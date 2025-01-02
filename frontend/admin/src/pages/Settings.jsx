@@ -2,7 +2,7 @@
 const Settings = () => {
   return (
 
-    <h1>Settings</h1>
+    <h1>this is  the settings page</h1>
   )
 }
 
