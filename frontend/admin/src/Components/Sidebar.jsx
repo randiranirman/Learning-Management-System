@@ -7,7 +7,7 @@ const Sidebar = () => {
      confirm("Are you sure you want to log out?");
     }
   return (
-    <div className="bg-primary text-white w-64 flex flex-col h-[calc(100vh-4rem)] p-5">
+    <div className="bg-primary text-white w-64 flex flex-col h-[calc(100vh-4rem)]  justi p-5">
       <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
       <ul className="space-y-4">
         <li>

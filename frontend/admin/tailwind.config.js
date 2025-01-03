@@ -9,6 +9,8 @@ export default {
       colors:{
         primary:"#7865F1",
         secondary:"#F4F4F9",
+        green:"#65F178",
+        red:"#F16567",
       },
       transitionDuration:{
         time:'200ms',
