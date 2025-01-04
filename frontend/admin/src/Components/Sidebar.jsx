@@ -1,4 +1,3 @@
-// components/Sidebar.jsx
 
 import { Link } from "react-router-dom";
 
