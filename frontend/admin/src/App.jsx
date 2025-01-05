@@ -6,15 +6,20 @@ import ManageAssignments from "./pages/ManageAssignments";
 import ManageCourses from "./pages/ManageCourses";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
-import Login from "./pages/Login";
+import { useState } from "react";
+import LogOutPopUp from "./Components/LogOutPopUp";
 
 const App = () => {
+  const [showLogOut, setShowLogOut] = useState(false);
+
   return (
     <div className="flex flex-col h-screen">
       
-      <div className="flex flex-grow">
-        <Sidebar className="h-auto w-1/5 bg-purple-500 flex flex-col justify-center" />
+      <div className="flex flex-grow position-fixed w-full h-full">
+      {showLogOut && <LogOutPopUp setShowLogOUt={setShowLogOut} />}
 
+        <Sidebar setShowLogOut={setShowLogOut} className="h-auto w-1/5 bg-purple-500 flex flex-col justify-center" />
+        
         <div className="flex-1 bg-gray-100 p-5">
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -23,7 +28,6 @@ const App = () => {
             <Route path="manage-courses" element={<ManageCourses />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="login" element={<Login />} />
           </Routes>
         </div>
       </div>

@@ -1,12 +1,9 @@
-
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const Sidebar = () => {
-     const choiceFunction = () => {
-     confirm("Are you sure you want to log out?");
-    }
+const Sidebar = ({ setShowLogOut }) => {
   return (
-    <div className="bg-primary text-white w-64 flex flex-col h-[calc(100vh-4rem)]  justi p-5">
+    <div className="bg-primary text-white w-64 flex flex-col h-[calc(100vh-4rem)] p-5">
       <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
       <ul className="space-y-4">
         <li>
@@ -57,17 +54,21 @@ const Sidebar = () => {
             Settings
           </Link>
         </li>
-        <li onClick={choiceFunction}>
-          <Link
-            to="/login"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
+        <li>
+          <button
+            className="block w-full text-left hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
+            onClick={() => setShowLogOut(true)}
           >
             Log Out
-          </Link>
+          </button>
         </li>
       </ul>
     </div>
   );
+};
+
+Sidebar.propTypes = {
+  setShowLogOut: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
