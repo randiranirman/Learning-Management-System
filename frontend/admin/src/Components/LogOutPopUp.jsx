@@ -13,7 +13,7 @@ const LogOutPopUp = ({ setShowLogOut }) => {
           </p>
           <div className="flex justify-between">
             <button
-              className="mx-4 bg-primary text-white rounded-md px-4 py-2 hover:transition transform hover:scale-110 duration-300"
+              className="mx-4 bg-primary text-white rounded-md px-4 py-2 hover:transition transform hover:scale-110 duration-300 oi"
               onClick={() => {
                 setShowLogOut(false);
               }}
