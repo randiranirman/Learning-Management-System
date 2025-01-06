@@ -2,7 +2,6 @@ const LogOutPopUp = ({ setShowLogOut }) => {
     return (
       <div
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn"
-        onClick={() => setShowLogOut(false)} 
       >
         <div
           className="bg-white rounded-lg shadow-lg p-6 w-96"
@@ -22,7 +21,7 @@ const LogOutPopUp = ({ setShowLogOut }) => {
             </button>
             <button
               className="mx-4 text-gray-600 hover:text-gray-900"
-              onClick={() => setShowLogOut(false)}
+              onClick={ () => setShowLogOut(false) }
             >
               Cancel
             </button>
