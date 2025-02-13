@@ -16,7 +16,7 @@ const App = () => {
     <div className="flex flex-col h-screen">
       
       <div className="flex flex-grow position-fixed w-full h-full">
-      {showLogOut && <LogOutPopUp setShowLogOUt={setShowLogOut} />}
+      {showLogOut && <LogOutPopUp onCloseLogOut={() => setShowLogOut(false)} />}
 
         <Sidebar setShowLogOut={setShowLogOut} className="h-auto w-1/5 bg-purple-500 flex flex-col justify-center" />
         

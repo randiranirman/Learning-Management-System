@@ -4,7 +4,7 @@ const AllCourses = () => {
     
 
     <>
-            <h1>All Courses</h1>
+            <h1 className="text-black 500">All Courses</h1>
     </>
   )
 }
