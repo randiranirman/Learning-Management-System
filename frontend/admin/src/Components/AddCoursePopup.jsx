@@ -49,8 +49,8 @@ const AddCoursePopup = ({ onClose }) => {
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div className="flex justify-end gap-2">
-            <button  onClick={onClose} type="submit" className="bg-primary text-white px-4 py-2 rounded-md hover:scale-105 transition-transform duration-200">Save</button>
+          <div className="flex justify-end gap-10">
+            <button  onClick={onClose} type="submit" className="bg-primary text-white px-4 py-2  gap-10 rounded-md hover:scale-105 transition-transform duration-200">Save</button>
             <button onClick={onClose} className="bg-red text-white px-4 py-2 rounded-md hover:scale-105 transition-transform duration-200">Cancel</button>
           </div>
         </form>
