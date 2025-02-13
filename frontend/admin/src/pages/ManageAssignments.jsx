@@ -10,7 +10,7 @@ const ManageAssignments = ({assignmentTitle,Subject,assignedTeacher,dueDate}) =>
               <tr>
                 <th className="px-3 py-4 text-semibold">Assignment Title</th>
                 <th className="px-6 py-4">Subject</th>
-                <th className="px-6 py-4">Assigned Teacher</th>
+                <th className="px-6 py-4">Assnoteigned Teacher</th>
                 <th className="px-6 py-4">Due Date</th>
                 <th className="px-6 py-4">Actions</th>
               </tr>
