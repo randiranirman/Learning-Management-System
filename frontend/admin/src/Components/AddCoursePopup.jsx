@@ -1,17 +1,38 @@
 import { useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import axios from "axios";
+
+const API_URL = "http://localhost:5248/api/subjects/create";  
 
 const AddCoursePopup = ({ onClose }) => {
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({
+    courseName: "",
+    subjectCode: "",
+    teacher: "",
+  });
 
+  // Handles input field changes
   const handleChange = (event) => {
     const { name, value } = event.target;
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(inputs);
+  // Handles form submission and API request
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // 
+
+    try {
+      const response = await axios.post(API_URL, inputs, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      alert(response.data.Message); 
+      setInputs({ courseName: "", subjectCode: "", teacher: "" }); 
+      onClose(); 
+    } catch (error) {
+      console.error("Error creating subject:", error.response?.data || error);
+      alert("Failed to add subject. Check console for details.");
+    }
   };
 
   return (
@@ -24,9 +45,10 @@ const AddCoursePopup = ({ onClose }) => {
             <input
               type="text"
               name="courseName"
-              value={inputs.courseName || ""}
+              value={inputs.courseName}
               onChange={handleChange}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              required
             />
           </div>
           <div>
@@ -34,9 +56,10 @@ const AddCoursePopup = ({ onClose }) => {
             <input
               type="text"
               name="subjectCode"
-              value={inputs.subjectCode || ""}
+              value={inputs.subjectCode}
               onChange={handleChange}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              required
             />
           </div>
           <div>
@@ -44,14 +67,26 @@ const AddCoursePopup = ({ onClose }) => {
             <input
               type="text"
               name="teacher"
-              value={inputs.teacher || ""}
+              value={inputs.teacher}
               onChange={handleChange}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              required
             />
           </div>
           <div className="flex justify-end gap-10">
-            <button  onClick={onClose} type="submit" className="bg-primary text-white px-4 py-2  gap-10 rounded-md hover:scale-105 transition-transform duration-200">Save</button>
-            <button onClick={onClose} className="bg-red text-white px-4 py-2 rounded-md hover:scale-105 transition-transform duration-200">Cancel</button>
+            <button
+              type="submit"
+              className="bg-primary text-white px-4 py-2 rounded-md hover:scale-105 transition-transform duration-200"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-red text-white px-4 py-2 rounded-md hover:scale-105 transition-transform duration-200"
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </div>

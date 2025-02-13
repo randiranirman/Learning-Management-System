@@ -12,13 +12,13 @@ const LogOutPopUp = ({ onCloseLogOut }) => {
         </p>
         <div className="flex justify-between">
           <button
-            className="mx-4 bg-primary text-white rounded-md px-4 py-2 hover:scale-110 transition-transform duration-200"
+            className="mx-4 bg-primary text-white rounded-md px-4 py-2 hover:scale-110 transition-transform duration-time"
             onClick={onCloseLogOut}
           >
             Log Out
           </button>
           <button
-            className="mx-4 bg-primary text-white rounded-md px-4 py-2   bg-red"
+            className="mx-4 bg-primary text-white rounded-md px-4 py-2   bg-red hover:scale-110 transition-transform duration-time"
             onClick={onCloseLogOut}
           >
             Cancel
@@ -28,5 +28,5 @@ const LogOutPopUp = ({ onCloseLogOut }) => {
     </div>
   );
 };
-
+  
 export default LogOutPopUp;
