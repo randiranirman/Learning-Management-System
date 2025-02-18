@@ -17,10 +17,15 @@ const AddCoursePopup = ({ onClose }) => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  // Handles form submission and API request
+  
   const handleSubmit = async (event) => {
     event.preventDefault(); // 
 
+
+
+
+
+    
     try {
       const response = await axios.post(API_URL, inputs, {
         headers: { "Content-Type": "application/json" },
@@ -36,8 +41,8 @@ const AddCoursePopup = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-200">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96 animate-fade-in">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-1000">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 animate-fade-in duration-200">
         <h2 className="text-xl font-semibold mb-4">Add Course</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
