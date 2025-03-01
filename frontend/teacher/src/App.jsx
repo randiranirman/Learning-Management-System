@@ -1,11 +1,11 @@
 // src/App.jsx
 import React from 'react';
-import CourseTabs from './components/courseTabs';
+import CourseDashboard from './pages/CourseDashboard';
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <CourseTabs />
+    <div>
+      <CourseDashboard />
     </div>
   );
 };
