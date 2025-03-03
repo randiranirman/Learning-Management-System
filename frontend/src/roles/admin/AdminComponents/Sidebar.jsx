@@ -1,74 +1,55 @@
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 
 const Sidebar = ({ setShowLogOut }) => {
   return (
-    <div className="bg-primary text-white w-64 flex flex-col h-[calc(100vh-4rem)] p-5">
-      <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
-      <ul className="space-y-4">
-        <li>
-          <Link
-            to="/"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/manage-users"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Manage Users
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/manage-assignments"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Manage Assignments
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/manage-courses"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Manage Courses
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/analytics"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Analytics
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/settings"
-            className="block hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-          >
-            Settings
-          </Link>
-        </li>
-        <li>
-          <button
-            className="block w-full text-left hover:bg-secondary hover:text-primary transition-all duration-200 p-2 rounded cursor-pointer"
-            onClick={() => setShowLogOut(true)}
-          >
-            Log Out
-          </button>
-        </li>
-      </ul>
+    
+    <div className="bg-primary w-1/5">
+      <div>
+        <div className="text-white font-bold text-3xl mx-2 my-2">
+          <h1>Welcome Admin!</h1>
+        </div>
+
+        <nav className="mt-4 space-y-4 max-h-50">
+          <ul className="mt-4 space-y-4 gap-4">
+            <Link to="/admin">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Dashboard
+              </li>
+            </Link>
+            <Link to="/admin/manage-users">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Manage Users
+              </li>
+            </Link>
+            <Link to="/admin/manage-assignments">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Manage Assignments
+              </li>
+            </Link>
+            <Link to="/admin/manage-courses">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Manage Courses
+              </li>
+            </Link>
+            <Link to="/admin/analytics">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Analytics
+              </li>
+            </Link>
+            <Link to="/admin/settings">
+              <li className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+                Settings
+              </li>
+            </Link>
+          </ul>
+        </nav>
+
+        <div className="hover:bg-secondary transition duration-300 hover:text-primary text-white px-4 py-4 cursor-pointer">
+          <button onClick={() => setShowLogOut(true)}>Log Out</button>
+        </div>
+      </div>
     </div>
   );
-};
-
-Sidebar.propTypes = {
-  setShowLogOut: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
