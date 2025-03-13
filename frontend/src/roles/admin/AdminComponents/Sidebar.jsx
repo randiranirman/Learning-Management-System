@@ -26,7 +26,7 @@ const Sidebar = () => {
         </Link>
 
         <Link to="/admin/manage-courses">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
+          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 ">
             Manage Courses
           </li>
         </Link>

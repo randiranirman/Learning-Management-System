@@ -6,9 +6,9 @@ const ManageCourses = () => {
 
   return (
     <>
-      <div >
-        <h1>Manage Courses</h1>
-        <button
+      <div  className="flex justify-between">
+        <h1 className="font-semibold text-2xl">Manage Courses</h1>
+        <button className="bg-primary text-white font-semibold rounded-lg px-4 py-2 cursor-pointer duration-200 hover:scale-120"
           onClick={() => setShowPopup(true)}
           
         >
