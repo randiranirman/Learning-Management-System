@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-
-
 const AddCoursePopup = ({ onClose }) => {
   const [inputs, setInputs] = useState({
     courseName: "",
@@ -15,25 +13,17 @@ const AddCoursePopup = ({ onClose }) => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  
   const handleSubmit = async (event) => {
-    event.preventDefault(); // 
-
-
-
-
-
-    
-    
+    event.preventDefault(); //
   };
 
   return (
-    <div >
-      <div >
-        <h2 >Add Course</h2>
-        <form onSubmit={handleSubmit} >
+    <div>
+      <div>
+        <h2>Add Course</h2>
+        <form onSubmit={handleSubmit}>
           <div>
-            <label >Course Name:</label>
+            <label>Course Name:</label>
             <input
               type="text"
               name="courseName"
@@ -43,7 +33,7 @@ const AddCoursePopup = ({ onClose }) => {
             />
           </div>
           <div>
-            <label >Subject Code:</label>
+            <label>Subject Code:</label>
             <input
               type="text"
               name="subjectCode"
@@ -53,7 +43,7 @@ const AddCoursePopup = ({ onClose }) => {
             />
           </div>
           <div>
-            <label >Teacher:</label>
+            <label>Teacher:</label>
             <input
               type="text"
               name="teacher"
@@ -62,18 +52,9 @@ const AddCoursePopup = ({ onClose }) => {
               required
             />
           </div>
-          <div >
-            <button
-              type="submit"
-             
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              
-            >
+          <div>
+            <button type="submit">Save</button>
+            <button type="button" onClick={onClose}>
               Cancel
             </button>
           </div>
@@ -82,6 +63,5 @@ const AddCoursePopup = ({ onClose }) => {
     </div>
   );
 };
-
 
 export default AddCoursePopup;

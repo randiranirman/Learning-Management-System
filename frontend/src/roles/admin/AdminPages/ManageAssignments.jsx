@@ -1,36 +1,56 @@
-const ManageAssignments = ({ assignmentTitle, Subject, assignedTeacher, dueDate }) => {
+const ManageAssignments = () => {
+  const assignments = [
+    {
+      title: "Math Homework",
+      subject: "Mathematics",
+      teacher: "Mr. Perera",
+      dueDate: "March 15, 2025",
+    },
+    {
+      title: "English Essay",
+      subject: "English",
+      teacher: "Mr. De Silva",
+      dueDate: "March 18, 2025",
+    },
+  ];
+
   return (
-    <>
-      <h1>Manage Assignments</h1>
+    <div>
       <div>
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Assignment Title</th>
-                <th>Subject</th>
-                <th>Assigned Teacher</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>{assignmentTitle}</th>
-                <th>{Subject}</th>
-                <th>{assignedTeacher}</th>
-                <th>{dueDate}</th>
-                <th>
+        <h1>Manage Assignments</h1>
+        <button>Add Assignment</button>
+      </div>
+
+      <div>
+        <h2>All Assignments</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Assignment Title</th>
+              <th>Subject</th>
+              <th>Assigned Teacher</th>
+              <th>Due Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {assignments.map((assignment, index) => (
+              <tr key={index}>
+                <td>{assignment.title}</td>
+                <td>{assignment.subject}</td>
+                <td>{assignment.teacher}</td>
+                <td>{assignment.dueDate}</td>
+                <td>
                   <button>Edit</button>
                   <button>Reassign</button>
                   <button>Delete</button>
-                </th>
+                </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </>
+    </div>
   );
 };
 
