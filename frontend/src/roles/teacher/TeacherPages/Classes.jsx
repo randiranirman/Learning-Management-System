@@ -2,7 +2,8 @@
 const MyCourses = () => {
     return (
         <>
-            <h1>This is My courses page</h1>
+            <h1>This is Classes page</h1>
+            
         </>
     )
 }
