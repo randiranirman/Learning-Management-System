@@ -1,53 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import LogOutPopUp from "./LogOutPopUp";
 
 const Sidebar = () => {
+  const [showLogOutPopup, setShowLogOutPopup]= useState("false");
+  const menuItems = [
+    { name: "Dashboard", path: "/admin/dashboard" },
+    { name: "Manage Users", path: "/admin/manage-users" },
+    { name: "Manage Assignments", path: "/admin/manage-assignments" },
+    { name: "Manage Courses", path: "/admin/manage-courses" },
+    { name: "Analytics", path: "/admin/analytics" },
+    { name: "Settings", path: "/admin/settings" },
+  ];
+
+  const menuItemStyles =
+    "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2";
+
   return (
     <div className="bg-primary h-screen w-[280px] flex flex-col gap-y-8 p-4">
       <h2 className="text-white font-semibold text-2xl text-center">Admin Panel</h2>
 
       <ul className="flex flex-col gap-y-4">
-        <Link to="/admin/dashboard">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
-            Dashboard
-          </li>
-        </Link>
-
-        <Link to="/admin/manage-users">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
-            Manage Users
-          </li>
-        </Link>
-
-        <Link to="/admin/manage-assignments">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
-            Manage Assignments
-          </li>
-        </Link>
-
-        <Link to="/admin/manage-courses">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 ">
-            Manage Courses
-          </li>
-        </Link>
-
-        <Link to="/admin/analytics">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
-            Analytics
-          </li>
-        </Link>
-
-        <Link to="/admin/settings">
-          <li className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2">
-            Settings
-          </li>
-        </Link>
+        {menuItems.map((item) => (
+          <Link key={item.path} to={item.path}>
+            <li className={menuItemStyles}>{item.name}</li>
+          </Link>
+        ))}
 
         {/* Log Out Button */}
-        <button className="text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 w-full">
-          Log Out
-        </button>
+        <button onClick={() => setShowLogOutPopup(true)} className={`${menuItemStyles} w-full`}>Log Out</button>
+
       </ul>
+      {showLogOutPopup && <LogOutPopUp setShowLogOutPopup={setShowLogOutPopup} /> }
     </div>
   );
 };
