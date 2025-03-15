@@ -7,8 +7,9 @@ import ManageAssignments from "./roles/admin/AdminPages/ManageAssignments";
 import ManageCourses from "./roles/admin/AdminPages/ManageCourses";
 import Analytics from "./roles/admin/AdminPages/Analytics";
 import Settings from "./roles/admin/AdminPages/Settings";
-import MyCourses from "./roles/teacher/TeacherPages/Classes";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
+import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 
 const App = () => {
   return (
@@ -25,7 +26,8 @@ const App = () => {
         <Route path="settings" element={<Settings />} />
       </Route>
 
-      <Route path="/teacher" element={<MyCourses />} />
+      <Route path="/teacher" element={<QuizManagement/>} />
+      <Route path="/teacher/quiz" element={<QuizCreation />} />
 
 
       <Route path="/student/dashboard" element={<StudentDashboard />} />
