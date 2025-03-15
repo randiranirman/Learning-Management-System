@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import Login from "./Login";
+
 import AdminLayout from "../roles/admin/AdminLayouts/AdminLayout";
 import Dashboard from "../roles/admin/AdminPages/Dashboard";
 import ManageUsers from "../roles/admin/AdminPages/ManageUsers";
@@ -13,6 +14,7 @@ import MyCourses from "../roles/teacher/TeacherPages/MyCourses";
 import StudentDashboard from "../roles/student/StudentPages/StudentDashboard";
 
 const App = () => {
+  
   return (
     <div className='m-50 place-content-between text-white  items-center justify-between bg-cover border-6 border-[#8f58ee]  rounded-3xl shadow-2xl bg-fixed' style={{"backgroundImage":"url(../src/assets/bg.png)"}}   >
     <Routes>
@@ -33,6 +35,7 @@ const App = () => {
       <Route path="/student/dashboard" element={<StudentDashboard />} />
     </Routes>
     </div>
+    
   );
 };
 
