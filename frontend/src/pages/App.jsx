@@ -1,3 +1,4 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import Login from "./Login";
@@ -35,13 +36,6 @@ const App = () => {
   );
 };
 
-/*function App() {
-  return(
-  <div className='m-50 place-content-between text-white  items-center justify-between bg-cover border-6 border-[#8f58ee]  rounded-3xl shadow-2xl bg-fixed' style={{"backgroundImage":"url(../src/assets/bg.png)"}}   >
-     <Login/>
-   </div>
-  );
-  
- };*/
+
 
 export default App;
