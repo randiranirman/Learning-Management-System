@@ -4,7 +4,15 @@ const QuizCreation = () => {
    
 
     <>
-            <h1>This is the quiz creation page </h1>            
+           <div className="">
+                <div flex flex-col>
+                    <label>Quiz Title</label>
+                    <input type="text" />
+
+                </div>
+                    
+
+            </div>         
 
     </>
   )
