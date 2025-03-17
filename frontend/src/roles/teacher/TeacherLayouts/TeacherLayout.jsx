@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom";
-import TeacherSidebar from "../TeacherComponents/TeacherSidebar";
+import TeacherFullHeader from "../TeacherComponents/TeacherFullHeader";
 
 const TeacherLayout = () => {
   return (
     <>
-      <TeacherSidebar />
+    <div>
+      <TeacherFullHeader />
+    </div>
+    <div>
       <Outlet /> 
+    </div>
     </>
   );
 };
