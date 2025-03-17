@@ -7,8 +7,9 @@ import ManageAssignments from "./roles/admin/AdminPages/ManageAssignments";
 import ManageCourses from "./roles/admin/AdminPages/ManageCourses";
 import Analytics from "./roles/admin/AdminPages/Analytics";
 import Settings from "./roles/admin/AdminPages/Settings";
-import MyCourses from "./roles/teacher/TeacherPages/Classes";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
+import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 
 import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
