@@ -36,7 +36,6 @@ const Login = () => {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
 
-      alert("Login successful!");
       window.location.href = "/admin"; 
     } catch (err) {
       setError(err.message); 
@@ -81,6 +80,7 @@ const Login = () => {
               required
             />
           </div>
+          
 
           <button
             type="submit"
