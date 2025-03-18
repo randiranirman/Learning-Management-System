@@ -58,6 +58,10 @@ const ManageCourses = () => {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+  }
+
   return (
     <>
       <div className="flex justify-between mt-2 mx-2 max-w-[90%]">
@@ -70,7 +74,7 @@ const ManageCourses = () => {
         </button>
       </div>
 
-      <div>
+      <div className="p-10">
         <AllCourses subjectDetails={allSubjects} />
       </div>
 

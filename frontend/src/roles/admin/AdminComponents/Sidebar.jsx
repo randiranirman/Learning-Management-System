@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import LogOutPopUp from "./LogOutPopUp";
 
 const Sidebar = () => {
-  const [showLogOutPopup, setShowLogOutPopup]= useState("false");
+  const [showLogOutPopup, setShowLogOutPopup] = useState(false);
+
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Manage Users", path: "/admin/manage-users" },
@@ -17,7 +18,7 @@ const Sidebar = () => {
     "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 active:text-primary active:bg-secondary ";
 
   return (
-    <div className="bg-primary h-screen w-[280px] flex flex-col gap-y-8 p-4">
+    <div className="bg-primary h-screen w-[350px] flex flex-col gap-y-8 p-6 fixed left-0 top-0"> {/* Increased width */}
       <h2 className="text-white font-semibold text-2xl text-center">Admin Panel</h2>
 
       <ul className="flex flex-col gap-y-4">
@@ -29,9 +30,9 @@ const Sidebar = () => {
 
         {/* Log Out Button */}
         <button onClick={() => setShowLogOutPopup(true)} className={`${menuItemStyles} w-full`}>Log Out</button>
-
       </ul>
-      {showLogOutPopup && <LogOutPopUp setShowLogOutPopup={setShowLogOutPopup} /> }
+
+      {showLogOutPopup && <LogOutPopUp setShowLogOutPopup={setShowLogOutPopup} />}
     </div>
   );
 };
