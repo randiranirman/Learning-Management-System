@@ -21,7 +21,7 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://localhost:7265/api/Auth/login", {
+      const response = await fetch("https://localhost:7265/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,8 +36,9 @@ const Login = () => {
       }
 
       // Store tokens in local storage
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      window.location.href = "/admin"; 
 
     } catch (err) {
       setError(err.message); // Set error message
