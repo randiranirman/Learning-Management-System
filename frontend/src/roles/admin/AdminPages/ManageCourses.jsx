@@ -2,9 +2,14 @@ import { useState, useEffect } from "react";
 import AddCoursePopup from "../AdminComponents/AddCoursePopup";
 import AllCourses from "../AdminComponents/AllCourses.jsx";
 import subjectApi from '../../../api/subjects.js';
+import EditCoursePopUp from "../AdminComponents/EditCoursePopUp.jsx";
+import DeleteAlert from "../AdminComponents/DeleteAlert.jsx";
 
 const ManageCourses = () => {
   const [showPopup, setShowPopup] = useState(false);
+
+  const [showEditSubjectPopup, setShowEditSubjectPopup] = useState(false);
+  const [showDeleteSubjectPopup, setShowDeleteSubjectPopup] = useState(false);
 
   const [subjectTitle, setSubjectTitle] = useState("");
   const [grade, setGrade] = useState("");
@@ -62,6 +67,10 @@ const ManageCourses = () => {
     e.preventDefault();
   }
 
+  const handleEdit = async (e) => {
+    e.preventDefault();
+  }
+
   return (
     <>
       <div className="flex justify-between">
@@ -75,7 +84,7 @@ const ManageCourses = () => {
       </div>
 
       <div className="p-10">
-        <AllCourses subjectDetails={allSubjects} />
+        <AllCourses subjectDetails={allSubjects} showEditPopup={() => setShowEditSubjectPopup(true)} showDeletePopup={() => setShowDeleteSubjectPopup(true)} />
       </div>
 
       {showPopup && (
@@ -88,6 +97,25 @@ const ManageCourses = () => {
           teacherId={teacherId}
           setTeacherId={setTeacherId}
           handleSubmit={handleSubmit}
+        />
+      )}
+
+      {showEditSubjectPopup && (
+        <EditCoursePopUp 
+          handleEdit={handleEdit}
+          onClose={() => setShowEditSubjectPopup(false)}
+          subjectTitle={subjectTitle}
+          setSubjectTitle={setSubjectTitle}
+          grade={grade}
+          setGrade={setGrade}
+          teacherId={teacherId}
+          setTeacherId={setTeacherId}
+        />
+      )}
+
+      {showDeleteSubjectPopup && (
+        <DeleteAlert 
+          onClose={() => setShowDeleteSubjectPopup(false)}
         />
       )}
     </>

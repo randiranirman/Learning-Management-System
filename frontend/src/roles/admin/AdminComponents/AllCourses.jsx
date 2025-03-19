@@ -1,5 +1,5 @@
 
-const AllCourses = ({ subjectDetails }) => {
+const AllCourses = ({ subjectDetails, showEditPopup, showDeletePopup }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border-0 border-gray-200 rounded-lg">
@@ -10,6 +10,9 @@ const AllCourses = ({ subjectDetails }) => {
             </th>
             <th className="px-4 py-2 text-left text-sm font-medium text-white text-xl">
               Subject Code
+            </th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-white text-xl">
+              Grade
             </th>
             <th className="px-4 py-2 text-left text-sm font-medium text-white text-xl">
               Teacher
@@ -24,12 +27,13 @@ const AllCourses = ({ subjectDetails }) => {
                 {course.subjectCodeNavigation.title}
               </td>
               <td className="px-4 py-3 text-sm text-gray-500">{course.subjectCodeNavigation.code}</td>
+              <td className="px-4 py-3 text-sm text-gray-500">{course.subjectCodeNavigation.grade}</td>
               <td className="px-4 py-3 text-sm text-gray-500">{course.teacher.fullName}</td>
               <td className="px-4 py-3 text-right text-sm font-medium flex gap-4 justify-center">
-                <button className="text-indigo-600 hover:text-indigo-900">
+                <button className="text-indigo-600 hover:text-indigo-900 cursor-pointer" onClick={showEditPopup}>
                   Edit
                 </button>
-                <button className="text-red-600 hover:text-red-900">
+                <button className="text-red-600 hover:text-red-900 cursor-pointer" onClick={showDeletePopup}>
                   Delete
                 </button>
               </td>
