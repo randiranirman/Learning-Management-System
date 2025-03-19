@@ -7,12 +7,14 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Set fade-in animation on component mount
   useEffect(() => {
     setTimeout(() => {
       setFadeIn(true);
     }, 100);
   }, []);
 
+  // Handle the login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -30,18 +32,17 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed!"); 
+        throw new Error(data.message || "Login failed!");
       }
 
+      // Store tokens in local storage
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
 
-      alert("Login successful!");
-      window.location.href = "/admin"; 
     } catch (err) {
-      setError(err.message); 
+      setError(err.message); // Set error message
     } finally {
-      setLoading(false); 
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -55,9 +56,10 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800">Welcome Back</h2>
         <p className="text-gray-500 text-center mb-6">Sign in to your account</p>
 
-        {error && <p className="text-red-500 text-center">{error}</p>} 
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Error message */}
 
         <form onSubmit={handleLogin} className="space-y-4">
+          {/* Username input */}
           <div>
             <label className="block text-gray-700 font-semibold">Username</label>
             <input
@@ -70,6 +72,7 @@ const Login = () => {
             />
           </div>
 
+          {/* Password input */}
           <div>
             <label className="block text-gray-700 font-semibold">Password</label>
             <input
@@ -82,6 +85,7 @@ const Login = () => {
             />
           </div>
 
+          {/* Login button */}
           <button
             type="submit"
             className="w-full py-3 text-white bg-primary rounded-lg hover:bg-opacity-90 transition"
@@ -91,8 +95,12 @@ const Login = () => {
           </button>
         </form>
 
+        {/* Forgot Password link */}
         <p className="mt-4 text-center text-gray-500">
-          Don't have an account? <a href="#" className="text-primary font-semibold">Sign Up</a>
+          Forgot your password?{" "}
+          <a href="/forgot-password" className="text-primary font-semibold">
+            Reset it here
+          </a>
         </p>
       </div>
     </div>

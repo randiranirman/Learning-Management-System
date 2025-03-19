@@ -15,7 +15,7 @@ const Sidebar = () => {
   ];
 
   const menuItemStyles =
-    "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2";
+    "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 active:text-primary active:bg-secondary ";
 
   return (
     <div className="bg-primary h-screen w-[350px] flex flex-col gap-y-8 p-6 fixed left-0 top-0"> {/* Increased width */}

@@ -64,7 +64,7 @@ const ManageCourses = () => {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mt-2 mx-2 max-w-[90%]">
         <h1 className="font-semibold text-2xl">Manage Courses</h1>
         <button
           className="bg-primary text-white font-semibold rounded-lg px-4 py-2 cursor-pointer duration-200 hover:scale-120"

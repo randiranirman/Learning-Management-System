@@ -4,7 +4,7 @@ const AllCourses = ({ subjectDetails }) => {
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border-0 border-gray-200 rounded-lg">
         <thead>
-          <tr className="bg-primary">
+          <tr className="bg-primary rounded-lg">
             <th className="px-4 py-2 text-left text-sm font-medium text-white text-xl">
               Subject Name
             </th>
