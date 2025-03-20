@@ -1,49 +1,42 @@
 import React, { useEffect, useState } from "react";
+import { useContext } from "react";
+import {login} from "../utils/authService";
+import { AuthContext } from "../auth/authContext";
 
 const Login = () => {
+  const {setUserRole}=useContext(AuthContext);
   const [fadeIn, setFadeIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Set fade-in animation on component mount
+
   useEffect(() => {
-    setTimeout(() => {
-      setFadeIn(true);
-    }, 100);
+    setTimeout(() => setFadeIn(true), 100);
   }, []);
 
-  // Handle the login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("https://localhost:7265/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed!");
+      const role = await login(username, password);
+      setUserRole(role);
+      if( role =="admin"){
+        window.location.href = "/admin";
+      }else if ( role =="teacher"){
+        window.location.href = "/teacher";
+      } else if ( role =="student"){
+        window.location.href = "/student";
+      } else {
+          setError("Unauthorized ") 
       }
-
-      // Store tokens in local storage
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      window.location.href = "/admin"; 
-
     } catch (err) {
-      setError(err.message); // Set error message
+      setError(err.message); 
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
@@ -57,10 +50,9 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800">Welcome Back</h2>
         <p className="text-gray-500 text-center mb-6">Sign in to your account</p>
 
-        {error && <p className="text-red-500 text-center">{error}</p>} {/* Error message */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* Username input */}
           <div>
             <label className="block text-gray-700 font-semibold">Username</label>
             <input
@@ -73,7 +65,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password input */}
           <div>
             <label className="block text-gray-700 font-semibold">Password</label>
             <input
@@ -86,7 +77,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Login button */}
           <button
             type="submit"
             className="w-full py-3 text-white bg-primary rounded-lg hover:bg-opacity-90 transition"
@@ -96,7 +86,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Forgot Password link */}
         <p className="mt-4 text-center text-gray-500">
           Forgot your password?{" "}
           <a href="/forgot-password" className="text-primary font-semibold">
