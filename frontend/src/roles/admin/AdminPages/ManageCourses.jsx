@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AddCoursePopup from "../AdminComponents/AddCoursePopup";
 import AllCourses from "../AdminComponents/AllCourses.jsx";
-import subjectApi from '../../../api/subjects.js';
+import subjectApi from "../../../api/subjects.js";
 import EditCoursePopUp from "../AdminComponents/EditCoursePopUp.jsx";
 import DeleteAlert from "../AdminComponents/DeleteAlert.jsx";
 
@@ -11,6 +11,7 @@ const ManageCourses = () => {
   const [showEditSubjectPopup, setShowEditSubjectPopup] = useState(false);
   const [showDeleteSubjectPopup, setShowDeleteSubjectPopup] = useState(false);
 
+  const [subjectCode, setSubjectCode] = useState("");
   const [subjectTitle, setSubjectTitle] = useState("");
   const [grade, setGrade] = useState("");
   const [teacherId, setTeacherId] = useState("");
@@ -19,7 +20,7 @@ const ManageCourses = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await subjectApi.get("/teacherSubject"); 
+        const response = await subjectApi.get("/teacherSubject");
         console.log(response.data);
         setAllSubjects(response.data);
       } catch (err) {
@@ -38,7 +39,7 @@ const ManageCourses = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const newSubject = {
       title: subjectTitle,
       grade: parseInt(grade, 10),
@@ -47,10 +48,13 @@ const ManageCourses = () => {
 
     try {
       console.log("Teacher ID before request:", teacherId);
-      const response = await subjectApi.post(`/subjects?assignTeacherId=${teacherId}`, newSubject);
+      const response = await subjectApi.post(
+        `/subjects?assignTeacherId=${teacherId}`,
+        newSubject
+      );
 
       console.log(response.data);
-      
+
       setAllSubjects([...allSubjects, response.data]);
 
       setSubjectTitle("");
@@ -63,13 +67,36 @@ const ManageCourses = () => {
     }
   };
 
-  const handleDelete = async (e) => {
-    e.preventDefault();
-  }
+  const handleDelete = async (Code) => {
+    try {
+      await subjectApi.delete(`/subjects/${Code}`);
 
-  const handleEdit = async (e) => {
-    e.preventDefault();
-  }
+      const response = await subjectApi.get("/teacherSubject");
+      setAllSubjects(response.data);
+
+      setShowDeleteSubjectPopup(false);
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
+  const handleEdit = async (Code) => {
+    const updatedSubjectBody = {
+      title: subjectTitle,
+      grade: grade,
+      assignedTeacherId: teacherId
+    }
+    try {
+      const response = await subjectApi.put(`/subjects/${Code}`, updatedSubjectBody);
+      const newSubjectList = await subjectApi.get("/teacherSubject");
+      setAllSubjects(newSubjectList);
+      setShowEditSubjectPopup(false);
+      setSubjectTitle('');
+      setTeacherId('');
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
 
   return (
     <>
@@ -84,7 +111,12 @@ const ManageCourses = () => {
       </div>
 
       <div className="p-10">
-        <AllCourses subjectDetails={allSubjects} showEditPopup={() => setShowEditSubjectPopup(true)} showDeletePopup={() => setShowDeleteSubjectPopup(true)} />
+        <AllCourses
+          subjectDetails={allSubjects}
+          showEditPopup={() => setShowEditSubjectPopup(true)}
+          showDeletePopup={() => setShowDeleteSubjectPopup(true)}
+          setSubjectCode={(newSubjectCode) => setSubjectCode(newSubjectCode)}
+        />
       </div>
 
       {showPopup && (
@@ -101,9 +133,10 @@ const ManageCourses = () => {
       )}
 
       {showEditSubjectPopup && (
-        <EditCoursePopUp 
+        <EditCoursePopUp
           handleEdit={handleEdit}
           onClose={() => setShowEditSubjectPopup(false)}
+          subjectCode={subjectCode}
           subjectTitle={subjectTitle}
           setSubjectTitle={setSubjectTitle}
           grade={grade}
@@ -115,7 +148,9 @@ const ManageCourses = () => {
 
       {showDeleteSubjectPopup && (
         <DeleteAlert 
-          onClose={() => setShowDeleteSubjectPopup(false)}
+          onClose={() => setShowDeleteSubjectPopup(false)} 
+          subjectCode={subjectCode}
+          handleDelete={handleDelete}
         />
       )}
     </>

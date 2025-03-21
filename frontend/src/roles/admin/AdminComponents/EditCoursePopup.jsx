@@ -2,6 +2,7 @@
 const EditCoursePopUp = ({
     onClose,
     handleEdit,
+    subjectCode,
     subjectTitle,
     setSubjectTitle,
     grade,
@@ -16,7 +17,7 @@ const EditCoursePopUp = ({
             <h2 className="text-2xl font-semibold text-gray-800">Update Course details</h2>
           </div>
   
-          <form onSubmit={handleEdit} className="space-y-4">
+          <form onSubmit={() => handleEdit(subjectCode)} className="space-y-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">New Subject Title:</label>
               <input
@@ -57,13 +58,13 @@ const EditCoursePopUp = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-red text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                className="px-4 py-2 bg-red text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors cursor-pointer"
               >
                 Save
               </button>

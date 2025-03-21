@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 
-export default function DeleteAlert({ onClose }) {
+export default function DeleteAlert({ onClose, subjectCode, handleDelete }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
       <div className="bg-white p-6 rounded-2xl shadow-xl w-96">
@@ -14,14 +14,14 @@ export default function DeleteAlert({ onClose }) {
         </p>
         <div className="flex justify-end space-x-2 mt-4">
           <button
-            className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100"
+            className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 cursor-pointer"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-            onClick={onClose}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
+            onClick={() => handleDelete(subjectCode)}
           >
             Delete
           </button>
