@@ -10,6 +10,7 @@ import Settings from "./roles/admin/AdminPages/Settings";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
+import ViewSubmission from "./roles/teacher/TeacherPages/ViewSubmission";
 
 const App = () => {
   return (
@@ -28,7 +29,7 @@ const App = () => {
 
       <Route path="/teacher" element={<QuizManagement/>} />
       <Route path="/teacher/quiz" element={<QuizCreation />} />
-
+      <Route path="/teacher/submissionview" element={<ViewSubmission />}/>
 
       <Route path="/student/dashboard" element={<StudentDashboard />} />
     </Routes>
