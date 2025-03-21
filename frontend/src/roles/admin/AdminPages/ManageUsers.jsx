@@ -3,7 +3,7 @@ import ManageUserPopup from '../AdminComponents/ManageUserPopup';
 import CurrentUser from '../AdminComponents/CurrentUser';
 
 const ManageUsers = () => {
-  const [showUserPopup, setShowUserPopup]= useState("false");
+  const [showUserPopup, setShowUserPopup]= useState(false);
 
   return (
     <>

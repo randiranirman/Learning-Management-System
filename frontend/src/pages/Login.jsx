@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import {login} from "../utils/authService";
 import { AuthContext } from "../auth/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const {setUserRole}=useContext(AuthContext);
+  const navigate = useNavigate();
   const [fadeIn, setFadeIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,11 +27,11 @@ const Login = () => {
       const role = await login(username, password);
       setUserRole(role);
       if( role =="admin"){
-        window.location.href = "/admin";
+        navigate("/admin");
       }else if ( role =="teacher"){
-        window.location.href = "/teacher";
+        navigate("/teacher");
       } else if ( role =="student"){
-        window.location.href = "/student";
+        navigate("/student");
       } else {
           setError("Unauthorized ") 
       }
