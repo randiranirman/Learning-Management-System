@@ -1,16 +1,19 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { registerUser } from "../../../utils/authService";
 
 const ManageUserPopup = ({ setShowUserPopup }) => {
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
-    role: "",
+    name: "",
     username: "",
     password: "",
-    name: "",
-    email: ""
+    email: "",
+    role: "",
   });
 
   const [errors, setErrors] = useState({
-    email: ""
+    email: "",
   });
 
   const validateEmail = (email) => {
@@ -22,15 +25,14 @@ const ManageUserPopup = ({ setShowUserPopup }) => {
     const { name, value } = e.target;
     
     setFormData({ ...formData, [name]: value });
-    
-    // Validate email when it changes
+
     if (name === "email") {
       if (!value) {
-        setErrors({ ...errors, email: "Email is required" });
+        setErrors((prevErrors) => ({ ...prevErrors, email: "Email is required" }));
       } else if (!validateEmail(value)) {
-        setErrors({ ...errors, email: "Please enter a valid email address" });
+        setErrors((prevErrors) => ({ ...prevErrors, email: "Please enter a valid email address" }));
       } else {
-        setErrors({ ...errors, email: "" });
+        setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
       }
     }
   };
@@ -38,31 +40,18 @@ const ManageUserPopup = ({ setShowUserPopup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate email before submission
     if (!validateEmail(formData.email)) {
-      setErrors({ ...errors, email: "Please enter a valid email address" });
+      setErrors((prevErrors) => ({ ...prevErrors, email: "Please enter a valid email address" }));
       return;
     }
 
     try {
-      const response = await fetch("https://localhost:7265/api/Auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create user");
-      }
-
-      const result = await response.json();
-      console.log("User created:", result);
-
-      setShowUserPopup(false);
+      const newUser = await registerUser(formData);
+      setUser(newUser);
+      console.log("Registered user:", newUser);
     } catch (error) {
-      console.error("Error creating user:", error);
+      setErrors((prevErrors) => ({ ...prevErrors, general: error.response?.data?.message || "Registration failed" }));
+      console.error("Registration failed:", error);
     }
   };
 
@@ -134,6 +123,8 @@ const ManageUserPopup = ({ setShowUserPopup }) => {
               required
             />
           </div>
+
+          {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
 
           <div className="flex justify-end space-x-2">
             <button
