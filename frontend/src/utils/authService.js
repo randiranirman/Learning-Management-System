@@ -84,3 +84,14 @@ export const getUserRole = () => {
   const refreshToken = localStorage.getItem("refreshToken");
   return refreshToken ? getRoleFromToken(refreshToken) : null;
 }
+
+export const fetchAllUsers = async () => {
+   try{
+    const response= await axios.get('https://localhost:7265/user');
+  return response.data;
+   }catch(error){
+    console.error("error fetching users ", error);
+   }
+   
+  
+}
