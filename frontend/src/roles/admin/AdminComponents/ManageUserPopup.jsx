@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { registerUser } from "../../../utils/authService";
 
-const ManageUserPopup = ({ setShowUserPopup }) => {
+const ManageUserPopup = ({ setShowUserPopup,onUserAdded  }) => {
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -48,7 +48,9 @@ const ManageUserPopup = ({ setShowUserPopup }) => {
     try {
       const newUser = await registerUser(formData);
       setUser(newUser);
-      console.log("Registered user:", newUser);
+      
+      
+      onUserAdded(newUser)
     } catch (error) {
       setErrors((prevErrors) => ({ ...prevErrors, general: error.response?.data?.message || "Registration failed" }));
       console.error("Registration failed:", error);

@@ -1,4 +1,3 @@
-import { QrCode } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 
 const QuizManagement = () => {
@@ -9,9 +8,9 @@ const QuizManagement = () => {
     
 
     <>
-        <div className="flex justify-between ">
+        <div className="flex justify-between mt-2 max-w-[90%] mx-4">
           <h1 className='font-semibold text-primary text-2xl'>Quiz Management</h1>
-          <button onClick={() => navigate("/teacher/quiz")} className='font-semibold bg-primary px-2 py-4 text-white rounded-md :hover-scale-110 cursor-pointer'> Create Quiz </button>
+          <button onClick={() => navigate("/teacher/quiz/createQuiz")} className='font-semibold bg-primary px-2 py-2 text-white rounded-md  cursor-pointer mx-2 hover:scale-110 duration-200 '> Create Quiz </button>
         </div>
 
     </>
