@@ -7,9 +7,9 @@ const FullHeaderTemplate = ({DropDownProps, SideNavProps}) => {
     const [showNav, setShowNav] = useState(false);
     return(
         <div className="relative">
-            <div className="flex justify-between bg-[#D9D9D9]">
+            <div className="flex justify-between bg-primary">
                 <div className="flex align-center justify-center ml-[10%]" onClick={() => setShowNav(true)}>
-                    <img src={navSelectorImg} alt="navSelectorImg" className="cursor-pointer" />
+                    <img src={navSelectorImg} alt="navSelectorImg" className="cursor-pointer filter invert" />
                 </div>
                 <div className="flex justify-center align-center mr-[2%]">
                     <DropDownTemplate DropDownProps={DropDownProps} />

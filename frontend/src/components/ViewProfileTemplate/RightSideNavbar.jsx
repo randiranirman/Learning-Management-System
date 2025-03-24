@@ -1,14 +1,23 @@
 import { useState } from "react";
 
-const teacherCourses = ["Sinhala", "Information and  Communication Technology", "Mathematics", "English", "History", "Buddhist", "Tamil", "Commerce"];
+const teacherCourses = [
+  "Sinhala", "Information and Communication Technology", "Mathematics", "English", "History", "Buddhist", "Tamil", "Commerce"
+];
 
 const RightSideNavbar = () => {
-  const [activeTab, setActiveTab] = useState("INTRODUCTION");
+  const [activeTab, setActiveTab] = useState("ABOUT");
+
+  const TeacherId = "1001";
+  const FullName = "Chanuka Dasun";
+  const Birthday = "2002-10-11";
+  const Email = "chanuka@gmail.com";
+  const ContactNo = "+94 715593983";
+  const Address = "No: 32, Kalugalpitiya, Badulla";
 
   return (
     <div className="w-full p-6">
-      <div className="border-b flex space-x-8">
-        {["INTRODUCTION", "COURSES", "RATINGS & REVIEWS"].map((tab) => (
+      <div className="border-b flex space-x-8 pb-2">
+        {["ABOUT", "COURSES"].map((tab) => (
           <button
             key={tab}
             className={`pb-2 px-4 font-semibold ${
@@ -21,44 +30,35 @@ const RightSideNavbar = () => {
         ))}
       </div>
 
-      <div className="mt-6">
-        {activeTab === "INTRODUCTION" && (
-          <div>
-            <p className="text-gray-700">
-              I am passionate about making technology easy to understand. I have taught students at the Universities and guided professionals for the past 20 years.
-            </p>
-
-            <div className="mt-6">
-              <h2 className="text-lg font-bold">Education</h2>
-              <ul className="list-disc list-inside text-gray-600">
-                <li>Masters in Computer Science</li>
-                <li>PhD in Computer Science and Engineering</li>
-              </ul>
-            </div>
-
-            <div className="mt-6">
-              <h2 className="text-lg font-bold">Achievements</h2>
-              <ul className="list-disc list-inside text-gray-600">
-                <li>Microsoft Certified Solution Developer</li>
-                <li>Oakridge University, Assisted Faculty</li>
-                <li>Guest Lecturer at Stanford University</li>
-              </ul>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "COURSES" && (
-          <div className="text-lg">
-            <ul className="list-disc list-inside text-gray-600">
-              {teacherCourses.map(course => (
-                <li>{course}</li>
-              ))}
+      <div className="mt-6 p-4 bg-white">
+        {activeTab === "ABOUT" && (
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Teacher Details</h2>
+            <ul className="text-lg text-gray-800 space-y-3">
+              <li><span className="font-semibold">ID:</span> {TeacherId}</li>
+              <li><span className="font-semibold">Full Name:</span> {FullName}</li>
+              <li><span className="font-semibold">Birthday:</span> {Birthday}</li>
+              <li><span className="font-semibold">Email:</span> {Email}</li>
+              <li><span className="font-semibold">Contact No:</span> {ContactNo}</li>
+              <li><span className="font-semibold">Address:</span> {Address}</li>
             </ul>
           </div>
         )}
 
-        {activeTab === "RATINGS & REVIEWS" && (
-          <p className="text-gray-700">Ratings & Reviews section coming soon...</p>
+        {activeTab === "COURSES" && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Courses Taught</h2>
+            <ul className="mt-4 grid grid-cols-2 gap-4">
+              {teacherCourses.map((course, index) => (
+                <li
+                  key={index}
+                  className="p-3 bg-blue-100 rounded-lg text-blue-900"
+                >
+                  {course}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>
