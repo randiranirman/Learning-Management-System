@@ -4,10 +4,9 @@ const QuizCreation = () => {
   const [quizTitle, setQuizTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
-  const [quizNumber, setQuizNumber] = useState(5); // Default number of questions
+  const [quizNumber, setQuizNumber] = useState(5); 
   const [questions, setQuestions] = useState([]);
   const[ showSaveButton, setShowSaveButton] = useState(false);
-  // Function to add a new question (only if the limit is not reached)
   const addQuestion = () => {
     if (questions.length < quizNumber) {
       setQuestions([...questions, { text: "", type: "MCQ" }]);
