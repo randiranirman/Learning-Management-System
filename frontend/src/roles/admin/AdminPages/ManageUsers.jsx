@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ManageUserPopup from '../AdminComponents/ManageUserPopup';
 import { fetchAllUsers } from '../../../utils/authService';
+import { deleteUser } from '../../../utils/userService';
 const ManageUsers = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [users, setUsers] = useState([]);
-
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -24,6 +24,19 @@ const ManageUsers = () => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
     setShowUserPopup(false);
   };
+  const  handleDeleteUser = async(username) => {
+    try{
+      const response = await deleteUser(username);
+    if ( response.status === 200){
+      setUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
+    }else{
+      console.error("Error Deleting User")
+    }
+    }catch(error){
+      console.error("Error deleting user ",error)
+    }
+     
+  }
 
   return (
     <>
@@ -64,10 +77,11 @@ const ManageUsers = () => {
                      transition-transform duration-200 hover:scale-110 px-4 py-2 mr-2">
                       Edit
                     </button>
-                    <button className="bg-red-500 text-white font-semibold rounded-lg cursor-pointer 
+                    <button onClick={() => handleDeleteUser(user.username)} className="bg-red-500 text-white font-semibold rounded-lg cursor-pointer 
                      transition-transform duration-200 hover:scale-110 px-4 py-2">
                       Delete
                     </button>
+
                   </td>
                 </tr>
               ))

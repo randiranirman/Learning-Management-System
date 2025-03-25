@@ -4,7 +4,7 @@ import { getUserRole, isAuthenticated, logout } from "../utils/authService";
 
 
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(); 
 export const AuthProvider = ({ children }) => {
 
   const [userRole, setUserRole] = useState(null);
