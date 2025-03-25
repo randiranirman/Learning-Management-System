@@ -2,9 +2,9 @@ import Card from "../AdminComponents/Card";
 
 const Dashboard = () => {
   return (
-    <div >
-      <h1 >Dashboard</h1>
-      <div >
+    <div  className="mx-2 mt-2 px-2 ">
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div  className="flex ">
         <Card title="Total Users" description="500 users registered" />
         <Card title="Active Users" description="25 users are active" />
         <Card title="Total Assignments" description="124 assignments are posted" />

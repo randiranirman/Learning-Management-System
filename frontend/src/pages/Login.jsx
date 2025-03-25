@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useContext } from "react";
+import {login} from "../utils/authService";
+import { AuthContext } from "../auth/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const {setUserRole}=useContext(AuthContext);
+  const navigate = useNavigate();
   const [fadeIn, setFadeIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
-    setTimeout(() => {
-      setFadeIn(true);
-    }, 100);
+    setTimeout(() => setFadeIn(true), 100);
   }, []);
 
   const handleLogin = async (e) => {
@@ -19,29 +24,21 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://localhost:7265/api/Auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed!"); 
+      const role = await login(username, password);
+      setUserRole(role);
+      if( role =="admin"){
+        navigate("/admin");
+      }else if ( role =="teacher"){
+        navigate("/teacher");
+      } else if ( role =="student"){
+        navigate("/student");
+      } else {
+          setError("Unauthorized ") 
       }
-
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-
-      alert("Login successful!");
-      window.location.href = "/admin"; 
     } catch (err) {
       setError(err.message); 
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -55,7 +52,7 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800">Welcome Back</h2>
         <p className="text-gray-500 text-center mb-6">Sign in to your account</p>
 
-        {error && <p className="text-red-500 text-center">{error}</p>} 
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -92,7 +89,10 @@ const Login = () => {
         </form>
 
         <p className="mt-4 text-center text-gray-500">
-          Don't have an account? <a href="#" className="text-primary font-semibold">Sign Up</a>
+          Forgot your password?{" "}
+          <a href="/forgot-password" className="text-primary font-semibold">
+            Reset it here
+          </a>
         </p>
       </div>
     </div>
