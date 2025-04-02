@@ -16,6 +16,7 @@ import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherAssignments from "./roles/teacher/TeacherPages/Assignments";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
+import EditProfile from "./roles/admin/AdminPages/EditProfile";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
+        < Route path="editProfile" element={<EditProfile />}  />
       </Route>
 
       {/* Teacher Routes */}
