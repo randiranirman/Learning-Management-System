@@ -7,7 +7,10 @@ export const getAdminDetails =  async ( id ) => {
     
     try{
         const response = await axios.get(`${BASE_URL}/${id}`);
-                return response.data;
+
+        
+        return response.data;
+
         }catch(error){
             console.error(error + "error getting details");
             return null;
