@@ -24,7 +24,9 @@ const Login = () => {
     setError(null);
 
     try {
-      const role = await login(username, password);
+      const loginResponse= await login(username, password);
+      const role = loginResponse.role;
+      
       setUserRole(role);
       if( role =="admin"){
         navigate("/admin");

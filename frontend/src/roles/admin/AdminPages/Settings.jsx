@@ -1,28 +1,54 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import {  useState } from "react";
+import EditProfile from "./EditProfile";
+
 
 const Settings = () => {
-   const navigate = useNavigate();
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  
+  
+
   return (
-    
-
     <>
-        <h1 className='font-semibold text-2xl'>Settings</h1>
-        <div className=' flex flex-row mt-4'>
-            <div className='max-w-1/2 flex flex-col py-2 space-y-2 px-2 border-1 '>
+      <div className="font-semibold text-2xl px-2">Settings</div>
 
-                <p> FirstName</p>
-                <p> LastName</p>
-                <p> Address</p>
-                <p> ContactNumber</p>
-            <button onClick={() => navigate("/editProfile")} className='bg-primary text-white font-semibold px-1 py-1 rounded-lg items-center cursor-pointer'>Edit Profile </button>
-
-            </div>
-
+      {/* Cards Container */}
+      <div className="flex mt-4 gap-4">
+        {/* Card 1: Edit Profile */}
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg flex-1"
+          style={{ maxWidth: "300px" }}
+        >
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4">Edit Profile</h3>
+            <button
+              onClick={() => setShowEditProfile(true)}
+              className="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:scale-110 duration-200 transition font-semibold"
+            >
+              Edit Profile
+            </button>
+          </div>
         </div>
 
-    </>
-  )
-}
+        {/* Card 2: Change Password */}
+        <div
+          className="bg-white p-6 rounded-lg shadow-md flex-1"
+          style={{ maxWidth: "300px" }}
+        >
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4">Change Password</h3>
+            <button
+              className="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:scale-110 duration-200 transition font-semibold"
+            >
+              Change Password
+            </button>
+          </div>
+        </div>
+      </div>
 
-export default Settings
+      {/* Conditional Render for EditProfile Modal */}
+      {showEditProfile && <EditProfile setShowEditProfile={setShowEditProfile} />}
+    </>
+  );
+};
+
+export default Settings;
