@@ -6,8 +6,10 @@ const EditProfile = ({ setShowEditProfile }) => {
   const [updatedDetails, setUpdatedDetails] = useState({
     firstName: "",
     lastName: "",
+    email: "",
     address: "",
     contactNumber: "",
+    city: "",
   });
 
   const handleChange = (e) => {
@@ -22,7 +24,7 @@ const EditProfile = ({ setShowEditProfile }) => {
       console.log("Updated profile successfully");
       setShowEditProfile(false);
     } catch (error) {
-      console.log(error, "Error updating details");
+      console.error(error, "Error updating details");
     }
   };
 
@@ -50,6 +52,7 @@ const EditProfile = ({ setShowEditProfile }) => {
                   onChange={handleChange}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-gray-50"
                   placeholder="Enter First Name"
+                  required
                 />
               </div>
             </div>
@@ -63,8 +66,23 @@ const EditProfile = ({ setShowEditProfile }) => {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-gray-50"
                 placeholder="Enter Last Name"
+                required
               />
             </div>
+          </div>
+
+          {/* Email field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={updatedDetails.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-gray-50"
+              placeholder="Enter Email"
+              required
+            />
           </div>
 
           {/* Address field */}
@@ -89,7 +107,7 @@ const EditProfile = ({ setShowEditProfile }) => {
             <div className="relative">
               <Phone size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type="text"
+                type="tel"
                 name="contactNumber"
                 value={updatedDetails.contactNumber}
                 onChange={handleChange}
@@ -97,6 +115,25 @@ const EditProfile = ({ setShowEditProfile }) => {
                 placeholder="Mobile Number"
               />
             </div>
+          </div>
+
+          {/* City field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <select
+              name="city"
+              value={updatedDetails.city}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-gray-50"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select City
+              </option>
+              <option value="city1">City 1</option>
+              <option value="city2">City 2</option>
+              <option value="city3">City 3</option>
+            </select>
           </div>
 
           {/* Action buttons */}
@@ -123,4 +160,3 @@ const EditProfile = ({ setShowEditProfile }) => {
 };
 
 export default EditProfile;
-  

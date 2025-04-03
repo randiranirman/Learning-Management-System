@@ -17,6 +17,7 @@ import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherAssignments from "./roles/teacher/TeacherPages/Assignments";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
+import EditProfile from "./roles/admin/AdminPages/EditProfile";
 
 const App = () => {
   return (

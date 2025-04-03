@@ -12,9 +12,13 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
+    "@shadcn/ui": "^0.0.4",
     "@tailwindcss/postcss": "^4.0.9",
     "axios": "^1.8.3",
+    "component": "^1.1.0",
+=======
     "jwt-decode": "^4.0.0",
+
     "lucide-react": "^0.479.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",

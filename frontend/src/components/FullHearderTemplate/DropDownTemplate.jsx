@@ -9,7 +9,7 @@ const DropDownTemplate = ({ DropDownProps }) => {
     <div className="relative inline-block text-left m-5">
       <Menu as="div" className="relative">
         <div className="flex items-center gap-3">
-          <span className="text-xl font-semibold">Hi, Chanuka</span>
+          <span className="text-xl text-white font-semibold">Hi, Chanuka</span>
           <img
             src={userImage}
             alt="Profile"
@@ -17,9 +17,9 @@ const DropDownTemplate = ({ DropDownProps }) => {
           />
           <Menu.Button className="focus:outline-none">
             {({ open }) => open ? (
-              <ChevronUpIcon className="w-8 h-8 text-black" />
+              <ChevronUpIcon className="w-8 h-8 text-white" />
             ) : (
-              <ChevronDownIcon className="w-8 h-8 text-black cursor-pointer" />
+              <ChevronDownIcon className="w-8 h-8 text-white cursor-pointer" />
             )}
           </Menu.Button>
         </div>
@@ -33,12 +33,12 @@ const DropDownTemplate = ({ DropDownProps }) => {
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-95 opacity-0"
         >
-          <Menu.Items className="absolute mt-2 w-56 bg-gray-200 rounded-lg shadow-lg right-0">
+          <Menu.Items className="absolute mt-2 w-56 bg-[#5038ED] rounded-lg shadow-lg right-0 text-white">
             {DropDownProps.map(
               DropDownProp => (
                 <Menu.Item key={DropDownProp.key}>
                   {({ active }) => (
-                    <Link to={DropDownProp.path} className={`block px-5 py-3 text-center text-xl font-medium ${active ? "bg-gray-300" : "bg-gray-200"}`}>
+                    <Link to={DropDownProp.path} className={`block px-5 py-3 text-center text-xl font-medium ${active ? "bg-[#705CF6]" : "bg-[#5038ED]"}`}>
                         {DropDownProp.title}
                     </Link>
                   )}
