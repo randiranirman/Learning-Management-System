@@ -1,9 +1,10 @@
-import { useState } from "react";
+import {  useState } from "react";
 import EditProfile from "./EditProfile";
 
 
 const Settings = () => {
   const [showEditProfile, setShowEditProfile] = useState(false);
+  
   
 
   return (
