@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DetailsViewNavbar from "./DetailsViewNavbar";
 import RightSideNavbar from "./RightSideNavbar";
 

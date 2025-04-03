@@ -123,3 +123,4 @@ const EditProfile = ({ setShowEditProfile }) => {
 };
 
 export default EditProfile;
+  
