@@ -17,7 +17,7 @@
       const id =  getIdFromToken(accessToken);
       localStorage.setItem("UserId",id);
       console.log("Role", role);
-      return {role,id};
+      return role ;
 
     } catch (error) {
       console.error("Login failed", error.response?.data?.message || error.message);
@@ -36,6 +36,9 @@
 
   }
   };
+
+
+  //logout  the users  by removing the tokens 
   export const logout = async () => {
     try {
       await axios.post(
@@ -62,7 +65,7 @@
   try{
       const decodedToken= jwtDecode(token);
       return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null
-
+    
   }catch(error){
     console.error("Error decoding token", error);
     return null;

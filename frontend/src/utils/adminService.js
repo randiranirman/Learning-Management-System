@@ -1,25 +1,10 @@
 import axios from "axios";
+import { Trophy } from "lucide-react";
 
 const BASE_URL= "https://localhost:7265/api/admin";
 
 
-export const getAdminDetails =  async ( id ) => {
-    
-    try{
-        const response = await axios.get(`${BASE_URL}/${id}`);
 
-        console.log(response);
-        
-
-        }catch(error){
-            console.error(error + "error getting details");
-            return null;
-        }
-
-
-
-
-}
 
 export const editAdminDetails = async (updatedData) => {
     const id = localStorage.getItem("UserId"); 
@@ -46,3 +31,22 @@ export const editAdminDetails = async (updatedData) => {
         throw new Error(error.response?.data?.message || "Failed to edit details");
     }
 };
+
+export const getAdminDetails = async (id ) => {
+    try{
+        const response  = await axios.get(`${BASE_URL}/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+
+        })
+            console.log(response.data)
+        return response.data;
+    }
+    catch(error){
+        console.error("Error fetching admin details:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "Failed to fetch admin details");
+    }
+
+}
+    
