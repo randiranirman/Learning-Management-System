@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       const loginResponse= await login(username, password);
-      const role = loginResponse.role;
+      const role = loginResponse;
       
       setUserRole(role);
       if( role =="admin"){
@@ -36,6 +36,7 @@ const Login = () => {
         navigate("/student");
       } else {
           setError("Unauthorized ") 
+          
       }
     } catch (err) {
       setError(err.message); 
