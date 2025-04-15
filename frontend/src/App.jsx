@@ -17,11 +17,15 @@ import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherAssignments from "./roles/teacher/TeacherPages/Assignments";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
+import FirstLogin from "./pages/FirstLogin";
+import UnAuthorized from "./pages/UnAuthorized";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/firstLogin" element={<FirstLogin />} />
+      <Route path="/unauthorized" element={<UnAuthorized />} />
 
       {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>

@@ -28,6 +28,13 @@ const Login = () => {
       const role = loginResponse;
       
       setUserRole(role);
+      const isFirstLogin = localStorage.getItem("isFirstLogin");
+      if( isFirstLogin === "true"){
+        navigate("/firstLogin");
+        return;
+
+      }
+
       if( role =="admin"){
         navigate("/admin");
       }else if ( role =="teacher"){
@@ -35,6 +42,7 @@ const Login = () => {
       } else if ( role =="student"){
         navigate("/student");
       } else {
+        navigate("/unauthorized")
           setError("Unauthorized ") 
           
       }

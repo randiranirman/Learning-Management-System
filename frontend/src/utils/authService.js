@@ -15,6 +15,11 @@
       const {accessToken,refreshToken}= response.data;
       const role = getRoleFromToken(accessToken);
       const id =  getIdFromToken(accessToken);
+      const usernameFromToken = getUserNameFromToken(accessToken);
+      const isFirstLogin = getIsFirstLoginFromToken(accessToken);
+      localStorage.setItem("isFirstLogin", isFirstLogin)
+;
+      localStorage.setItem("usernameFromToken", usernameFromToken);
       localStorage.setItem("UserId",id);
       console.log("Role", role);
       return role ;
@@ -116,4 +121,40 @@
     }
 
     
+  }
+  //function for decoding the loginAttempt from the token 
+  export const getIsFirstLoginFromToken = (token) => {
+    try {
+      const decodedToken = jwtDecode(token);
+      const isFirstLogin = decodedToken["isFirstLogin"];
+      return isFirstLogin === 'True' || isFirstLogin === true;
+    } catch (error) {
+      console.log("Error decoding token: ", error);
+      return false;
+    }
+  };
+  // function for decoding  the username from the token 
+  export const getUserNameFromToken = ( token) => {
+    try{
+      const decodedToken = jwtDecode(token);
+      const username = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      return username;
+    }catch(error){
+      console.log("error decoding token ", error);
+    }
+  }
+
+  // function for changing the password 
+  export const changeCredentials = async (username, formDetails ) => {
+
+    try{
+      const response = await axios.post(`${API_URL}/update-credentials/${username}`,
+        formDetails
+      );
+      return response.data;
+
+    }catch( error){
+      throw error.response?.data || "something went wrong";
+    }
+
   }

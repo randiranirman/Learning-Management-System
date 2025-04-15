@@ -1,32 +1,118 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { changeCredentials } from '../utils/authService';
 
 const FirstLogin = () => {
+  const [formDetails, setFormDetails] = useState({
+    tempPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+
+  const username = localStorage.getItem("usernameFromToken");
+
+  useEffect(() => {
+    setTimeout(() => setFadeIn(true), 100);
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormDetails({ ...formDetails, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formDetails.newPassword !== formDetails.confirmPassword) {
+      setMessage('New passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const data = await changeCredentials(username, formDetails);
+      setMessage(data); // success message from backend
+    } catch (err) {
+      setMessage(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    
-    <>
-            <div>
-                    <h1 className='font-semibold text-2xl'>Change Password</h1>
-                    <label>Temporary Password
-                        <input placeholder='Enter the temporary password' className='rounded-lg' type="text" />
+    <div className="flex items-center justify-center min-h-screen bg-primary px-4">
+      <div
+        className={`w-full max-w-md p-8 rounded-2xl shadow-xl bg-white transform transition-opacity duration-700 ease-in-out ${
+          fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
+        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+          Change Password
+        </h1>
 
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Temporary Password
+            </label>
+            <input
+              type="password"
+              name="tempPassword"
+              value={formDetails.tempPassword}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-                    </label>
-                    <label>New  Password
-                        <input placeholder='Enter the new password' className='rounded-lg' type="text" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              New Password
+            </label>
+            <input
+              type="password"
+              name="newPassword"
+              value={formDetails.newPassword}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formDetails.confirmPassword}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+          >
+            {loading ? 'Updating...' : 'Change Password'}
+          </button>
+        </form>
 
-                    </label>
-                    <label>Confirm Password
-                        <input placeholder='Confirm Password' className='rounded-lg' type="text" />
+        {message && (
+          <p className="text-center mt-4 text-sm text-red-600">{message}</p>
+        )}
+      </div>
+    </div>
+  );
+};
 
-
-
-                    </label>
-                    
-            </div>
-    </>
-  )
-}
-
-export default FirstLogin
+export default FirstLogin;
