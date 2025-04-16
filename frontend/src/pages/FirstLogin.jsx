@@ -30,7 +30,12 @@ const FirstLogin = () => {
     e.preventDefault();
 
     if (formDetails.newPassword !== formDetails.confirmPassword) {
-      setMessage('New passwords do not match.');
+      Swal.fire({
+        title: 'Error!',
+        text: "Passwords don't match ",
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
       return;
     }
 
@@ -46,6 +51,7 @@ const FirstLogin = () => {
         text: 'Your password has been updated. Please log in again.',
         icon: 'success',
         confirmButtonText: 'OK'
+        
       });
   
       // After user clicks OK, redirect to login
