@@ -38,7 +38,7 @@ const Settings = () => {
         >
           <div className="text-center">
           <div className="mb-4 text-left text-sm text-gray-700">
-      <p><span className="font-medium">Name:</span> {adminDetails?.firstName || "-"}</p>
+      <p><span className="font-medium">Name:</span> {adminDetails?.firstName   || "-"}</p>
       <p><span className="font-medium">Email:</span> {adminDetails?.email || "-"}</p>
       <p><span className="font-medium">Address:</span> {adminDetails?.address || "-"}</p>
       <p><span className="font-medium">Contact Number:</span> {adminDetails?.contactNumber || "-"}</p>
