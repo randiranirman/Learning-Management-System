@@ -3,7 +3,7 @@ import { changeCredentials } from '../utils/authService';
 
 const FirstLogin = () => {
   const [formDetails, setFormDetails] = useState({
-    tempPassword: '',
+    temporaryPassword: '',
     newPassword: '',
     confirmPassword: '',
   });
@@ -37,6 +37,8 @@ const FirstLogin = () => {
     try {
       const data = await changeCredentials(username, formDetails);
       setMessage(data); // success message from backend
+      console.log(formDetails)
+
     } catch (err) {
       setMessage(err);
     } finally {
@@ -62,8 +64,8 @@ const FirstLogin = () => {
             </label>
             <input
               type="password"
-              name="tempPassword"
-              value={formDetails.tempPassword}
+              name="temporaryPassword"
+              value={formDetails.temporaryPassword}
               onChange={handleChange}
               className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
