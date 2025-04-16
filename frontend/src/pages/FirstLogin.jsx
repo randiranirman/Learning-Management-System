@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { changeCredentials } from '../utils/authService';
+import { useNavigate } from 'react-router-dom';
 
 const FirstLogin = () => {
   const [formDetails, setFormDetails] = useState({
@@ -7,6 +9,7 @@ const FirstLogin = () => {
     newPassword: '',
     confirmPassword: '',
   });
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,16 +34,30 @@ const FirstLogin = () => {
       return;
     }
 
+
     setLoading(true);
     setMessage('');
 
     try {
       const data = await changeCredentials(username, formDetails);
       setMessage(data); // success message from backend
-      console.log(formDetails)
-
+      await Swal.fire({
+        title: 'Success!',
+        text: 'Your password has been updated. Please log in again.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+  
+      // After user clicks OK, redirect to login
+          navigate("/");
     } catch (err) {
       setMessage(err);
+      Swal.fire({
+        title: 'Error',
+        text: err,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     } finally {
       setLoading(false);
     }
