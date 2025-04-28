@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Trophy } from "lucide-react";
 
 const BASE_URL= "https://localhost:7265/api/admin";
 
