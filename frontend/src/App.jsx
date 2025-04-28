@@ -10,6 +10,7 @@ import Settings from "./roles/admin/AdminPages/Settings";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
+import ViewSubmission from "./roles/teacher/TeacherPages/ViewSubmission";
 
 import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
@@ -39,6 +40,11 @@ const App = () => {
         < Route path="editProfile" element={<EditProfile />}  />
       </Route>
 
+
+      <Route path="/teacher" element={<QuizManagement/>} />
+      <Route path="/teacher/quiz" element={<QuizCreation />} />
+      <Route path="/teacher/submissionview" element={<ViewSubmission />}/>
+
       {/* Teacher Routes */}
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
@@ -51,6 +57,7 @@ const App = () => {
 
       {/* Student routes */}
       <Route path="/student" element={<StudentDashboard />} />
+
 
     </Routes>
   );
