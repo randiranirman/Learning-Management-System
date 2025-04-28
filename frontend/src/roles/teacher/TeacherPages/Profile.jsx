@@ -1,7 +1,8 @@
+import ProfileSection from "../../../components/ViewProfileTemplate/FullProfilePage";
 
 const Profile = () => {
     return (
-        <h1>This is profile section</h1>
+        <ProfileSection />
     )
 }
 

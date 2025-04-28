@@ -85,6 +85,11 @@ button:focus-visible {
   to {
     transform: rotate(360deg);
   }
+=======
+*{
+ 
+  font-family: "poppins",sans-serif;
+
 }
 
 @media (prefers-reduced-motion: no-preference) {
