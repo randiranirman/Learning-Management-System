@@ -39,10 +39,12 @@ const App = () => {
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<TeacherAssignments />} />
         <Route path="settings" element={<TeacherSettings />} />
+        <Route path="quiz" element={<QuizManagement />} />
+        <Route path="quiz/createQuiz" element={<QuizCreation/>} />
       </Route>
 
       {/* Student routes */}
-      <Route path="/student/dashboard" element={<StudentDashboard />} />
+      <Route path="/student" element={<StudentDashboard />} />
 
     </Routes>
   );

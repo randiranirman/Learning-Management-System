@@ -11,7 +11,7 @@ const teacherDropDownProps = [
 const teacherSideNavComponents = [
   {icon: myCoursesImg, title: "Dashboard", key: 1, path: '/teacher'},
   {icon: calendarImg, title: "Assignments", key: 2, path: '/teacher/assignments'},
-  {icon: quizManagementImg, title: "Quiz", key: 3, path: '/teacher/calender'},
+  {icon: quizManagementImg, title: "Quiz", key: 3, path: '/teacher/quiz'},
   {icon: assignmentImg, title: "Submissions", key: 4, path: '/teacher/files'},
   {icon: settingsImg, title: "Settings", key: 5, path: '/teacher/settings'}
 ]
