@@ -10,17 +10,23 @@ import Settings from "./roles/admin/AdminPages/Settings";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
+import ViewSubmission from "./roles/teacher/TeacherPages/ViewSubmission";
 
 import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherAssignments from "./roles/teacher/TeacherPages/Assignments";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
+import EditProfile from "./roles/admin/AdminPages/EditProfile";
+import FirstLogin from "./pages/FirstLogin";
+import UnAuthorized from "./pages/UnAuthorized";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/firstLogin" element={<FirstLogin />} />
+      <Route path="/unauthorized" element={<UnAuthorized />} />
 
       {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>
@@ -31,7 +37,13 @@ const App = () => {
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
+        < Route path="editProfile" element={<EditProfile />}  />
       </Route>
+
+
+      <Route path="/teacher" element={<QuizManagement/>} />
+      <Route path="/teacher/quiz" element={<QuizCreation />} />
+      <Route path="/teacher/submissionview" element={<ViewSubmission />}/>
 
       {/* Teacher Routes */}
       <Route path="/teacher" element={<TeacherLayout />}>
@@ -45,6 +57,7 @@ const App = () => {
 
       {/* Student routes */}
       <Route path="/student" element={<StudentDashboard />} />
+
 
     </Routes>
   );
