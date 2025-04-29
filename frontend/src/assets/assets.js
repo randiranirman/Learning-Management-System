@@ -10,6 +10,7 @@ import NavCancelImg from './Vector.svg';
 import quizManagementImg from './quizManagement.svg';
 import roleProfile from './roleProfile.svg';
 import editProfileVector from './editProfileVector.svg';
+import courseImgVector from './courses-img-vector.svg';
 
 export {
     assignmentImg, 
@@ -23,5 +24,6 @@ export {
     NavCancelImg,
     quizManagementImg,
     roleProfile,
-    editProfileVector
+    editProfileVector,
+    courseImgVector
 };

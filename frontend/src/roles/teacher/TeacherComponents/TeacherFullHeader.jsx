@@ -1,4 +1,4 @@
-import { myCoursesImg, calendarImg, quizManagementImg, assignmentImg, settingsImg } from "../../../assets/assets";
+import { myCoursesImg, calendarImg, quizManagementImg, assignmentImg, settingsImg, courseImgVector } from "../../../assets/assets";
 import FullHeaderTemplate from "../../../components/FullHearderTemplate/FullHeaderTemplate";
 
 const teacherDropDownProps = [
