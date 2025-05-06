@@ -1,7 +1,7 @@
 import axios from "axios";
 export const deleteUser = async (username) => {
     try{
-     const response = await axios.delete(`https://localhost:7265/user/${username}`);
+     const response = await axios.delete(`https://localhost:7033/user/${username}`);
  
      return response;  
  
