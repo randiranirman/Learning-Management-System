@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ManageUserPopup from '../AdminComponents/ManageUserPopup';
 import { fetchAllUsers } from '../../../utils/authService';
 import { deleteUser } from '../../../utils/userService';
+import Swal from 'sweetalert2';
 const ManageUsers = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [users, setUsers] = useState([]);
@@ -21,20 +22,37 @@ const ManageUsers = () => {
   }, []);
 
   const handleUserAdded = async (newUser) => {
+   
     setUsers((prevUsers) => [...prevUsers, newUser]);
     setShowUserPopup(false);
   };
   const  handleDeleteUser = async(username) => {
-    try{
-      const response = await deleteUser(username);
-    if ( response.status === 200){
-      setUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
-    }else{
-      console.error("Error Deleting User")
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    if( result.isConfirmed){
+      try{
+        const response = await deleteUser(username);
+      if ( response.status === 200){
+        setUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
+        Swal.fire('Deleted!', 'User has been deleted successfully.', 'success');
+      }else{
+  
+        console.error("Error Deleting User")
+        Swal.fire('Error!', 'Something went wrong.', 'error');
+      }
+      }catch(error){
+        console.error("Error deleting user ",error)
+      }
+
     }
-    }catch(error){
-      console.error("Error deleting user ",error)
-    }
+   
      
   }
 
