@@ -20,14 +20,14 @@ const FirstLogin = () => {
     new: false,
     confirm: false
   });
-  const [suggestions, setSuggestions] = useState([]);
+  
 
   const username = localStorage.getItem("usernameFromToken");
 
   useEffect(() => {
     setTimeout(() => setFadeIn(true), 100);
     // Generate password suggestions
-    generatePasswordSuggestions();
+    
   }, []);
 
   const handleChange = (e) => {
@@ -67,49 +67,9 @@ const FirstLogin = () => {
     setPasswordStrength(strength);
   };
 
-  const generatePasswordSuggestions = () => {
-    // Generate a few strong password examples
-    const suggestedPasswords = [
-      generateStrongPassword(),
-      generateStrongPassword(),
-      generateStrongPassword()
-    ];
-    
-    setSuggestions(suggestedPasswords);
-  };
+  
 
-  const generateStrongPassword = () => {
-    const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
-    const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    const specialChars = '!@#$%^&*()-_=+[]{}|;:,.<>?';
-    
-    const allChars = lowerChars + upperChars + numbers + specialChars;
-    let password = '';
-    
-    // Ensure at least one of each type
-    password += lowerChars[Math.floor(Math.random() * lowerChars.length)];
-    password += upperChars[Math.floor(Math.random() * upperChars.length)];
-    password += numbers[Math.floor(Math.random() * numbers.length)];
-    password += specialChars[Math.floor(Math.random() * specialChars.length)];
-    
-    // Add more random characters for length
-    for (let i = 0; i < 8; i++) {
-      password += allChars[Math.floor(Math.random() * allChars.length)];
-    }
-    
-    // Shuffle the password
-    return password.split('').sort(() => 0.5 - Math.random()).join('');
-  };
 
-  const applyPasswordSuggestion = (password) => {
-    setFormDetails({
-      ...formDetails,
-      newPassword: password,
-      confirmPassword: password
-    });
-    checkPasswordStrength(password);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
