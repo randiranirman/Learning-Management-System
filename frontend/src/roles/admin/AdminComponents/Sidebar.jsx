@@ -16,9 +16,10 @@ const Sidebar = () => {
     });
 
     if (result.isConfirmed) {
-      logout(); // clear session/local storage
+      // clear session/local storage
       Swal.fire('Logged out!', 'You have been logged out.', 'success').then(() => {
-        window.location.href = "/login";
+        logout(); 
+        
       });
     }
   };
