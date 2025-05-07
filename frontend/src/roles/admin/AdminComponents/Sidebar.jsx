@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import LogOutPopUp from "./LogOutPopUp";
+import { logout } from "../../../utils/authService";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
-  const [showLogOutPopup, setShowLogOutPopup] = useState(false);
+  const handleLogOut = async () => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You will be logged out.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log out!'
+    });
+
+    if (result.isConfirmed) {
+      logout(); // clear session/local storage
+      Swal.fire('Logged out!', 'You have been logged out.', 'success').then(() => {
+        window.location.href = "/login";
+      });
+    }
+  };
 
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard" },
@@ -15,10 +33,10 @@ const Sidebar = () => {
   ];
 
   const menuItemStyles =
-    "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 active:text-primary active:bg-secondary ";
+    "text-white font-semibold text-xl cursor-pointer text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2 active:text-primary active:bg-secondary";
 
   return (
-    <div className="bg-primary h-screen w-[350px] flex flex-col gap-y-8 p-6 fixed left-0 top-0"> {/* Increased width */}
+    <div className="bg-primary h-screen w-[350px] flex flex-col gap-y-8 p-6 fixed left-0 top-0">
       <h2 className="text-white font-semibold text-2xl text-center">Admin Panel</h2>
 
       <ul className="flex flex-col gap-y-4">
@@ -27,12 +45,18 @@ const Sidebar = () => {
             <li className={menuItemStyles}>{item.name}</li>
           </Link>
         ))}
-
-        {/* Log Out Button */}
-        <button onClick={() => setShowLogOutPopup(true)} className={`${menuItemStyles} w-full`}>Log Out</button>
       </ul>
 
-      {showLogOutPopup && <LogOutPopUp setShowLogOutPopup={setShowLogOutPopup} />}
+      {/* Spacer */}
+      <div className="flex-grow" />
+
+      {/* Log out button */}
+      <button
+        onClick={handleLogOut}
+        className="text-white font-semibold text-xl text-center hover:bg-secondary hover:text-primary rounded-xl transition duration-300 py-2"
+      >
+        Log Out
+      </button>
     </div>
   );
 };
