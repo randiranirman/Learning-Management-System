@@ -3,9 +3,64 @@ import ManageUserPopup from '../AdminComponents/ManageUserPopup';
 import { fetchAllUsers } from '../../../utils/authService';
 import { deleteUser } from '../../../utils/userService';
 import Swal from 'sweetalert2';
+import { uploadCSV } from '../../../utils/csvUploader';
+
+
 const ManageUsers = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [users, setUsers] = useState([]);
+  const [csvFile, setCsvFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
+
+
+  const handleFileChange =  ( event) => {
+    const selectedFile = event.target.files[0]
+if( selectedFile){
+    setCsvFile(selectedFile);
+    setUploadStatus("");
+
+}
+  }
+const handleUploadCSV = async ( ) => {
+  if( !csvFile){
+    Swal.fire({
+        icon: 'warning',
+        title: 'No File Selected',
+        text: 'Please select a CSV file to upload.',
+      });
+    setUploadStatus("Please select a file.");
+      return;
+  }
+
+  const formData = new FormData();
+    formData.append("file", csvFile);
+
+     try {
+      const result = await uploadCSV(formData);
+      setUploadStatus("CSV file uploaded successfully!");
+        Swal.fire({
+        icon: 'success',
+        title: 'Upload Successful',
+        text: 'CSV file uploaded successfully!',
+      });
+      console.log("Server response:", result);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Upload Failed',
+        text: error.response?.data || 'There was an error uploading the CSV file.',
+      });
+      setUploadStatus("Error uploading CSV file.");
+      console.error("Upload error:", error);
+    }
+
+}
+
+
+
+
+
+
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -60,15 +115,42 @@ const ManageUsers = () => {
     <>
       {/* Header Section */}
       <div className="flex justify-between items-center mx-4 mt-4 max-w-[90%]">
-        <h1 className="font-semibold text-2xl">Manage Users</h1>  
-        <button
-          onClick={() => setShowUserPopup(true)}
-          className="bg-primary text-white font-semibold rounded-lg cursor-pointer 
-                     transition-transform duration-200 hover:scale-110 px-4 py-2"
-        >
-          Add User
-        </button>
-      </div>
+  {/* Left side: Heading */}
+  <h1 className="font-semibold text-2xl">Manage Users</h1>
+
+  {/* Right side: Buttons in a row */}
+  <div className="flex space-x-4">
+    <label className="text-sm font-medium">Upload CSV File</label>
+
+    <input
+      type="file"
+      accept=".csv"
+      onChange={handleFileChange}
+      className="block w-48 text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
+                 file:rounded-lg file:border-0
+                 file:text-sm file:font-semibold
+                 file:bg-primary file:text-white
+                 hover:file:bg-primary/90 transition duration-150"
+    />
+
+    <button
+      onClick={handleUploadCSV}
+      className="bg-primary text-white px-4 py-2 rounded-lg font-semibold 
+                 hover:bg-primary/90 transition-transform hover:scale-105"
+    >
+      Upload
+    </button>
+
+    <button
+      onClick={() => setShowUserPopup(true)}
+      className="bg-primary text-white font-semibold rounded-lg cursor-pointer 
+                 transition-transform duration-200 hover:scale-110 px-4 py-2"
+    >
+      Add User
+    </button>
+  </div>
+</div>
+
 
       {/* Table Section */}
       <div className="overflow-x-auto mt-4 mx-4">
