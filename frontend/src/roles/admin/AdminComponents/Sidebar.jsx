@@ -5,23 +5,9 @@ import Swal from "sweetalert2";
 
 const Sidebar = () => {
   const handleLogOut = async () => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You will be logged out.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, log out!'
-    });
+    
 
-    if (result.isConfirmed) {
-      // clear session/local storage
-      Swal.fire('Logged out!', 'You have been logged out.', 'success').then(() => {
-        logout(); 
-        
-      });
-    }
+    logout();
   };
 
   const menuItems = [
