@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import swal from "sweetalert2";
 
 const API_URL = "https://localhost:7033/api/auth"; // Base API URL
 
@@ -55,12 +56,28 @@ export const logout = async () => {
         },
       }
     );
-
-    // Clear tokens from localStorage
+    const result = await swal.fire({
+          title: 'Are you sure?',
+          text: "You will be logged out.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, log out!'
+        });
+    
+        if (result.isConfirmed) {
+          // clear session/local storage
+           // Clear tokens from localStorage
     localStorage.removeItem("accessToken");
+    
 
     // Redirect to the login page
     window.location.href = "/";
+          
+        }
+
+   
   } catch (error) {
     console.error("Logout failed", error);
   }
