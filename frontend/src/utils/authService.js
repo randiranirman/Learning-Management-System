@@ -104,6 +104,7 @@ const getRoleFromToken = (token) => {
 
 export const isAuthenticated = () => {
   const token = localStorage.getItem("accessToken");
+  console.log("test login for is authenticated");
   return token !== null && token !== undefined;
 
 };
