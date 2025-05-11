@@ -7,7 +7,7 @@ const ManageUserPopup = ({ setShowUserPopup,onUserAdded  }) => {
   const [formData, setFormData] = useState({
     name: "",
     username: "",
-    password: "",
+   
     email: "",
     role: "",
   });
@@ -114,17 +114,7 @@ const ManageUserPopup = ({ setShowUserPopup,onUserAdded  }) => {
             />
           </div>
 
-          <div>
-            <label className="block font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg focus:ring focus:ring-primary outline-none"
-              required
-            />
-          </div>
+         
 
           {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
 
