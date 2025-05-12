@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import ManageUserPopup from '../AdminComponents/ManageUserPopup';
-import { fetchAllUsers } from '../../../utils/authService';
+import { fetchAllUsers, getIdFromToken } from '../../../utils/authService';
 import { deleteUser } from '../../../utils/userService';
 import Swal from 'sweetalert2';
 import { uploadCSV } from '../../../utils/csvUploader';
@@ -12,6 +13,9 @@ const ManageUsers = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
 
+
+
+  
 
   const handleFileChange =  ( event) => {
     const selectedFile = event.target.files[0]
@@ -64,7 +68,7 @@ const handleUploadCSV = async ( ) => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const usersData = await fetchAllUsers();
+        const usersData = await fetchAllUsers(getIdFromToken(localStorage.getItem("accessToken")));
         if (usersData) {
           setUsers(usersData);
         }
