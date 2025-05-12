@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Router } from "react-router-dom";
 import Login from "./pages/Login";
 import AdminLayout from "./roles/admin/AdminLayouts/AdminLayout";
 import Dashboard from "./roles/admin/AdminPages/Dashboard";
@@ -19,6 +19,7 @@ import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin";
 import UnAuthorized from "./pages/UnAuthorized";
+import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 
 const App = () => {
   return (
@@ -50,7 +51,8 @@ const App = () => {
       </Route>
 
       {/* Student routes */}
-      <Route path="/student" element={<StudentDashboard />} />
+      <Route path="/student"  element={<StudentLayout/>} />
+      
 
     </Routes>
   );
