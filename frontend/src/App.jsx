@@ -7,7 +7,6 @@ import ManageAssignments from "./roles/admin/AdminPages/ManageAssignments";
 import ManageCourses from "./roles/admin/AdminPages/ManageCourses";
 import Analytics from "./roles/admin/AdminPages/Analytics";
 import Settings from "./roles/admin/AdminPages/Settings";
-import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 
@@ -20,6 +19,7 @@ import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin";
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
+
 
 const App = () => {
   return (
@@ -52,6 +52,9 @@ const App = () => {
 
       {/* Student routes */}
       <Route path="/student"  element={<StudentLayout/>} />
+      
+      
+      
       
 
     </Routes>
