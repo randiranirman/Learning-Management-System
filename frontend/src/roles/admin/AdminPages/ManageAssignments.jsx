@@ -16,9 +16,9 @@ const ManageAssignments = () => {
 
   return (
     <div>
-      <div>
-        <h1>Manage Assignments</h1>
-        <button>Add Assignment</button>
+      <div className="display flex flex-row   justify-between max-w-4/5  mx-4 px-2  py-4 ">
+        <h1 className="font-semibold  text-2xl">Manage Assignments</h1>
+        <button className="bg-primary  rounded-lg  text-white font-semibold  px-2 py-2 cursor-pointer  hover:scale-110 transform duration-200">Add Assignment</button>
       </div>
 
       <div>
