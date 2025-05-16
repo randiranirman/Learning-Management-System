@@ -175,10 +175,12 @@ export const changeCredentials = async (username, formDetails) => {
     const response = await axios.post(`${API_URL}/update-credentials/${username}`,
       formDetails
     );
-    window.location("/");
+    console.log(username)
+    window.location.href ="/";
     return response.data;
 
   } catch (error) {
+    console.log(error)
     throw error.response?.data || "something went wrong";
   }
 
