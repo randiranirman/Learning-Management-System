@@ -1,48 +1,48 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
+import { Table, Button, Upload, Space, Typography, Popconfirm, message, Input } from 'antd';
+import { UploadOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ManageUserPopup from '../AdminComponents/ManageUserPopup';
 import { fetchAllUsers, getIdFromToken } from '../../../utils/authService';
 import { deleteUser } from '../../../utils/userService';
 import Swal from 'sweetalert2';
 import { uploadCSV } from '../../../utils/csvUploader';
 
+const { Title } = Typography;
 
 const ManageUsers = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [users, setUsers] = useState([]);
   const [csvFile, setCsvFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [fileList, setFileList] = useState([]);
 
+  const handleFileChange = (info) => {
+    if (info.file) {
+      setCsvFile(info.file.originFileObj);
+      setFileList(info.fileList.slice(-1)); // Keep only the latest file
+      setUploadStatus("");
+    }
+  };
 
-
-  
-
-  const handleFileChange =  ( event) => {
-    const selectedFile = event.target.files[0]
-if( selectedFile){
-    setCsvFile(selectedFile);
-    setUploadStatus("");
-
-}
-  }
-const handleUploadCSV = async ( ) => {
-  if( !csvFile){
-    Swal.fire({
+  const handleUploadCSV = async () => {
+    if (!csvFile) {
+      Swal.fire({
         icon: 'warning',
         title: 'No File Selected',
         text: 'Please select a CSV file to upload.',
       });
-    setUploadStatus("Please select a file.");
+      setUploadStatus("Please select a file.");
       return;
-  }
+    }
 
-  const formData = new FormData();
+    const formData = new FormData();
     formData.append("file", csvFile);
 
-     try {
+    try {
       const result = await uploadCSV(formData);
       setUploadStatus("CSV file uploaded successfully!");
-        Swal.fire({
+      Swal.fire({
         icon: 'success',
         title: 'Upload Successful',
         text: 'CSV file uploaded successfully!',
@@ -57,13 +57,7 @@ const handleUploadCSV = async ( ) => {
       setUploadStatus("Error uploading CSV file.");
       console.error("Upload error:", error);
     }
-
-}
-
-
-
-
-
+  };
 
   useEffect(() => {
     const getUsers = async () => {
@@ -81,11 +75,11 @@ const handleUploadCSV = async ( ) => {
   }, []);
 
   const handleUserAdded = async (newUser) => {
-   
     setUsers((prevUsers) => [...prevUsers, newUser]);
     setShowUserPopup(false);
   };
-  const  handleDeleteUser = async(username) => {
+
+  const handleDeleteUser = async (username) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -95,109 +89,119 @@ const handleUploadCSV = async ( ) => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
     });
-    if( result.isConfirmed){
-      try{
+    
+    if (result.isConfirmed) {
+      try {
         const response = await deleteUser(username);
-      if ( response.status === 200){
-        setUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
-        Swal.fire('Deleted!', 'User has been deleted successfully.', 'success');
-      }else{
-  
-        console.error("Error Deleting User")
-        Swal.fire('Error!', 'Something went wrong.', 'error');
+        if (response.status === 200) {
+          setUsers((prevUsers) => prevUsers.filter((user) => user.username !== username));
+          Swal.fire('Deleted!', 'User has been deleted successfully.', 'success');
+        } else {
+          console.error("Error Deleting User");
+          Swal.fire('Error!', 'Something went wrong.', 'error');
+        }
+      } catch (error) {
+        console.error("Error deleting user ", error);
       }
-      }catch(error){
-        console.error("Error deleting user ",error)
-      }
-
     }
-   
-     
-  }
+  };
+
+  // Ant Design Table columns configuration
+  const columns = [
+    {
+      title: 'Username',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space>
+          <Button 
+            type="primary" 
+            icon={<EditOutlined />}
+          >
+            Edit
+          </Button>
+          <Button 
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDeleteUser(record.username)}
+          >
+            Delete
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <>
       {/* Header Section */}
-      <div className="flex justify-between items-center mx-4 mt-4 max-w-[90%]">
-  {/* Left side: Heading */}
-  <h1 className="font-semibold text-2xl">Manage Users</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 16px', maxWidth: '90%' }}>
+        {/* Left side: Heading */}
+        <Title level={3} style={{ margin: 0 }}>Manage Users</Title>
 
-  {/* Right side: Buttons in a row */}
-  <div className="flex space-x-4">
-    <label className="text-sm font-medium">Upload CSV File</label>
+        {/* Right side: Buttons in a row */}
+        <Space>
+          <Typography.Text strong>Upload CSV File</Typography.Text>
+          
+          <Upload
+            beforeUpload={() => false}
+            onChange={handleFileChange}
+            accept=".csv"
+            fileList={fileList}
+            maxCount={1}
+          >
+            <Button icon={<UploadOutlined />}>Select File</Button>
+          </Upload>
 
-    <input
-      type="file"
-      accept=".csv"
-      onChange={handleFileChange}
-      className="block w-48 text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
-                 file:rounded-lg file:border-0
-                 file:text-sm file:font-semibold
-                 file:bg-primary file:text-white
-                 hover:file:bg-primary/90 transition duration-150"
-    />
+          <Button 
+            type="primary"
+            onClick={handleUploadCSV}
+          >
+            Upload
+          </Button>
 
-    <button
-      onClick={handleUploadCSV}
-      className="bg-primary text-white px-4 py-2 rounded-lg font-semibold 
-                 hover:bg-primary/90 transition-transform hover:scale-105"
-    >
-      Upload
-    </button>
-
-    <button
-      onClick={() => setShowUserPopup(true)}
-      className="bg-primary text-white font-semibold rounded-lg cursor-pointer 
-                 transition-transform duration-200 hover:scale-110 px-4 py-2"
-    >
-      Add User
-    </button>
-  </div>
-</div>
-
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />}
+            onClick={() => setShowUserPopup(true)}
+          >
+            Add User
+          </Button>
+        </Space>
+      </div>
 
       {/* Table Section */}
-      <div className="overflow-x-auto mt-4 mx-4">
-        <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-          <thead>
-            <tr className="bg-primary text-white text-left">
-              <th className="px-6 py-3 rounded-tl-lg">Username</th>
-              <th className="px-6 py-3">Email</th>
-              <th className="px-6 py-3">Name</th>
-              <th className="px-6 py-3 ">Role</th>
-              <th className='px-6 py-3 rounded-tr-lg' >Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length > 0 ? (
-              users.map((user, index) => (
-                <tr key={index} className="border-b hover:bg-gray-100 transition">
-                  <td className="px-6 py-3 font-semibold">{user.username}</td>
-                  <td className="px-6 py-3 font-semibold ">{user.email}</td>
-                  <td className="px-6 py-3  font-semibold ">{user.name}</td>
-                  <td className="px-6 py-3 font-semibold ">{user.role}</td>
-                  <td className="px-6 py-3 font-semibold ">
-                    <button className="bg-primary text-white font-semibold rounded-lg cursor-pointer 
-                     transition-transform duration-200 hover:scale-110 px-4 py-2 mr-2">
-                      Edit
-                    </button>
-                    <button onClick={() => handleDeleteUser(user.username)} className="bg-red-500 text-white font-semibold rounded-lg cursor-pointer 
-                     transition-transform duration-200 hover:scale-110 px-4 py-2">
-                      Delete
-                    </button>
-
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center px-6 py-4 text-gray">
-                  No users found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div style={{ margin: '16px 16px' }}>
+        <Table 
+          columns={columns} 
+          dataSource={users}
+          rowKey="username"
+          pagination={{ pageSize: 10 }}
+          bordered
+          scroll={{ x: 'max-content' }}
+          locale={{
+            emptyText: 'No users found'
+          }}
+        />
       </div>
 
       {/* Add User Popup */}

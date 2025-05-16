@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logout } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
 import {
   HomeOutlined,
@@ -18,6 +19,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
+
 const AdminSideBar = ({ userName = "John Doe", userRole = "Admin" }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
@@ -36,42 +38,55 @@ const AdminSideBar = ({ userName = "John Doe", userRole = "Admin" }) => {
       path: '/admin/dashboard'
     },
     {
-      key: 'calendar',
+      key: 'manage users',
       icon: <CalendarOutlined />,
-      label: 'Calendar',
+      label: 'manage users',
       path: '/admin/manage-users'
     },
     {
-      key: 'messages',
-      icon: <MessageOutlined />,
-      label: 'Messages',
+      key: 'Manage Assignments',
+      icon: <UserOutlined />,
+      label: 'Manage Assignments',
       path: '/admin/manage-assignments'
     },
     {
-      key: 'documents',
+      key: 'Manage-Courses',
       icon: <FileTextOutlined />,
-      label: 'Documents',
+      label: 'Manage Courses',
       path: '/admin/manage-courses'
     },
     {
-      key: 'profile',
+      key: 'Analytics ',
       icon: <UserOutlined />,
-      label: 'Profile',
+      label: 'Analytics',
       path: '/admin/analytics'
     },
     {
-      key: 'settings',
+      key: 'Settings',
       icon: <SettingOutlined />,
       label: 'Settings',
+      path: '/admin/settings'
+    },
+
+    {
+      key: 'Logout',
+      icon: <LogoutOutlined />,
+      label: 'Logout',
       path: '/admin/settings'
     }
   ];
 
-  // Function to handle navigation
-  const handleMenuClick = (item) => {
-    navigate(item.path);
+  const handleMenuClick = ({ key }) => {
+    if (key === 'Logout') {
+      logout(); // Call the logout function
+      
+    } else {
+      const selectedItem = menuItems.find(item => item.key === key);
+      if (selectedItem) {
+        navigate(selectedItem.path);
+      }
+    }
   };
-
   return (
     <Sider
       width={250}
