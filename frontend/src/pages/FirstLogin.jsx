@@ -7,7 +7,7 @@ import { changeCredentials } from '../utils/authService';
 
 const { Title, Text, Paragraph } = Typography;
 
-export default function ChangePasswordForm() {
+export default function FirstLogin() {
   const [fadeIn, setFadeIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -15,6 +15,13 @@ export default function ChangePasswordForm() {
   const firstLoginImage = firstLoginNew;
   const username  = localStorage.getItem("usernameFromToken")
   
+
+  const [formDetails, setFormDetails]= useState({
+    temporaryPassword:"",
+    newPassword:"",
+    confirmPassword:""
+
+  })
   const [passwordVisible, setPasswordVisible] = useState({
     temporary: false,
     new: false,
@@ -79,9 +86,11 @@ export default function ChangePasswordForm() {
     setMessage('');
     
     try {
+      console.log(formDetails);
+
       // calling   the change credentials
-      await changeCredentials(username,form)
-      console.log(form);
+      await changeCredentials(localStorage.getItem("usernameFromToken"),formDetails)
+      console.log(formDetails);
       setMessage('Password changed successfully!');
     } catch (error) {
       setMessage('Failed to change password. Please try again.');
@@ -153,6 +162,8 @@ export default function ChangePasswordForm() {
                 >
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
+                    value={formDetails.temporaryPassword}
+                    onChange={(e) => setFormDetails({...formDetails,temporaryPassword:e.target.value})}
                     placeholder="Enter your temporary password"
                     iconRender={(visible) => (
                       visible ? 
@@ -168,6 +179,8 @@ export default function ChangePasswordForm() {
 
                 <Form.Item
                   name="newPassword"
+                  value={formDetails.newPassword}
+                    onChange={(e) => setFormDetails({...formDetails,newPassword:e.target.value})}
                   label="New Password"
                   rules={[
                     { required: true, message: 'Please enter your new password' },
@@ -209,6 +222,8 @@ export default function ChangePasswordForm() {
                 <Form.Item
                   name="confirmPassword"
                   label="Confirm Password"
+                  value={formDetails.confirmPassword}
+                    onChange={(e) => setFormDetails({...formDetails,confirmPassword:e.target.value})}
                   rules={[
                     { required: true, message: 'Please confirm your password' },
                     { validator: validateConfirmPassword }
