@@ -13,7 +13,6 @@ export default function FirstLogin() {
   const [message, setMessage] = useState('');
   const [form] = Form.useForm();
   const firstLoginImage = firstLoginNew;
-  const username  = localStorage.getItem("usernameFromToken")
   
 
   const [formDetails, setFormDetails]= useState({
