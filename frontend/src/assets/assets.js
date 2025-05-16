@@ -21,6 +21,7 @@ import  scienceSubject from './science-img.png'
 
 import sinhalaSubject from './sinhala-img.png'
 import loginImage from './login_image.jpg'
+import firstLoginNew from './Wavy_Tech-28_Single-10.jpg'
 
 
 export {
@@ -36,7 +37,8 @@ export {
     quizManagementImg,
     roleProfile,
     editProfileVector,
-    loginImage
+    loginImage,
+    firstLoginNew
 };
 
 
