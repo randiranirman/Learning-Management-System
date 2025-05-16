@@ -20,7 +20,7 @@ import mathSubject from './maths-img.png'
 import  scienceSubject from './science-img.png'
 
 import sinhalaSubject from './sinhala-img.png'
-
+import loginImage from './login_image.jpg'
 
 
 export {
@@ -35,7 +35,8 @@ export {
     NavCancelImg,
     quizManagementImg,
     roleProfile,
-    editProfileVector
+    editProfileVector,
+    loginImage
 };
 
 
