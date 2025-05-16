@@ -46,6 +46,7 @@ export const registerUser = async (userData) => {
 
 //logout  the users  by removing the tokens 
 export const logout = async () => {
+  console.log("logout function called")
   try {
     await axios.post(
       `${API_URL}/logout`,
@@ -65,6 +66,8 @@ export const logout = async () => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, log out!'
         });
+
+        
     
         if (result.isConfirmed) {
           // clear session/local storage
