@@ -19,6 +19,7 @@ import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin";
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
+import Notifications from "./roles/teacher/TeacherPages/Notifications";
 
 
 const App = () => {
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="assignments" element={<TeacherAssignments />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
+        <Route path="notifications" errorElement={<Notifications />} />
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
       </Route>
 
