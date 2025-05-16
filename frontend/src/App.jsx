@@ -38,6 +38,7 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
         < Route path="editProfile" element={<EditProfile />}  />
+       
       </Route>
 
       {/* Teacher Routes */}
