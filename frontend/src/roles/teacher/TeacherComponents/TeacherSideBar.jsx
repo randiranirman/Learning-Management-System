@@ -84,7 +84,13 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
     icon: <DiffOutlined />,  // This one is already appropriate
     label: 'Quiz Creation',
     path: '/teacher/quiz/createQuiz'
-  }
+  },
+  {
+      key: 'Logout',
+      icon: <LogoutOutlined />,  // This one is already appropriate
+      label: 'Logout',
+      path: '/'
+    }
 ];
   const handleMenuClick = ({ key }) => {
     if (key === 'Logout') {

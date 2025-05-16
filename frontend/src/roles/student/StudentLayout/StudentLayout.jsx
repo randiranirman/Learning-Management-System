@@ -5,7 +5,7 @@ const StudentLayout = () => {
   return (
     <>
     <div>
-      <StudentFullHeader />
+      <StudentFullHeader   />
     </div>
     <div>
       <Outlet /> 
