@@ -169,11 +169,19 @@ const ManageUsers = () => {
             fileList={fileList}
             maxCount={1}
           >
-            <Button icon={<UploadOutlined />}>Select File</Button>
+            <Button style={
+              {
+                background:'#5038ED',
+                color:'white'
+              }
+            } icon={<UploadOutlined />}>Select File</Button>
           </Upload>
 
           <Button 
             type="primary"
+            style={{
+              background:'#5038ED'
+            }}
             onClick={handleUploadCSV}
           >
             Upload
@@ -182,6 +190,9 @@ const ManageUsers = () => {
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
+             style={{
+              background:'#5038ED'
+            }}
             onClick={() => setShowUserPopup(true)}
           >
             Add User

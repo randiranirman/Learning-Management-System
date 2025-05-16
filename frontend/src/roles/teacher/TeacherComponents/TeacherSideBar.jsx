@@ -17,7 +17,10 @@ import {
   TeamOutlined,
   ScheduleOutlined,
   BookOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  QuestionCircleOutlined,
+  DiffOutlined,
+  MailOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -25,7 +28,7 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 
-const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
+const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
  
  }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -43,43 +46,44 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     key: 'dashboard',
     icon: <DashboardOutlined />,  // This one is already appropriate
     label: 'Dashboard',
-    path: '/admin/dashboard'
+    path: '/teacher/dashboard'
   },
   {
-    key: 'manage users',
+    key: 'profile',
     icon: <TeamOutlined />,  // Better for user management than Calendar
-    label: 'manage users',
-    path: '/admin/manage-users'
+    label: 'Profile',
+    path: '/teacher/profile'
   },
   {
-    key: 'Manage Assignments',
+    key: 'notifications',
+    icon: <MailOutlined />,  // Better for user management than Calendar
+    label: 'Notifications',
+    path: '/teacher/notifications'
+  },
+  {
+    key: 'assignments',
     icon: <ScheduleOutlined />,  // Better for assignments/tasks
-    label: 'Manage Assignments',
-    path: '/admin/manage-assignments'
+    label: 'Assignments',
+    path: '/teacher/assignments'
   },
   {
-    key: 'Manage-Courses',
-    icon: <BookOutlined />,  // Better for courses/educational content
-    label: 'Manage Courses',
-    path: '/admin/manage-courses'
-  },
-  {
-    key: 'Analytics ',
-    icon: <BarChartOutlined />,  // Better for analytics/data
-    label: 'Analytics',
-    path: '/admin/analytics'
-  },
-  {
-    key: 'Settings',
-    icon: <SettingOutlined />,  // This one is already appropriate
+    key: 'settings',
+    icon: <SettingOutlined />,  // Better for courses/educational content
     label: 'Settings',
-    path: '/admin/settings'
+    path: '/teacher/settings'
   },
   {
-    key: 'Logout',
-    icon: <LogoutOutlined />,  // This one is already appropriate
-    label: 'Logout',
-    path: '/admin/settings'
+    key: 'quiz',
+    icon: <QuestionCircleOutlined />,  // Better for analytics/data
+    label: 'Quiz',
+    path: '/teacher/quiz'
+  },
+  
+  {
+    key: 'quizCreation',
+    icon: <DiffOutlined />,  // This one is already appropriate
+    label: 'Quiz Creation',
+    path: '/teacher/quiz/createQuiz'
   }
 ];
   const handleMenuClick = ({ key }) => {
@@ -235,4 +239,4 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
   );
 };
 
-export default AdminSideBar;
+export default TeacherSideBar;
