@@ -19,6 +19,7 @@ import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin";
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
+import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 
 
@@ -51,6 +52,7 @@ const App = () => {
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="notifications" errorElement={<Notifications />} />
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
+        <Route path="files" element={<Files />} />
       </Route>
 
       {/* Student routes */}

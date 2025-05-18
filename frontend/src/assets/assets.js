@@ -18,8 +18,12 @@ import historySubject from  './history-img.png'
 import ictSubject from './ICT-img.png'
 import mathSubject from './maths-img.png'
 import  scienceSubject from './science-img.png'
-
+import pdfFrameImg from './Frame.svg';
+import addIconFull from './addIconFull.svg';
+import videoImgFull from './videoImgFull.svg';
+import assignmentUploadImg from './assignmentUploadImg.svg';
 import sinhalaSubject from './sinhala-img.png'
+import addButtonImg from './add-button.svg'
 import loginImage from './login_image.jpg'
 import firstLoginNew from './Wavy_Tech-28_Single-10.jpg'
 
@@ -37,6 +41,11 @@ export {
     quizManagementImg,
     roleProfile,
     editProfileVector,
+    addButtonImg,
+    pdfFrameImg,
+    addIconFull,
+    videoImgFull,
+    assignmentUploadImg
     loginImage,
     firstLoginNew
 };
@@ -52,5 +61,4 @@ export const subjectCards =  {
     englishSubject,
     dramaSubject,
     commerceSubject
-
 }
