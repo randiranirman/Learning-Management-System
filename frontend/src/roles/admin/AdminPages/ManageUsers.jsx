@@ -16,16 +16,18 @@ const ManageUsers = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
   const [fileList, setFileList] = useState([]);
-
-  const handleFileChange = (info) => {
-    if (info.file) {
-      setCsvFile(info.file.originFileObj);
-      setFileList(info.fileList.slice(-1)); // Keep only the latest file
-      setUploadStatus("");
-    }
-  };
+const handleFileChange = (info) => {
+  if (info.file) {
+    setCsvFile(info.file);
+    setFileList(info.fileList.slice(-1)); // Keep only the latest file
+    setUploadStatus("");
+    console.log(info.file);
+  }
+};
 
   const handleUploadCSV = async () => {
+    console.log( csvFile);
+    console.log("this line got executed")
     if (!csvFile) {
       Swal.fire({
         icon: 'warning',
