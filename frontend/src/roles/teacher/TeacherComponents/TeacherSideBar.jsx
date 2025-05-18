@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { getUserNameFromToken, logout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
@@ -27,75 +27,73 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-
-const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
- 
- }) => {
-  const [collapsed, setCollapsed] = useState(false);
+const TeacherSideBar = ({
+  userName = getUserNameFromToken(localStorage.getItem("accessToken")),
+  userRole = getUserRole(localStorage.getItem("accessToken")),
+  collapsed,
+  setCollapsed
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  // Define menu items
   const menuItems = [
-  {
-    key: 'dashboard',
-    icon: <DashboardOutlined />,  // This one is already appropriate
-    label: 'Dashboard',
-    path: '/teacher/dashboard'
-  },
-  {
-    key: 'profile',
-    icon: <TeamOutlined />,  // Better for user management than Calendar
-    label: 'Profile',
-    path: '/teacher/profile'
-  },
-  {
-    key: 'notifications',
-    icon: <MailOutlined />,  // Better for user management than Calendar
-    label: 'Notifications',
-    path: '/teacher/notifications'
-  },
-  {
-    key: 'assignments',
-    icon: <ScheduleOutlined />,  // Better for assignments/tasks
-    label: 'Assignments',
-    path: '/teacher/assignments'
-  },
-  {
-    key: 'settings',
-    icon: <SettingOutlined />,  // Better for courses/educational content
-    label: 'Settings',
-    path: '/teacher/settings'
-  },
-  {
-    key: 'quiz',
-    icon: <QuestionCircleOutlined />,  // Better for analytics/data
-    label: 'Quiz',
-    path: '/teacher/quiz'
-  },
-  
-  {
-    key: 'quizCreation',
-    icon: <DiffOutlined />,  // This one is already appropriate
-    label: 'Quiz Creation',
-    path: '/teacher/quiz/createQuiz'
-  },
-  {
+    {
+      key: 'dashboard',
+      icon: <DashboardOutlined />,
+      label: 'Dashboard',
+      path: '/teacher/dashboard'
+    },
+    {
+      key: 'profile',
+      icon: <TeamOutlined />,
+      label: 'Profile',
+      path: '/teacher/profile'
+    },
+    {
+      key: 'notifications',
+      icon: <MailOutlined />,
+      label: 'Notifications',
+      path: '/teacher/notifications'
+    },
+    {
+      key: 'assignments',
+      icon: <ScheduleOutlined />,
+      label: 'Assignments',
+      path: '/teacher/assignments'
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined />,
+      label: 'Settings',
+      path: '/teacher/settings'
+    },
+    {
+      key: 'quiz',
+      icon: <QuestionCircleOutlined />,
+      label: 'Quiz',
+      path: '/teacher/quiz'
+    },
+    {
+      key: 'quizCreation',
+      icon: <DiffOutlined />,
+      label: 'Quiz Creation',
+      path: '/teacher/quiz/createQuiz'
+    },
+    {
       key: 'Logout',
-      icon: <LogoutOutlined />,  // This one is already appropriate
+      icon: <LogoutOutlined />,
       label: 'Logout',
       path: '/'
     }
-];
+  ];
+
   const handleMenuClick = ({ key }) => {
     if (key === 'Logout') {
-      logout(); // Call the logout function
-      
+      logout();
     } else {
       const selectedItem = menuItems.find(item => item.key === key);
       if (selectedItem) {
@@ -103,6 +101,7 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
       }
     }
   };
+
   return (
     <Sider
       width={250}
@@ -122,16 +121,18 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
       }}
     >
       {/* Logo and Header Section */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: collapsed ? 'center' : 'flex-start',
-        padding: collapsed ? '20px 0' : '20px 24px',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: collapsed ? 'center' : 'flex-start',
+          padding: collapsed ? '20px 0' : '20px 24px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)'
+        }}
+      >
         {collapsed ? (
-          <Avatar 
-            size={40} 
+          <Avatar
+            size={40}
             style={{ backgroundColor: '#fff', color: '#5038ED' }}
           >
             {userName.charAt(0)}
@@ -139,8 +140,8 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
         ) : (
           <>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-              <Avatar 
-                size={40} 
+              <Avatar
+                size={40}
                 style={{ backgroundColor: '#fff', color: '#5038ED' }}
               >
                 {userName.charAt(0)}
@@ -174,9 +175,9 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
       {/* Menu Items */}
       <Menu
         mode="inline"
-        selectedKeys={[location.pathname.split('/')[1] || 'dashboard']}
-        style={{ 
-          background: 'transparent', 
+        selectedKeys={[location.pathname.split('/')[2] || 'dashboard']}
+        style={{
+          background: 'transparent',
           borderRight: 'none',
           marginTop: '20px'
         }}
@@ -186,31 +187,25 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
         }}
         items={menuItems.map(item => ({
           key: item.key,
-          icon: (
-            <span style={{ color: '#fff' }}>
-              {item.icon}
-            </span>
-          ),
-          label: (
-            <span style={{ color: '#fff' }}>
-              {item.label}
-            </span>
-          )
+          icon: <span style={{ color: '#fff' }}>{item.icon}</span>,
+          label: <span style={{ color: '#fff' }}>{item.label}</span>
         }))}
         theme="dark"
       />
 
       {/* Bottom Icons */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        padding: collapsed ? '16px 0' : '16px 24px',
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex',
-        justifyContent: collapsed ? 'center' : 'space-between',
-        alignItems: 'center'
-      }}>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          padding: collapsed ? '16px 0' : '16px 24px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          display: 'flex',
+          justifyContent: collapsed ? 'center' : 'space-between',
+          alignItems: 'center'
+        }}
+      >
         {collapsed ? (
           <Tooltip title="Logout" placement="right">
             <Button
@@ -222,22 +217,9 @@ const TeacherSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("
           </Tooltip>
         ) : (
           <>
-            <Button
-              type="text"
-              icon={<BellOutlined />}
-              style={{ color: '#fff' }}
-            />
-            <Button
-              type="text"
-              icon={<MessageOutlined />}
-              style={{ color: '#fff' }}
-            />
-            <Button
-              type="text"
-              icon={<LogoutOutlined />}
-              style={{ color: '#fff' }}
-              danger
-            />
+            <Button type="text" icon={<BellOutlined />} style={{ color: '#fff' }} />
+            <Button type="text" icon={<MessageOutlined />} style={{ color: '#fff' }} />
+            <Button type="text" icon={<LogoutOutlined />} style={{ color: '#fff' }} danger />
           </>
         )}
       </div>
