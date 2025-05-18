@@ -65,8 +65,15 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
       setShowUserPopup(false);
       onUserAdded && onUserAdded(); // refresh list if provided
     } catch (error) {
-      message.error("Failed to register user");
-      console.error(error);
+      await Swal.fire({
+    title: 'Error',
+    text: 'Username already exists',
+    icon: 'error',
+    confirmButtonText: 'OK'
+  });
+  
+  message.error("Failed to register user");
+  console.error("Registration error:", error);
     }
   };
 
