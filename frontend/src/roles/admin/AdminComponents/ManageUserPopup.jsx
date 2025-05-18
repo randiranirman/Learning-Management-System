@@ -1,13 +1,17 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { Modal, Form, Input, Select, Button, Typography, message } from "antd";
 import { registerUser } from "../../../utils/authService";
+import Swal from "sweetalert2";
 
-const ManageUserPopup = ({ setShowUserPopup,onUserAdded  }) => {
-  const [user, setUser] = useState(null);
+const { Option } = Select;
+const { Title } = Typography;
+
+const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
+  const [form] = Form.useForm();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
-   
     email: "",
     role: "",
   });
@@ -23,120 +27,95 @@ const ManageUserPopup = ({ setShowUserPopup,onUserAdded  }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
     setFormData({ ...formData, [name]: value });
 
     if (name === "email") {
       if (!value) {
-        setErrors((prevErrors) => ({ ...prevErrors, email: "Email is required" }));
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Email is required",
+        }));
       } else if (!validateEmail(value)) {
-        setErrors((prevErrors) => ({ ...prevErrors, email: "Please enter a valid email address" }));
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Please enter a valid email address",
+        }));
       } else {
         setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
       }
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleRoleChange = (value) => {
+    setFormData({ ...formData, role: value });
+  };
 
-    if (!validateEmail(formData.email)) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "Please enter a valid email address" }));
-      return;
-    }
-
+  const handleSubmit = async () => {
     try {
-      const newUser = await registerUser(formData);
-      setUser(newUser);
-      
-      
-      onUserAdded(newUser)
+      await registerUser(formData);
+      message.success("User registered successfully");
+      form.resetFields();
+       await Swal.fire({
+              title: 'Success!',
+              text: 'User added successfully',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+        
+      setShowUserPopup(false);
+      onUserAdded && onUserAdded(); // refresh list if provided
     } catch (error) {
-      setErrors((prevErrors) => ({ ...prevErrors, general: error.response?.data?.message || "Registration failed" }));
-      console.error("Registration failed:", error);
+      message.error("Failed to register user");
+      console.error(error);
     }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg bg-opacity-10 animate-fadeIn">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-semibold mb-4">Add User</h2>
+    <Modal
+      open
+      title={<Title level={4}>Add User</Title>}
+      onCancel={() => setShowUserPopup(false)}
+      footer={null}
+    >
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={handleSubmit}
+        initialValues={formData}
+      >
+        <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+          <Input name="name" onChange={handleChange} />
+        </Form.Item>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block font-medium">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg focus:ring focus:ring-primary outline-none"
-              required
-            />
-          </div>
+        <Form.Item label="Username" name="username" rules={[{ required: true }]}>
+          <Input name="username" onChange={handleChange} />
+        </Form.Item>
 
-          <div>
-            <label className="block font-medium">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full p-2 border rounded-lg focus:ring focus:ring-primary outline-none ${
-                errors.email ? "border-red-500" : ""
-              }`}
-              required
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
+        <Form.Item
+          label="Email"
+          name="email"
+          validateStatus={errors.email ? "error" : ""}
+          help={errors.email}
+          rules={[{ required: true, type: "email" }]}
+        >
+          <Input name="email" onChange={handleChange} />
+        </Form.Item>
 
-          <div>
-            <label className="block font-medium">Role</label>
-            <input
-              type="text"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg focus:ring focus:ring-primary outline-none"
-              required
-            />
-          </div>
+        <Form.Item label="Role" name="role" rules={[{ required: true }]}>
+          <Select placeholder="Select role" onChange={handleRoleChange}>
+            <Option value="admin">Admin</Option>
+            <Option value="teacher">Teacher</Option>
+            <Option value="student">Student</Option>
+          </Select>
+        </Form.Item>
 
-          <div>
-            <label className="block font-medium">Username</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg focus:ring focus:ring-primary outline-none"
-              required
-            />
-          </div>
-
-         
-
-          {errors.general && <p className="text-red-500 text-sm mt-2">{errors.general}</p>}
-
-          <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-              onClick={() => setShowUserPopup(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition"
-              disabled={errors.email !== ""}
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block >
+            Add User
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };
 

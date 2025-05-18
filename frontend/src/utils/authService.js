@@ -46,6 +46,7 @@ export const registerUser = async (userData) => {
 
 //logout  the users  by removing the tokens 
 export const logout = async () => {
+  console.log("logout function called")
   try {
     await axios.post(
       `${API_URL}/logout`,
@@ -65,6 +66,8 @@ export const logout = async () => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, log out!'
         });
+
+        
     
         if (result.isConfirmed) {
           // clear session/local storage
@@ -172,9 +175,12 @@ export const changeCredentials = async (username, formDetails) => {
     const response = await axios.post(`${API_URL}/update-credentials/${username}`,
       formDetails
     );
+    console.log(username)
+    window.location.href ="/";
     return response.data;
 
   } catch (error) {
+    console.log(error)
     throw error.response?.data || "something went wrong";
   }
 
