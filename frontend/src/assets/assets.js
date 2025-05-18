@@ -45,7 +45,7 @@ export {
     pdfFrameImg,
     addIconFull,
     videoImgFull,
-    assignmentUploadImg
+    assignmentUploadImg,
     loginImage,
     firstLoginNew
 };
