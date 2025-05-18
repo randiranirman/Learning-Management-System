@@ -213,7 +213,7 @@ function Files() {
   };
 
   return (
-    <div>
+    <div style={{marginLeft: 20}}>
       {materials.map((topic) => {
         // Create an array of all cards for this topic including the "Add item" card
         const topicCards = [
