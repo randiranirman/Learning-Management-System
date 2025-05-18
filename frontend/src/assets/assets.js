@@ -18,8 +18,13 @@ import historySubject from  './history-img.png'
 import ictSubject from './ICT-img.png'
 import mathSubject from './maths-img.png'
 import  scienceSubject from './science-img.png'
+import pdfFrameImg from './Frame.svg';
+import addIconFull from './addIconFull.svg';
+import videoImgFull from './videoImgFull.svg';
+import assignmentUploadImg from './assignmentUploadImg.svg';
 
 import sinhalaSubject from './sinhala-img.png'
+import addButtonImg from './add-button.svg'
 
 
 
@@ -35,7 +40,12 @@ export {
     NavCancelImg,
     quizManagementImg,
     roleProfile,
-    editProfileVector
+    editProfileVector,
+    addButtonImg,
+    pdfFrameImg,
+    addIconFull,
+    videoImgFull,
+    assignmentUploadImg
 };
 
 
