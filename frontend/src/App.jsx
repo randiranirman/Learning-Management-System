@@ -46,6 +46,7 @@ const App = () => {
       {/* Teacher Routes */}
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
+        <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<TeacherAssignments />} />
         <Route path="settings" element={<TeacherSettings />} />
