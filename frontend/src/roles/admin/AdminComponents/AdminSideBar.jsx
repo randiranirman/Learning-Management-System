@@ -25,7 +25,7 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 
-const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
+const AdminSideBar = ({ userName ="HImashi", userRole = getUserRole(localStorage.getItem("accessToken"))
  
  }) => {
   const [collapsed, setCollapsed] = useState(false);
