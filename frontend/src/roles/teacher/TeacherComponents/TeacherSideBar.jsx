@@ -28,7 +28,7 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 const TeacherSideBar = ({
-  userName = getUserNameFromToken(localStorage.getItem("accessToken")),
+  userName = "taecher",
   userRole = getUserRole(localStorage.getItem("accessToken")),
   collapsed,
   setCollapsed
