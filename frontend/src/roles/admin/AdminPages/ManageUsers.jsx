@@ -16,6 +16,12 @@ const ManageUsers = () => {
   const [csvFile, setCsvFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [formData, setFormData] = useState({
+      name: "",
+      username: "",
+      email: "",
+      role: "",
+    }); 
 const handleFileChange = (info) => {
   if (info.file) {
     setCsvFile(info.file);
@@ -79,6 +85,9 @@ const handleFileChange = (info) => {
   const handleUserAdded = async (newUser) => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
     setShowUserPopup(false);
+  };
+   const handleRoleChange = (value) => {
+    setFormData({ ...formData, role: value });
   };
 
   const handleDeleteUser = async (username) => {
@@ -178,6 +187,9 @@ const handleFileChange = (info) => {
               }
             } icon={<UploadOutlined />}>Select File</Button>
           </Upload>
+
+         
+          
 
           <Button 
             type="primary"
