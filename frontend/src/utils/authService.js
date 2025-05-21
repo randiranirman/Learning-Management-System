@@ -86,6 +86,8 @@ export const logout = async () => {
   }
 };
 
+// this is the function for deconding the role from the token 
+
 const getRoleFromToken = (token) => {
   try {
     const decodedToken = jwtDecode(token);
