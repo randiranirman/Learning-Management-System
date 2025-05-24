@@ -8,32 +8,7 @@ const { Meta } = Card;
 const { Text } = Typography;
 
 function Files() {
-  // const a = [
-  //   {
-  //     id: 1,
-  //     name: 'Topic 1',
-  //     items: [
-  //       { id: 1, uploadLink: "abc.test", fileType: "pdf", savedName: "file item 1" },
-  //       { id: 2, uploadLink: "efg.test", fileType: "assignment", savedName: "file item 2" },
-  //       { id: 3, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 3" },
-  //       { id: 4, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 6" }
-  //     ]
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Topic 2',
-  //     items: [
-  //       { id: 5, uploadLink: "pqr.test", fileType: "pdf", savedName: "item 2" },
-  //       { id: 6, uploadLink: "stu.test", fileType: "text", savedName: "item 3" },
-  //       { id: 7, uploadLink: "vuw.test", fileType: "video", savedName: "item 4" }
-  //     ]
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Topic 3',
-  //     items: []
-  //   }
-  // ]
+
   const [materials, setMaterials] = useState([]);
   
   const [uploadingTopic, setUploadingTopic] = useState(null);
