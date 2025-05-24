@@ -1,42 +1,59 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, Button, Typography, message, Progress } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { pdfFrameImg, videoImgFull, assignmentUploadImg, addIconFull } from '../../../assets/assets.js';
+import {createMetireal, getAllMetireals} from '../../../utils/MetirealApi.js';
 
 const { Meta } = Card;
 const { Text } = Typography;
 
 function Files() {
-  const [materials, setMaterials] = useState([
-    {
-      id: 1,
-      name: 'Topic 1',
-      items: [
-        { id: 1, uploadLink: "abc.test", fileType: "pdf", savedName: "file item 1" },
-        { id: 2, uploadLink: "efg.test", fileType: "assignment", savedName: "file item 2" },
-        { id: 3, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 3" },
-        { id: 4, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 6" }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Topic 2',
-      items: [
-        { id: 5, uploadLink: "pqr.test", fileType: "pdf", savedName: "item 2" },
-        { id: 6, uploadLink: "stu.test", fileType: "text", savedName: "item 3" },
-        { id: 7, uploadLink: "vuw.test", fileType: "video", savedName: "item 4" }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Topic 3',
-      items: []
-    }
-  ]);
+  // const a = [
+  //   {
+  //     id: 1,
+  //     name: 'Topic 1',
+  //     items: [
+  //       { id: 1, uploadLink: "abc.test", fileType: "pdf", savedName: "file item 1" },
+  //       { id: 2, uploadLink: "efg.test", fileType: "assignment", savedName: "file item 2" },
+  //       { id: 3, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 3" },
+  //       { id: 4, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 6" }
+  //     ]
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Topic 2',
+  //     items: [
+  //       { id: 5, uploadLink: "pqr.test", fileType: "pdf", savedName: "item 2" },
+  //       { id: 6, uploadLink: "stu.test", fileType: "text", savedName: "item 3" },
+  //       { id: 7, uploadLink: "vuw.test", fileType: "video", savedName: "item 4" }
+  //     ]
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Topic 3',
+  //     items: []
+  //   }
+  // ]
+  const [materials, setMaterials] = useState([]);
   
   const [uploadingTopic, setUploadingTopic] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
+
+  // dependency for empty array means it runs when the page is reloading
+  useEffect(() => {
+    const fetchAllMetireals = async () => {
+      try {
+        const response = await getAllMetireals();
+        console.log("Response from page loading: ", response);
+        setMaterials(response);
+      } catch(err) {
+        console.log("Error in page reloading: ", err);
+        throw err;
+      }
+    };
+    fetchAllMetireals();
+  }, []) 
 
   const handleFileSelect = (e, topicId) => {
     const selectedFile = e.target.files[0];
@@ -54,7 +71,7 @@ function Files() {
 
     // Create form data
     const formData = new FormData();
-    formData.append('UPLOADCARE_PUB_KEY', 'c437a5cc83605b82c636');
+    formData.append('UPLOADCARE_PUB_KEY', '6cc797dafbd41f00efac');
     formData.append('UPLOADCARE_STORE', '1');
     formData.append('file', fileToUpload);
 
@@ -121,7 +138,12 @@ function Files() {
         });
       });
       
-      message.success(`${fileToUpload.name} uploaded successfully`);
+      console.log(`${fileToUpload.name} uploaded successfully`);
+
+      console.log(topicId, newFile);
+      const backendResponse = await createMetireal(topicId, newFile);
+
+      console.log(backendResponse);
       
       // Reset file input
       if (fileInputRef.current) {
@@ -214,6 +236,7 @@ function Files() {
 
   return (
     <div style={{marginLeft: 20}}>
+      
       {materials.map((topic) => {
         // Create an array of all cards for this topic including the "Add item" card
         const topicCards = [
