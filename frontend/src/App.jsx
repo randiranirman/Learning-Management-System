@@ -21,6 +21,7 @@ import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
       <Route path="/firstLogin" element={<FirstLogin />} />
       <Route path="/unauthorized" element={<UnAuthorized />} />
 
+     <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
       {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
@@ -42,8 +44,10 @@ const App = () => {
         < Route path="editProfile" element={<EditProfile />}  />
        
       </Route>
+      </Route>
 
       {/* Teacher Routes */}
+      <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
@@ -55,9 +59,14 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
         <Route path="files" element={<Files />} />
       </Route>
+      </Route>
 
+
+      
       {/* Student routes */}
+       <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
       <Route path="/student"  element={<StudentLayout/>} />
+      </Route>
       
       
       
