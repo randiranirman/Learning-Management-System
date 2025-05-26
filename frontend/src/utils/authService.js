@@ -187,3 +187,27 @@ export const changeCredentials = async (username, formDetails) => {
   }
 
 }
+// function for requesting password reset
+export const requestPasswordReset = async( email) => {
+  return await axios.post(`${API_URL}/request-password-reset`, {email} )
+    .then(response => {
+      console.log("Password reset requested successfully");
+      return response.data;
+    })
+    .catch(error => {
+      console.error("Error requesting password reset", error);
+      throw error.response?.data || "Request failed";
+    });
+}
+// function for resetting the password 
+export const resetPassword= async( data) => {
+  return await axios.post(`${API_URL}/reset-password`, data)
+    .then(response => {
+      console.log("Password reset successfully");
+      return response.data;
+    })
+    .catch(error => {
+      console.error("Error resetting password", error);
+      throw error.response?.data || "Reset failed";
+    });
+}

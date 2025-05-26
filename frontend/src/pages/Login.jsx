@@ -172,9 +172,12 @@ const LoginPage = () => {
               <div style={{ textAlign: "center", marginTop: 24 }}>
                 <Text type="secondary">
                   Forgot your password?{" "}
-                  <a href="/forgot-password" style={{ fontWeight: 500 }}>
-                    Reset it here
-                  </a>
+                   <span
+          onClick={() => navigate("/request-password-reset")}
+          style={{ fontWeight: 500, color: "#1890ff", cursor: "pointer" }}
+        >
+          Reset it here
+        </span>
                 </Text>
               </div>
             </div>
