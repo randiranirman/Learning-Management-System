@@ -22,6 +22,8 @@ import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import ResetPassword from "./pages/ResetPassword";
+import RequestReset from "./pages/RequestReset";
 
 
 const App = () => {
@@ -30,6 +32,8 @@ const App = () => {
       <Route path="/" element={<Login />} />
       <Route path="/firstLogin" element={<FirstLogin />} />
       <Route path="/unauthorized" element={<UnAuthorized />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/request-password-reset" element={<RequestReset />} />
 
      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
       {/* Admin routes */}
