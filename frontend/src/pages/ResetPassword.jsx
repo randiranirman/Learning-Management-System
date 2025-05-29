@@ -1,7 +1,6 @@
-import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import useState from 'react';
 import { resetPassword } from '../utils/authService';
+import {useState} from 'react';
 
 const ResetPassword = () => {
 
