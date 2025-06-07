@@ -2,10 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { Card, Button, Typography, message, Progress } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { pdfFrameImg, videoImgFull, assignmentUploadImg, addIconFull } from '../../../assets/assets.js';
-import {createMetireal, getAllMetireals} from '../../../utils/MetirealApi.js';
+import {createMetireal, deleteMetireal, editMetirealSavedName, getAllMetireals} from '../../../utils/MetirealApi.js';
+import { editTopic } from '../../../utils/subjectTopicAPI.js';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const { Meta } = Card;
 const { Text } = Typography;
+export const MySwal = withReactContent(Swal);
 
 function Files() {
 
@@ -141,27 +145,89 @@ function Files() {
     }
   };
 
-  const deleteFile = (e, topicId, itemId) => {
+  const deleteFile = async (e, topicId, itemId) => {
     e.stopPropagation(); // Prevent opening the file
-    setMaterials(prevMaterials => {
-      return prevMaterials.map(topic => {
-        if (topic.id === topicId) {
-          return {
-            ...topic,
-            items: topic.items.filter(item => item.id !== itemId)
-          };
-        }
-        return topic;
-      });
-    });
-    message.info('File deleted successfully');
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won’t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Perform delete logic here
+        console.log(topicId, itemId);
+        const response = await deleteMetireal(itemId);
+        console.log(response.data);
+        setMaterials(prevMaterials => {
+          return prevMaterials.map(topic => {
+            if (topic.id === topicId) {
+              return {
+                ...topic,
+                items: topic.items.filter(item => item.id !== itemId)
+              };
+            }
+            return topic;
+          });
+        });
+        console.log('File deleted successfully');
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+      }
+    })
   };
 
-  const editFile = (e, topicId, itemId) => {
+  const editFile = async (e, topicId, itemId) => {
     e.stopPropagation(); // Prevent opening the file
-    console.log("Edit file with id:", itemId, "in topic:", topicId);
-    message.info('Edit functionality not implemented');
+
+    const { value: name, isConfirmed } = await MySwal.fire({
+      title: 'Enter new name',
+      input: 'text',
+      inputPlaceholder: 'Type your name here',
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (isConfirmed && name) {
+      const requestObject = {
+        updatedSavedName: name
+      };
+
+      try {
+        const backendResponse = await editMetirealSavedName(itemId, requestObject);
+        console.log(backendResponse.data);
+
+        setMaterials(prevMaterials =>
+          prevMaterials.map(topic => {
+            if (topic.id === topicId) {
+              return {
+                ...topic,
+                items: topic.items.map(item => {
+                  if (item.id === itemId) {
+                    return { ...item, savedName: name };
+                  }
+                  return item;
+                })
+              };
+            }
+            return topic;
+          })
+        );
+
+        Swal.fire('Edited!', 'New Name Added!', 'success');
+      } catch (error) {
+        console.error("Error updating saved name:", error);
+        Swal.fire('Error!', 'Failed to update name.', 'error');
+      }
+    }
   };
+
 
   const openFilePreview = (file) => {
     // Open file preview in a new tab
@@ -195,7 +261,11 @@ function Files() {
     message.success('New topic added');
   };
 
-  const handleTopicNameChange = (topicId, newName) => {
+  const handleTopicNameChange = async (topicId, newName) => {
+
+    const response = await editTopic(topicId, newName);
+    console.log(response);
+
     setMaterials(prevMaterials => {
       return prevMaterials.map(topic => {
         if (topic.id === topicId) {

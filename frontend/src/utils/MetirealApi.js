@@ -28,7 +28,29 @@ const getAllMetireals = async () => {
     }
 }
 
+const deleteMetireal = async (metirealId) => {
+    try {
+        const response = await axios.delete(`https://localhost:7212/api/metireals/${metirealId}`);
+        return response;
+    } catch(error) {
+        console.log(`Error while delete metireal:${metirealId}`, error);
+        throw error;
+    }
+}
+
+const editMetirealSavedName = async (metirealId, newNameObject) => {
+    try {
+        const response = await axios.put(`https://localhost:7212/api/metireals/${metirealId}`, newNameObject);
+        return response;
+    } catch(error) {
+        console.log(`Error while Edit metireal name:${metirealId}`, error);
+        throw error;
+    }
+}
+
 export {
     createMetireal,
-    getAllMetireals
+    getAllMetireals,
+    deleteMetireal,
+    editMetirealSavedName
 };
