@@ -24,8 +24,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-
-const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
+// userName = getUserNameFromToken(localStorage.getItem("accessToken"))
+const AdminSideBar = ({ userName = "chanuka", userRole = getUserRole(localStorage.getItem("accessToken"))
  
  }) => {
   const [collapsed, setCollapsed] = useState(false);

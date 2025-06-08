@@ -1,42 +1,38 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, Button, Typography, message, Progress } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { pdfFrameImg, videoImgFull, assignmentUploadImg, addIconFull } from '../../../assets/assets.js';
+import {createMetireal, deleteMetireal, editMetirealSavedName, getAllMetireals} from '../../../utils/MetirealApi.js';
+import { editTopic } from '../../../utils/subjectTopicAPI.js';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const { Meta } = Card;
 const { Text } = Typography;
+export const MySwal = withReactContent(Swal);
 
 function Files() {
-  const [materials, setMaterials] = useState([
-    {
-      id: 1,
-      name: 'Topic 1',
-      items: [
-        { id: 1, uploadLink: "abc.test", fileType: "pdf", savedName: "file item 1" },
-        { id: 2, uploadLink: "efg.test", fileType: "assignment", savedName: "file item 2" },
-        { id: 3, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 3" },
-        { id: 4, uploadLink: "hij.test", fileType: "pdf", savedName: "file item 6" }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Topic 2',
-      items: [
-        { id: 5, uploadLink: "pqr.test", fileType: "pdf", savedName: "item 2" },
-        { id: 6, uploadLink: "stu.test", fileType: "text", savedName: "item 3" },
-        { id: 7, uploadLink: "vuw.test", fileType: "video", savedName: "item 4" }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Topic 3',
-      items: []
-    }
-  ]);
+
+  const [materials, setMaterials] = useState([]);
   
   const [uploadingTopic, setUploadingTopic] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
+
+  // dependency for empty array means it runs when the page is reloading
+  useEffect(() => {
+    const fetchAllMetireals = async () => {
+      try {
+        const response = await getAllMetireals();
+        console.log("Response from page loading: ", response);
+        setMaterials(response);
+      } catch(err) {
+        console.log("Error in page reloading: ", err);
+        throw err;
+      }
+    };
+    fetchAllMetireals();
+  }, []) 
 
   const handleFileSelect = (e, topicId) => {
     const selectedFile = e.target.files[0];
@@ -54,7 +50,7 @@ function Files() {
 
     // Create form data
     const formData = new FormData();
-    formData.append('UPLOADCARE_PUB_KEY', 'c437a5cc83605b82c636');
+    formData.append('UPLOADCARE_PUB_KEY', '6cc797dafbd41f00efac');
     formData.append('UPLOADCARE_STORE', '1');
     formData.append('file', fileToUpload);
 
@@ -121,7 +117,12 @@ function Files() {
         });
       });
       
-      message.success(`${fileToUpload.name} uploaded successfully`);
+      console.log(`${fileToUpload.name} uploaded successfully`);
+
+      console.log(topicId, newFile);
+      const backendResponse = await createMetireal(topicId, newFile);
+
+      console.log(backendResponse);
       
       // Reset file input
       if (fileInputRef.current) {
@@ -144,27 +145,89 @@ function Files() {
     }
   };
 
-  const deleteFile = (e, topicId, itemId) => {
+  const deleteFile = async (e, topicId, itemId) => {
     e.stopPropagation(); // Prevent opening the file
-    setMaterials(prevMaterials => {
-      return prevMaterials.map(topic => {
-        if (topic.id === topicId) {
-          return {
-            ...topic,
-            items: topic.items.filter(item => item.id !== itemId)
-          };
-        }
-        return topic;
-      });
-    });
-    message.info('File deleted successfully');
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won’t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Perform delete logic here
+        console.log(topicId, itemId);
+        const response = await deleteMetireal(itemId);
+        console.log(response.data);
+        setMaterials(prevMaterials => {
+          return prevMaterials.map(topic => {
+            if (topic.id === topicId) {
+              return {
+                ...topic,
+                items: topic.items.filter(item => item.id !== itemId)
+              };
+            }
+            return topic;
+          });
+        });
+        console.log('File deleted successfully');
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+      }
+    })
   };
 
-  const editFile = (e, topicId, itemId) => {
+  const editFile = async (e, topicId, itemId) => {
     e.stopPropagation(); // Prevent opening the file
-    console.log("Edit file with id:", itemId, "in topic:", topicId);
-    message.info('Edit functionality not implemented');
+
+    const { value: name, isConfirmed } = await MySwal.fire({
+      title: 'Enter new name',
+      input: 'text',
+      inputPlaceholder: 'Type your name here',
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (isConfirmed && name) {
+      const requestObject = {
+        updatedSavedName: name
+      };
+
+      try {
+        const backendResponse = await editMetirealSavedName(itemId, requestObject);
+        console.log(backendResponse.data);
+
+        setMaterials(prevMaterials =>
+          prevMaterials.map(topic => {
+            if (topic.id === topicId) {
+              return {
+                ...topic,
+                items: topic.items.map(item => {
+                  if (item.id === itemId) {
+                    return { ...item, savedName: name };
+                  }
+                  return item;
+                })
+              };
+            }
+            return topic;
+          })
+        );
+
+        Swal.fire('Edited!', 'New Name Added!', 'success');
+      } catch (error) {
+        console.error("Error updating saved name:", error);
+        Swal.fire('Error!', 'Failed to update name.', 'error');
+      }
+    }
   };
+
 
   const openFilePreview = (file) => {
     // Open file preview in a new tab
@@ -198,7 +261,11 @@ function Files() {
     message.success('New topic added');
   };
 
-  const handleTopicNameChange = (topicId, newName) => {
+  const handleTopicNameChange = async (topicId, newName) => {
+
+    const response = await editTopic(topicId, newName);
+    console.log(response);
+
     setMaterials(prevMaterials => {
       return prevMaterials.map(topic => {
         if (topic.id === topicId) {
@@ -214,6 +281,7 @@ function Files() {
 
   return (
     <div style={{marginLeft: 20}}>
+      
       {materials.map((topic) => {
         // Create an array of all cards for this topic including the "Add item" card
         const topicCards = [
