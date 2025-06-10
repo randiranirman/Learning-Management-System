@@ -90,17 +90,25 @@ export const logout = async () => {
 
 const getRoleFromToken = (token) => {
   try {
+    // Check if token exists and has the correct format (3 parts separated by dots)
+    if (!token || typeof token !== 'string') {
+      console.warn("Token is null, undefined, or not a string");
+      return null;
+    }
+    
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      console.warn("Invalid token format: token should have 3 parts separated by dots");
+      return null;
+    }
+    
     const decodedToken = jwtDecode(token);
-    return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null
+    return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
 
   } catch (error) {
     console.error("Error decoding token", error);
     return null;
   }
-
-
-
-
 }
 
 
@@ -115,8 +123,9 @@ export const isAuthenticated = () => {
 };
 
 export const getUserRole = () => {
-  const refreshToken = localStorage.getItem("refreshToken");
-  return refreshToken ? getRoleFromToken(refreshToken) : null;
+  // Use accessToken instead of refreshToken for getting user role
+  const accessToken = localStorage.getItem("accessToken");
+  return accessToken ? getRoleFromToken(accessToken) : null;
 }
 
 export const fetchAllUsers = async (currentUserId) => {
@@ -134,23 +143,43 @@ export const fetchAllUsers = async (currentUserId) => {
 }
 
 export const getIdFromToken = (token) => {
-
-
   try {
+    // Check if token exists and has the correct format
+    if (!token || typeof token !== 'string') {
+      console.warn("Token is null, undefined, or not a string");
+      return null;
+    }
+    
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      console.warn("Invalid token format: token should have 3 parts separated by dots");
+      return null;
+    }
+    
     const decodedToken = jwtDecode(token);
-
     const id = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
     return id ? parseInt(id, 10) : null;
 
   } catch (error) {
     console.log("error decoding token ", error);
+    return null;
   }
-
-
 }
 //function for decoding the loginAttempt from the token 
 export const getIsFirstLoginFromToken = (token) => {
   try {
+    // Check if token exists and has the correct format
+    if (!token || typeof token !== 'string') {
+      console.warn("Token is null, undefined, or not a string");
+      return false;
+    }
+    
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      console.warn("Invalid token format: token should have 3 parts separated by dots");
+      return false;
+    }
+    
     const decodedToken = jwtDecode(token);
     const isFirstLogin = decodedToken["isFirstLogin"];
     return isFirstLogin === 'True' || isFirstLogin === true;
@@ -162,11 +191,24 @@ export const getIsFirstLoginFromToken = (token) => {
 // function for decoding  the username from the token 
 export const getUserNameFromToken = (token) => {
   try {
+    // Check if token exists and has the correct format
+    if (!token || typeof token !== 'string') {
+      console.warn("Token is null, undefined, or not a string");
+      return null;
+    }
+    
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      console.warn("Invalid token format: token should have 3 parts separated by dots");
+      return null;
+    }
+    
     const decodedToken = jwtDecode(token);
     const username = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
     return username;
   } catch (error) {
     console.log("error decoding token ", error);
+    return null;
   }
 }
 

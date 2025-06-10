@@ -12,9 +12,15 @@ export const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
-    const role = getUserRole();
-    setUserRole(role);
-    setIsAuth(isAuthenticated());
+    try {
+      const role = getUserRole();
+      setUserRole(role);
+      setIsAuth(isAuthenticated());
+    } catch (error) {
+      console.error("Error getting user role:", error);
+      setUserRole(null);
+      setIsAuth(false);
+    }
   }, []);
 
   const handleLogout = () => {
