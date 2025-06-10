@@ -26,6 +26,7 @@ import sinhalaSubject from './sinhala-img.png'
 import addButtonImg from './add-button.svg'
 import loginImage from './login_image.jpg'
 import firstLoginNew from './Wavy_Tech-28_Single-10.jpg'
+import resetRequestPassword from './requsetResetPassword.jpg'
 
 
 export {
@@ -47,7 +48,8 @@ export {
     videoImgFull,
     assignmentUploadImg,
     loginImage,
-    firstLoginNew
+    firstLoginNew,
+    resetRequestPassword
 };
 
 
