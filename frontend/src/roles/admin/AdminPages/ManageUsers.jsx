@@ -23,11 +23,17 @@ const ManageUsers = () => {
       role: "",
     }); 
 const handleFileChange = (info) => {
-  if (info.file) {
-    setCsvFile(info.file);
+  if (info.fileList && info.fileList.length > 0) {
+    // Get the last file in the list and extract the native File object
+    const latestFileObj = info.fileList[info.fileList.length - 1];
+    const file = latestFileObj.originFileObj || latestFileObj;
+    setCsvFile(file);
     setFileList(info.fileList.slice(-1)); // Keep only the latest file
     setUploadStatus("");
-    console.log(info.file);
+    console.log(file);
+  } else {
+    setCsvFile(null);
+    setFileList([]);
   }
 };
 
