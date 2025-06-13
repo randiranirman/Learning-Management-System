@@ -128,19 +128,30 @@ export const getUserRole = () => {
   return accessToken ? getRoleFromToken(accessToken) : null;
 }
 
-export const fetchAllUsers = async (currentUserId) => {
+export const fetchAllUsers = async () => {
   try {
-    const response = await axios.get('https://localhost:7033/user');
-    currentUserId=getIdFromToken(localStorage.getItem("accessToken"));
-    const users = response.data.filter( user => user.Id !== currentUserId); 
+    // Get current user ID from token
+    const currentUserId = getIdFromToken(localStorage.getItem("accessToken"));
+    if (!currentUserId) {
+      throw new Error("Current user ID not found in token.");
+    }
+
+    // Fetch all users
+    const response = await axios.get('https://localhost:7033/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+
+    // Filter out the current user
+    const users = response.data.filter(user => user.id !== currentUserId && user.Id !== currentUserId);
 
     return users;
   } catch (error) {
-    console.error("error fetching users ", error);
+    console.error("Error fetching users", error);
+    return [];
   }
-
-
-}
+};
 
 export const getIdFromToken = (token) => {
   try {
