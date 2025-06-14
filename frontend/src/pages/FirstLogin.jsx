@@ -161,9 +161,8 @@ export default function FirstLogin() {
                 >
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
-                    value={formDetails.temporaryPassword}
-                    onChange={(e) => setFormDetails({...formDetails,temporaryPassword:e.target.value})}
                     placeholder="Enter your temporary password"
+                    onChange={e => setFormDetails({ ...formDetails, temporaryPassword: e.target.value })}
                     iconRender={(visible) => (
                       visible ? 
                         <EyeOutlined onClick={() => togglePasswordVisibility('temporary')} /> : 
@@ -178,8 +177,6 @@ export default function FirstLogin() {
 
                 <Form.Item
                   name="newPassword"
-                  value={formDetails.newPassword}
-                    onChange={(e) => setFormDetails({...formDetails,newPassword:e.target.value})}
                   label="New Password"
                   rules={[
                     { required: true, message: 'Please enter your new password' },
@@ -189,7 +186,10 @@ export default function FirstLogin() {
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="Enter your new password"
-                    onChange={handlePasswordChange}
+                    onChange={e => {
+                      handlePasswordChange(e);
+                      setFormDetails({ ...formDetails, newPassword: e.target.value });
+                    }}
                     iconRender={(visible) => (
                       visible ? 
                         <EyeOutlined onClick={() => togglePasswordVisibility('new')} /> : 
@@ -201,7 +201,6 @@ export default function FirstLogin() {
                     }}
                   />
                 </Form.Item>
-
                 {form.getFieldValue('newPassword') && (
                   <div style={{ marginTop: -20, marginBottom: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -221,8 +220,6 @@ export default function FirstLogin() {
                 <Form.Item
                   name="confirmPassword"
                   label="Confirm Password"
-                  value={formDetails.confirmPassword}
-                    onChange={(e) => setFormDetails({...formDetails,confirmPassword:e.target.value})}
                   rules={[
                     { required: true, message: 'Please confirm your password' },
                     { validator: validateConfirmPassword }
@@ -231,6 +228,7 @@ export default function FirstLogin() {
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="Confirm your new password"
+                    onChange={e => setFormDetails({ ...formDetails, confirmPassword: e.target.value })}
                     iconRender={(visible) => (
                       visible ? 
                         <EyeOutlined onClick={() => togglePasswordVisibility('confirm')} /> : 
@@ -263,16 +261,28 @@ export default function FirstLogin() {
           </Col>
 
           {/* Image (Right Side) */}
+          {/* Image (Right Side) */}
           <Col 
             xs={0} sm={0} md={12} lg={14} xl={16}
             style={{ 
-              backgroundImage: `url(${firstLoginImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#f0f2f5'
             }}
           >
-           
+            <img
+              src={firstLoginImage}
+              alt="First Login"
+              style={{
+                width: '100%',
+                height: '100vh',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block'
+              }}
+              loading="lazy"
+            />
           </Col>
         </Row>
       </Content>
