@@ -7,14 +7,14 @@ const API_URL = "https://localhost:7033/api/auth"; // Base API URL
 
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { username, password });
+    const response = await axios.post(`${API_URL}/login`, { username, password });//api call
 
     // Store tokens in localStorage
     localStorage.setItem("accessToken", response.data.accessToken);
     localStorage.setItem("refreshToken", response.data.refreshToken);
 
     const { accessToken, refreshToken } = response.data;
-    const role = getRoleFromToken(accessToken);
+    const role = getRoleFromToken(accessToken);//deconding  role from token 
     const id = getIdFromToken(accessToken);
     const usernameFromToken = getUserNameFromToken(accessToken);
     const isFirstLogin = getIsFirstLoginFromToken(accessToken);

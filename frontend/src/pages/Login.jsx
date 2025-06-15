@@ -36,7 +36,7 @@ const LoginPage = () => {
 
     try {
       const loginResponse = await login(username, password);
-      const role = loginResponse;
+      const role = loginResponse;//assign role
 
       setUserRole(role);
       const isFirstLogin = localStorage.getItem("isFirstLogin");

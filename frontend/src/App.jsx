@@ -22,6 +22,9 @@ import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 
+import AssignmentSubmission from "./roles/student/StudentPages/AssignmentSubmission";
+
+
 
 const App = () => {
   return (
@@ -57,7 +60,12 @@ const App = () => {
       </Route>
 
       {/* Student routes */}
-      <Route path="/student"  element={<StudentLayout/>} />
+      <Route path="/student"  element={<StudentLayout/>} >
+      <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="AssignmentSubmission" element={<AssignmentSubmission />}/>
+      </Route>
+      
       
       
       
