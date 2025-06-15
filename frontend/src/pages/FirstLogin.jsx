@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Form, Input, Button, Progress, Typography, Row, Col, Layout, Alert } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, LockOutlined } from '@ant-design/icons';
 import { firstLoginNew } from '../assets/assets';
@@ -12,30 +12,31 @@ export default function FirstLogin() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [form] = Form.useForm();
-  const firstLoginImage = firstLoginNew;
-  
-
-  const [formDetails, setFormDetails]= useState({
-    temporaryPassword:"",
-    newPassword:"",
-    confirmPassword:""
-
-  })
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const [passwordVisible, setPasswordVisible] = useState({
     temporary: false,
     new: false,
     confirm: false
   });
   
-  const [passwordStrength, setPasswordStrength] = useState(0);
+  const debounceTimer = useRef(null);
   
   useEffect(() => {
     setFadeIn(true);
+    
+    // Cleanup debounce timer on unmount
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
   }, []);
   
-  const calculatePasswordStrength = (password) => {
-    let strength = 0;
+  // Memoized password strength calculation
+  const calculatePasswordStrength = useCallback((password) => {
+    if (!password) return 0;
     
+    let strength = 0;
     if (password.length >= 8) strength += 1;
     if (/[a-z]/.test(password)) strength += 1;
     if (/[A-Z]/.test(password)) strength += 1;
@@ -43,39 +44,44 @@ export default function FirstLogin() {
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
     
     return strength;
-  };
+  }, []);
   
-  const handlePasswordChange = (e) => {
+  // Debounced password strength update to prevent excessive calculations
+  const handlePasswordChange = useCallback((e) => {
     const password = e.target.value;
-    if (password) {
-      setPasswordStrength(calculatePasswordStrength(password));
-    } else {
-      setPasswordStrength(0);
+    
+    // Clear previous timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
     }
     
-    form.validateFields(['confirmPassword']);
-  };
+    // Set new timer for debounced update
+    debounceTimer.current = setTimeout(() => {
+      setPasswordStrength(calculatePasswordStrength(password));
+    }, 150); // 150ms debounce
+  }, [calculatePasswordStrength]);
   
-  const getStrengthStatus = () => {
+  // Memoized status and text calculations
+  const strengthStatus = useMemo(() => {
     if (passwordStrength <= 1) return 'exception';
     if (passwordStrength <= 3) return 'normal';
     return 'success';
-  };
+  }, [passwordStrength]);
   
-  const getStrengthText = () => {
+  const strengthText = useMemo(() => {
     if (passwordStrength <= 1) return 'Weak';
     if (passwordStrength <= 3) return 'Medium';
     return 'Strong';
-  };
+  }, [passwordStrength]);
   
-  const togglePasswordVisibility = (field) => {
+  const togglePasswordVisibility = useCallback((field) => {
     setPasswordVisible(prev => ({
       ...prev,
       [field]: !prev[field]
     }));
-  };
+  }, []);
   
-  const handleSubmit = async (values) => {
+  const handleSubmit = useCallback(async (values) => {
     if (values.newPassword !== values.confirmPassword) {
       setMessage('Passwords do not match');
       return;
@@ -85,18 +91,21 @@ export default function FirstLogin() {
     setMessage('');
             
     try {
-      console.log(formDetails);
-
-      // calling   the change credentials
-      await changeCredentials(localStorage.getItem("usernameFromToken"),formDetails)
-      console.log(formDetails);
+      // Use form values directly instead of formDetails state
+      const credentials = {
+        temporaryPassword: values.temporaryPassword,
+        newPassword: values.newPassword,
+        confirmPassword: values.confirmPassword
+      };
+      
+      await changeCredentials(localStorage.getItem("usernameFromToken"), credentials);
       setMessage('Password changed successfully!');
     } catch (error) {
       setMessage('Failed to change password. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
   
   const validateConfirmPassword = (_, value) => {
     const password = form.getFieldValue('newPassword');
@@ -162,12 +171,6 @@ export default function FirstLogin() {
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="Enter your temporary password"
-                    onChange={e => setFormDetails({ ...formDetails, temporaryPassword: e.target.value })}
-                    iconRender={(visible) => (
-                      visible ? 
-                        <EyeOutlined onClick={() => togglePasswordVisibility('temporary')} /> : 
-                        <EyeInvisibleOutlined onClick={() => togglePasswordVisibility('temporary')} />
-                    )}
                     visibilityToggle={{
                       visible: passwordVisible.temporary,
                       onVisibleChange: () => togglePasswordVisibility('temporary'),
@@ -186,15 +189,7 @@ export default function FirstLogin() {
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="Enter your new password"
-                    onChange={e => {
-                      handlePasswordChange(e);
-                      setFormDetails({ ...formDetails, newPassword: e.target.value });
-                    }}
-                    iconRender={(visible) => (
-                      visible ? 
-                        <EyeOutlined onClick={() => togglePasswordVisibility('new')} /> : 
-                        <EyeInvisibleOutlined onClick={() => togglePasswordVisibility('new')} />
-                    )}
+                    onChange={handlePasswordChange}
                     visibilityToggle={{
                       visible: passwordVisible.new,
                       onVisibleChange: () => togglePasswordVisibility('new'),
@@ -205,11 +200,11 @@ export default function FirstLogin() {
                   <div style={{ marginTop: -20, marginBottom: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Text type="secondary">Password strength:</Text>
-                      <Text type="secondary">{getStrengthText()}</Text>
+                      <Text type="secondary">{strengthText}</Text>
                     </div>
                     <Progress 
                       percent={passwordStrength * 20} 
-                      status={getStrengthStatus()}
+                      status={strengthStatus}
                       showInfo={false}
                       strokeWidth={5}
                       style={{ marginTop: 8 }}
@@ -228,12 +223,6 @@ export default function FirstLogin() {
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="Confirm your new password"
-                    onChange={e => setFormDetails({ ...formDetails, confirmPassword: e.target.value })}
-                    iconRender={(visible) => (
-                      visible ? 
-                        <EyeOutlined onClick={() => togglePasswordVisibility('confirm')} /> : 
-                        <EyeInvisibleOutlined onClick={() => togglePasswordVisibility('confirm')} />
-                    )}
                     visibilityToggle={{
                       visible: passwordVisible.confirm,
                       onVisibleChange: () => togglePasswordVisibility('confirm'),
@@ -272,7 +261,7 @@ export default function FirstLogin() {
             }}
           >
             <img
-              src={firstLoginImage}
+              src={firstLoginNew}
               alt="First Login"
               style={{
                 width: '100%',
