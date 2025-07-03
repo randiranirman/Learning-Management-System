@@ -15,7 +15,7 @@ const { Title, Paragraph, Text } = Typography;
 const { Content } = Layout;
 
 const LoginPage = () => {
-  const { setUserRole } = useContext(AuthContext);
+  const { handleLogin: contextHandleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +29,7 @@ const LoginPage = () => {
     setTimeout(() => setFadeIn(true), 100);
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -38,7 +38,9 @@ const LoginPage = () => {
       const loginResponse = await login(username, password);
       const role = loginResponse;
 
-      setUserRole(role);
+      // Update the context with the logged in user
+      contextHandleLogin(role);
+      
       const isFirstLogin = localStorage.getItem("isFirstLogin");
       if (isFirstLogin === "true") {
         navigate("/firstLogin");
@@ -116,7 +118,7 @@ const LoginPage = () => {
               <Form
                 form={form}
                 name="login"
-                onSubmit={handleLogin}
+                onSubmit={handleLoginSubmit}
                 layout="vertical"
                 requiredMark={false}
                 size="large"
@@ -162,7 +164,7 @@ const LoginPage = () => {
                     block
                     size="large"
                     style={{ height: 46, background: "#5038ED" }}
-                    onClick={handleLogin}
+                    onClick={handleLoginSubmit}
                   >
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>

@@ -118,8 +118,43 @@ const getRoleFromToken = (token) => {
 export const isAuthenticated = () => {
   const token = localStorage.getItem("accessToken");
   console.log("test login for is authenticated");
-  return token !== null && token !== undefined;
-
+  
+  if (!token) {
+    return false;
+  }
+  
+  try {
+    // Check if token exists and is valid format
+    if (typeof token !== 'string') {
+      return false;
+    }
+    
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      return false;
+    }
+    
+    // Decode the token to check expiration
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000; // Convert to seconds
+    
+    // Check if token is expired
+    if (decodedToken.exp && decodedToken.exp < currentTime) {
+      console.log("Token is expired");
+      // Clear expired token
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("UserId");
+      localStorage.removeItem("usernameFromToken");
+      localStorage.removeItem("isFirstLogin");
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error validating token:", error);
+    return false;
+  }
 };
 
 export const getUserRole = () => {

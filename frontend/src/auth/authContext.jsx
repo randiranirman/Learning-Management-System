@@ -14,14 +14,21 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     try {
       const role = getUserRole();
+      const authenticated = isAuthenticated();
       setUserRole(role);
-      setIsAuth(isAuthenticated());
+      setIsAuth(authenticated);
+      console.log("Auth context initialized - Role:", role, "Authenticated:", authenticated);
     } catch (error) {
       console.error("Error getting user role:", error);
       setUserRole(null);
       setIsAuth(false);
     }
   }, []);
+
+  const handleLogin = (role) => {
+    setUserRole(role);
+    setIsAuth(true);
+  };
 
   const handleLogout = () => {
     logout();
@@ -30,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuth,userRole ,setUserRole,  handleLogout }}>
+    <AuthContext.Provider value={{ isAuth, userRole, setUserRole, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
