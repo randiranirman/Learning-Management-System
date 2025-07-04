@@ -27,7 +27,7 @@ import addButtonImg from './add-button.svg'
 import loginImage from './login_image.jpg'
 import firstLoginNew from './Wavy_Tech-28_Single-10.jpg'
 import resetRequestPassword from './requsetResetPassword.jpg'
-
+import resetPasswordImg from  './resetpassword.jpg'
 
 export {
     assignmentImg, 
@@ -49,7 +49,8 @@ export {
     assignmentUploadImg,
     loginImage,
     firstLoginNew,
-    resetRequestPassword
+    resetRequestPassword,
+    resetPasswordImg
 };
 
 
