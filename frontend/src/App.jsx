@@ -21,6 +21,7 @@ import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
+import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
@@ -51,19 +52,19 @@ const App = () => {
       </Route>
 
       {/* Teacher Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<TeacherAssignments />} />
+        <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="notifications" errorElement={<Notifications />} />
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
         <Route path="files" element={<Files />} />
       </Route>
-      </Route>
+      
 
 
       
