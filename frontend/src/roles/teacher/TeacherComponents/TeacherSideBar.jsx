@@ -20,7 +20,8 @@ import {
   BarChartOutlined,
   QuestionCircleOutlined,
   DiffOutlined,
-  MailOutlined
+  MailOutlined,
+  SnippetsOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -66,6 +67,12 @@ const TeacherSideBar = ({
       path: '/teacher/assignments'
     },
     {
+      key: 'registration',
+      icon: <SnippetsOutlined/>,
+      label: 'Registration',
+      path: '/teacher/registration'
+    },
+    {
       key: 'settings',
       icon: <SettingOutlined />,
       label: 'Settings',
@@ -88,7 +95,9 @@ const TeacherSideBar = ({
       icon: <LogoutOutlined />,
       label: 'Logout',
       path: '/'
-    }
+    },
+    
+    
   ];
 
   const handleMenuClick = ({ key }) => {
