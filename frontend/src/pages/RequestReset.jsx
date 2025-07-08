@@ -33,7 +33,7 @@ const RequestReset = () => {
       setMessage("Password reset link sent to your email.");
     } catch (err) {
       console.error("Error requesting password reset:", err);
-      setError("Failed to request password reset. Please try again.");
+      setError("Email is not  registered or an error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

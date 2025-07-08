@@ -16,7 +16,7 @@ import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
-import FirstLogin from "./pages/FirstLogin";
+import FirstLogin from "./pages/FirstLogin"; 
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
@@ -24,7 +24,7 @@ import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
-import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 
 
@@ -32,6 +32,10 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/unauthorized" element={<UnAuthorized />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/firstLogin" element={<FirstLogin />} />
+      <Route path="/request-reset-password" element={<RequestReset />} />
 
      
       {/* Admin routes */}
@@ -57,10 +61,11 @@ const App = () => {
       
       <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >
       <Route path="/teacher" element={<TeacherLayout />}>
-        <Route index element={<TeacherDashboard />} />
+        <Route index element={<TeacherDashboard />} />  
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<Assignment />} />
+        <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="notifications" errorElement={<Notifications />} />
