@@ -13,7 +13,6 @@ import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
-import TeacherAssignments from "./roles/teacher/TeacherPages/Assignments";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin";
@@ -24,6 +23,8 @@ import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
+import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+import Assignment from "./roles/teacher/TeacherPages/Assignments";
 
 
 const App = () => {
@@ -35,8 +36,11 @@ const App = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/request-password-reset" element={<RequestReset />} />
 
-     <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+     
       {/* Admin routes */}
+
+
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />} >
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -49,14 +53,17 @@ const App = () => {
        
       </Route>
       </Route>
+     
 
       {/* Teacher Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
+      
+      
+      <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
-        <Route path="assignments" element={<TeacherAssignments />} />
+        <Route path="assignments" element={<Assignment />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="notifications" errorElement={<Notifications />} />
@@ -68,8 +75,11 @@ const App = () => {
 
       
       {/* Student routes */}
-       <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-      <Route path="/student"  element={<StudentLayout/>} />
+      <Route element={<ProtectedRoute allowedRoles={["student"] } />} >
+      <Route path="/student"  element={<StudentLayout/>} >
+        <Route index element={<StudentDashboard/>}/>
+        <Route path="dashboard" element={<StudentDashboard/>}/>
+      </Route>
       </Route>
       
       
