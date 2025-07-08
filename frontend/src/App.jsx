@@ -1,4 +1,4 @@
-import { Routes, Route, Router } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import AdminLayout from "./roles/admin/AdminLayouts/AdminLayout";
 import Dashboard from "./roles/admin/AdminPages/Dashboard";
@@ -7,6 +7,7 @@ import ManageAssignments from "./roles/admin/AdminPages/ManageAssignments";
 import ManageCourses from "./roles/admin/AdminPages/ManageCourses";
 import Analytics from "./roles/admin/AdminPages/Analytics";
 import Settings from "./roles/admin/AdminPages/Settings";
+import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 
@@ -31,10 +32,6 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/firstLogin" element={<FirstLogin />} />
-      <Route path="/unauthorized" element={<UnAuthorized />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/request-password-reset" element={<RequestReset />} />
 
      
       {/* Admin routes */}
@@ -81,14 +78,14 @@ const App = () => {
         <Route path="dashboard" element={<StudentDashboard/>}/>
       </Route>
       </Route>
-      
-      
-      
-      
 
+      <Route path="/teacher" element={<QuizManagement/>} />
+      <Route path="/teacher/quiz" element={<QuizCreation />} />
+
+
+      <Route path="/student/dashboard" element={<StudentDashboard />} />
     </Routes>
   );
 };
 
 export default App;
-  
