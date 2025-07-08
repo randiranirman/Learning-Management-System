@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react';  //Imports the React library
 import { 
-  Card, 
+  Card, //Imports various UI components from Ant Design
   Row, 
   Col, 
   Typography, 
@@ -12,7 +12,7 @@ import {
   Space,
   Divider
 } from 'antd';
-import { 
+import {   //specific icons from Ant Design's icon library
   UserOutlined, 
   TeamOutlined, 
   FileTextOutlined,
@@ -22,7 +22,7 @@ import {
 
 const { Title, Text } = Typography;
 
-// Custom theme based on provided color code
+
 const theme = {
   colorPrimary: '#5038ED',
   colorSecondary: '#f4f4f9',
@@ -30,7 +30,7 @@ const theme = {
   colorRed: '#F16567',
 };
 
-// Mock data
+
 const studentData = [
   { id: 1, name: 'Emma Wilson', avatar: 'https://via.placeholder.com/150', grade: 'A', attendance: 95, status: 'Active' },
   { id: 2, name: 'James Brown', avatar: 'https://via.placeholder.com/150', grade: 'B+', attendance: 85, status: 'Active' },
@@ -148,7 +148,7 @@ const Dashboard = () => {
           >
             <Statistic
               title="Total Teachers"
-              value={187}
+              value={15}
               prefix={<TeamOutlined style={{ color: theme.colorPrimary }} />}
               valueStyle={{ color: theme.colorPrimary }}
               suffix={
@@ -169,7 +169,7 @@ const Dashboard = () => {
           >
             <Statistic
               title="Active Assignments"
-              value={143}
+              value={12}
               prefix={<FileTextOutlined style={{ color: theme.colorPrimary }} />}
               valueStyle={{ color: theme.colorPrimary }}
               suffix={
