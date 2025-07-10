@@ -1,4 +1,4 @@
-import { myCoursesImg, calendarImg, quizManagementImg, assignmentImg, settingsImg } from "../../../assets/assets";
+{/*import { myCoursesImg, calendarImg, quizManagementImg, assignmentImg, settingsImg } from "../../../assets/assets";
 import FullHeaderTemplate from "../../../components/FullHearderTemplate/FullHeaderTemplate";
 
 const studentDropDownProps = [
@@ -22,4 +22,4 @@ const StudentFullHeader = () => {
   )
 }
 
-export default StudentFullHeader;
+export default StudentFullHeader;*/}
