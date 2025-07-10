@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Card, Avatar, Typography, Space, Divider, Row, Col, Tag, List, 
-  Button, Tooltip, Form, Input, Modal, message
+  Card, Avatar, Typography, Space, Divider, Row, Col, 
+  Button, Tooltip, Form, Input, Modal, message, DatePicker, Select
 } from 'antd';
 import { 
   UserOutlined, MailOutlined, PhoneOutlined, HomeOutlined, BookOutlined,
-  MessageOutlined, EditOutlined, CalendarOutlined, BulbOutlined, 
+  MessageOutlined, EditOutlined, CalendarOutlined, 
   IdcardOutlined, ReadOutlined
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -16,24 +17,19 @@ const Profile = () => {
   const [teacher, setTeacher] = useState({
     name: 'Ms. Jennifer Williams',
     subject: 'Mathematics',
-    grade: '8th Grade',
     email: 'j.williams@lincoln-middle.edu',
     phone: '(555) 123-4567',
-    classroom: 'Room 203',
+    classroom: '6',
     address: '123 Educator Lane, Teaching City, TC 54321',
     birthday: 'May 12, 1985',
     yearsTeaching: 7,
     education: 'B.Ed. in Mathematics Education, State University',
-    bio: 'Dedicated middle school math teacher focused on making numbers fun and accessible for all students. Passionate about using interactive learning methods and technology in the classroom.',
-    certifications: [
-      'State Teaching License - Mathematics (K-12)',
-      'Professional Development in Technology Integration',
-      'Special Education Awareness Training'
-    ]
+    bio: 'Dedicated middle school math teacher focused on making numbers fun and accessible for all students. Passionate about using interactive learning methods and technology in the classroom.'
   });
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [initialValues, setInitialValues] = useState({});
   const [form] = Form.useForm();
-
+  
   // InfoItem component for consistent styling
   const InfoItem = ({ icon, label, value }) => (
     <div style={{ marginBottom: '16px' }}>
@@ -52,19 +48,111 @@ const Profile = () => {
     </div>
   );
 
+  // Check if form values are different from initial values
+  const checkFormChanges = (currentValues) => {
+    try {
+      // Compare current form values with initial values
+      for (const key in currentValues) {
+        // Skip comparison for birthdayDate as it's a special case
+        if (key === 'birthdayDate') continue;
+        
+        // Check if value is different from initial
+        if (currentValues[key] !== initialValues[key] && 
+            String(currentValues[key]) !== String(initialValues[key])) {
+          return true;
+        }
+      }
+      
+      // Special check for birthdayDate which is a dayjs object
+      if (currentValues.birthdayDate && initialValues.birthdayDate) {
+        if (!currentValues.birthdayDate.isSame(initialValues.birthdayDate)) {
+          return true;
+        }
+      } else if ((currentValues.birthdayDate && !initialValues.birthdayDate) || 
+                (!currentValues.birthdayDate && initialValues.birthdayDate)) {
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Error checking form changes:", error);
+      return false;
+    }
+  };
+
   const showEditModal = () => {
-    form.setFieldsValue({...teacher});
-    setIsEditModalVisible(true);
+    try {
+      // Convert string date to dayjs object for DatePicker
+      const formData = { ...teacher };
+      if (teacher.birthday) {
+        formData.birthdayDate = dayjs(teacher.birthday, 'MMMM D, YYYY');
+      }
+      
+      // Store initial values for change detection
+      const initialFormValues = {};
+      Object.keys(formData).forEach(key => {
+        if (key !== 'birthdayDate') {
+          initialFormValues[key] = formData[key];
+        }
+      });
+      
+      // Handle dayjs object separately
+      if (formData.birthdayDate) {
+        initialFormValues.birthdayDate = formData.birthdayDate;
+      }
+      
+      // Set initial values for comparison
+      setInitialValues(initialFormValues);
+      
+      // Set form fields
+      form.setFieldsValue(formData);
+      setIsEditModalVisible(true);
+    } catch (error) {
+      console.error("Error showing edit modal:", error);
+      message.error("Could not open edit form. Please try again.");
+    }
   };
 
   const handleSave = () => {
-    form.validateFields()
-      .then(values => {
-        setTeacher({...teacher, ...values});
-        setIsEditModalVisible(false);
-        message.success('Profile updated successfully!');
-      })
-      .catch(info => console.log('Validate Failed:', info));
+    try {
+      // Check if form has changes
+      const currentValues = form.getFieldsValue();
+      const hasChanges = checkFormChanges(currentValues);
+      
+      if (!hasChanges) {
+        message.info('No changes detected to save.');
+        return;
+      }
+
+      // Validate all fields before saving
+      form.validateFields()
+        .then(values => {
+          // Convert dayjs object back to string format
+          const formattedValues = { ...values };
+          if (formattedValues.birthdayDate) {
+            formattedValues.birthday = formattedValues.birthdayDate.format('MMMM D, YYYY');
+            delete formattedValues.birthdayDate;
+          }
+          
+          // Update teacher state
+          setTeacher(prevTeacher => ({...prevTeacher, ...formattedValues}));
+          setIsEditModalVisible(false);
+          message.success('Profile updated successfully!');
+        })
+        .catch(info => {
+          // Show validation error message
+          if (info.errorFields && info.errorFields.length > 0) {
+            const fieldName = info.errorFields[0].name[0];
+            const errorMsg = info.errorFields[0].errors[0];
+            message.error(`${fieldName}: ${errorMsg}`);
+          } else {
+            message.error('Please fill in all required fields correctly.');
+          }
+        });
+    } catch (error) {
+      console.error('Error during form submission:', error);
+      message.error('Could not save changes. Please try again.');
+    }
   };
 
   return (
@@ -99,10 +187,6 @@ const Profile = () => {
               <Text style={{ fontSize: '16px', display: 'block', color: '#ffffff', fontWeight: 600, opacity: 0.9 }}>
                 {teacher.subject} Teacher
               </Text>
-              <Tag color="purple" style={{ 
-                margin: '8px 0', borderRadius: '12px', padding: '0 10px', 
-                background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', color: 'white' 
-              }}>{teacher.grade}</Tag>
             </div>
             <Divider style={{ margin: '8px 0 16px', borderColor: 'rgba(255,255,255,0.2)' }} />
             <div style={{ padding: '0 10px' }}>
@@ -137,21 +221,9 @@ const Profile = () => {
             <div>
               <Space align="center" style={{ marginBottom: '12px' }}>
                 <ReadOutlined style={{ color: '#5e35f6' }} />
-                <Text strong style={{ color: '#2f1b69' }}>Education & Certifications</Text>
+                <Text strong style={{ color: '#2f1b69' }}>Education</Text>
               </Space>
               <Paragraph style={{ marginBottom: '14px' }}><Text>{teacher.education}</Text></Paragraph>
-              <List
-                size="small"
-                dataSource={teacher.certifications}
-                renderItem={(item) => (
-                  <List.Item style={{ borderBottom: 'none', padding: '4px 0' }}>
-                    <List.Item.Meta
-                      avatar={<BulbOutlined style={{ color: '#5e35f6' }} />}
-                      title={<span style={{ color: '#2f1b69' }}>{item}</span>}
-                    />
-                  </List.Item>
-                )}
-              />
             </div>
           </Card>
         </Col>
@@ -160,31 +232,46 @@ const Profile = () => {
       {/* Edit Profile Modal */}
       <Modal
         title={<span style={{ color: '#2f1b69' }}>Edit Profile Information</span>}
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
+        destroyOnClose={true}
         onCancel={() => setIsEditModalVisible(false)}
         footer={[
           <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>Cancel</Button>,
-          <Button key="submit" type="primary" onClick={handleSave} style={{ background: '#5e35f6', border: 'none' }}>
+          <Button 
+            key="submit" 
+            type="primary" 
+            onClick={handleSave}
+            style={{ background: '#5e35f6', border: 'none' }}
+          >
             Save Changes
           </Button>
         ]}
         width={700}
       >
-        <Form form={form} layout="vertical" initialValues={{...teacher}}>
+        <Form 
+          form={form} 
+          layout="vertical" 
+          initialValues={{...teacher}}
+          onValuesChange={(changedValues, allValues) => {
+            // No need for complex state tracking since we directly check
+            // form validity and changes when the save button is clicked
+          }}
+        >
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item name="name" label="Full Name" rules={[{ required: true, message: 'Please enter your name' }]}>
+              <Form.Item name="name" label="Full Name" 
+                rules={[
+                  { required: true, message: 'Please enter your name' },
+                  { min: 4, message: 'Name must be at least 4 characters' },
+                  { max: 50, message: 'Name cannot exceed 50 characters' }
+                ]}
+              >
                 <Input prefix={<UserOutlined />} placeholder="Enter your full name" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="subject" label="Subject" rules={[{ required: true, message: 'Please enter your subject' }]}>
                 <Input placeholder="Enter your subject" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="grade" label="Grade" rules={[{ required: true, message: 'Please enter your grade' }]}>
-                <Input placeholder="Enter your grade level" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -198,13 +285,33 @@ const Profile = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="phone" label="Phone Number" rules={[{ required: true, message: 'Please enter your phone number' }]}>
-                <Input prefix={<PhoneOutlined />} placeholder="Enter your phone number" />
+              <Form.Item name="phone" label="Phone Number" 
+                rules={[
+                  { required: true, message: 'Please enter your phone number' },
+                  { 
+                    pattern: /^07\d{8}$/, 
+                    message: 'Phone number must be 10 digits and start with 07' 
+                  }
+                ]}
+              >
+                <Input prefix={<PhoneOutlined />} placeholder="Enter your phone number (07xxxxxxxx)" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="classroom" label="Classroom" rules={[{ required: true, message: 'Please enter your classroom' }]}>
-                <Input prefix={<HomeOutlined />} placeholder="Enter classroom number" />
+              <Form.Item name="classroom" label="Class" rules={[{ required: true, message: 'Please select your class' }]}> 
+                <Select 
+                  placeholder="Select class"
+                  options={[
+                    { value: '6', label: '6' },
+                    { value: '7', label: '7' },
+                    { value: '8', label: '8' },
+                    { value: '9', label: '9' },
+                    { value: '10', label: '10' },
+                    { value: '11', label: '11' }
+                  ]}
+                  virtual={false}
+                  getPopupContainer={trigger => trigger.parentElement}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -213,8 +320,44 @@ const Profile = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="birthday" label="Birthday" rules={[{ required: true, message: 'Please enter your birthday' }]}>
-                <Input prefix={<CalendarOutlined />} placeholder="Enter your birthday" />
+              <Form.Item name="birthdayDate" label="Birthday" 
+                rules={[
+                  { required: true, message: 'Please select your birthday' },
+                  {
+                    validator: (_, value) => {
+                      if (!value) return Promise.resolve();
+                      
+                      // Check if age is at least 18 and less than 100
+                      const today = dayjs();
+                      const age = today.diff(value, 'year');
+                      
+                      if (age < 18) {
+                        return Promise.reject(new Error('You must be at least 18 years old'));
+                      }
+                      
+                      if (age > 100) {
+                        return Promise.reject(new Error('Please enter a valid birth date'));
+                      }
+                      
+                      return Promise.resolve();
+                    }
+                  }
+                ]}
+              >
+                <DatePicker 
+                  style={{ width: '100%' }} 
+                  format="MMMM D, YYYY"
+                  getPopupContainer={trigger => trigger.parentElement}
+                  disabledDate={(current) => {
+                    if (!current) return false;
+                    
+                    // Can't select future dates or dates less than 18 years ago
+                    const today = dayjs().endOf('day');
+                    const eighteenYearsAgo = dayjs().subtract(18, 'year');
+                    
+                    return current > today || current > eighteenYearsAgo;
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={24}>

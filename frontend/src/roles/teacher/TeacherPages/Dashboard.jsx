@@ -7,11 +7,12 @@ import {
   QuestionCircleOutlined,
   CalendarOutlined,
   BarChartOutlined,
-  PlusOutlined,
   EyeOutlined,
   EditOutlined,
-  ArrowLeftOutlined
+  ArrowLeftOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
+import ClassCard from '../TeacherComponents/ClassCard';
 
 const { Title, Text } = Typography;
 
@@ -63,49 +64,38 @@ const TeacherDashboard = () => {
     setSelectedClass(null);
   };
 
+  // Fixed color for all action cards
+  const actionCardColor = "#722ed1";
+
   // Class detail actions
   const classActions = [
     {
       title: "Create Quiz",
       icon: <QuestionCircleOutlined />,
-      color: "#722ed1",
+      color: actionCardColor,
       description: "Create new quiz for students",
-      action: () => console.log("Navigate to create quiz")
+      action: () => window.location.href = '/teacher/quiz'
     },
     {
       title: "View Assignments",
       icon: <FileTextOutlined />,
-      color: "#1890ff", 
+      color: actionCardColor, 
       description: "Manage class assignments",
-      action: () => console.log("Navigate to assignments")
-    },
-    {
-      title: "Student Progress",
-      icon: <BarChartOutlined />,
-      color: "#52c41a",
-      description: "Track student performance",
-      action: () => console.log("Navigate to progress")
-    },
-    {
-      title: "Schedule Class",
-      icon: <CalendarOutlined />,
-      color: "#fa8c16",
-      description: "Manage class schedule",
-      action: () => console.log("Navigate to schedule")
+      action: () => window.location.href = '/teacher/assignments'
     },
     {
       title: "Grade Submissions",
       icon: <EditOutlined />,
-      color: "#eb2f96",
+      color: actionCardColor,
       description: "Review pending submissions",
       action: () => console.log("Navigate to grading")
     },
     {
       title: "Class Materials",
       icon: <BookOutlined />,
-      color: "#13c2c2",
+      color: actionCardColor,
       description: "Upload and manage resources",
-      action: () => console.log("Navigate to materials")
+       action: () => window.location.href = '/teacher/files'
     }
   ];
 
@@ -121,17 +111,17 @@ const TeacherDashboard = () => {
             Back to Dashboard
           </Button>
           
-          <Card style={{ marginBottom: '24px', border: `2px solid ${selectedClass.color}` }}>
+          <Card style={{ marginBottom: '24px', border: `2px solid #722ed1` }}>
             <Row align="middle">
               <Col span={2}>
                 <Avatar 
                   size={64} 
-                  style={{ backgroundColor: selectedClass.color }}
+                  style={{ backgroundColor: "#722ed1" }}
                   icon={<BookOutlined />}
                 />
               </Col>
               <Col span={14}>
-                <Title level={2} style={{ margin: 0, color: selectedClass.color }}>
+                <Title level={2} style={{ margin: 0, color: "#722ed1" }}>
                   {selectedClass.name}
                 </Title>
                 <Text type="secondary">{selectedClass.subject}</Text>
@@ -192,26 +182,7 @@ const TeacherDashboard = () => {
             ))}
           </Row>
 
-          {selectedClass.pendingSubmissions > 0 && (
-            <Card 
-              style={{ marginTop: '24px', borderLeft: '4px solid #ff4d4f' }}
-              title={
-                <Badge count={selectedClass.pendingSubmissions} offset={[10, 0]}>
-                  <span>Pending Actions</span>
-                </Badge>
-              }
-            >
-              <Text>You have {selectedClass.pendingSubmissions} pending submissions to review.</Text>
-              <Button 
-                type="primary" 
-                danger 
-                style={{ marginLeft: '16px' }}
-                onClick={() => console.log("Navigate to pending submissions")}
-              >
-                Review Now
-              </Button>
-            </Card>
-          )}
+          {/* Removed pending submissions card */}
         </div>
       </div>
     );
@@ -230,72 +201,7 @@ const TeacherDashboard = () => {
         <Row gutter={[24, 24]}>
           {classes.map((classItem) => (
             <Col xs={24} sm={12} lg={8} key={classItem.id}>
-              <Card
-                hoverable
-                onClick={() => handleClassSelect(classItem)}
-                style={{ 
-                  borderTop: `4px solid ${classItem.color}`,
-                  height: '280px',
-                  cursor: 'pointer'
-                }}
-                bodyStyle={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-              >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <Avatar 
-                      size={48}
-                      style={{ backgroundColor: classItem.color, marginRight: '12px' }}
-                      icon={<BookOutlined />}
-                    />
-                    <div>
-                      <Title level={4} style={{ margin: 0 }}>{classItem.name}</Title>
-                      <Text type="secondary">{classItem.subject}</Text>
-                    </div>
-                  </div>
-                  
-                  <Divider style={{ margin: '16px 0' }} />
-                  
-                  <Row gutter={16}>
-                    <Col span={8}>
-                      <Statistic 
-                        title="Students" 
-                        value={classItem.students}
-                        prefix={<UserOutlined />}
-                      />
-                    </Col>
-                    <Col span={8}>
-                      <Statistic 
-                        title="Assignments" 
-                        value={classItem.assignments}
-                        prefix={<FileTextOutlined />}
-                      />
-                    </Col>
-                    <Col span={8}>
-                      <Statistic 
-                        title="Quizzes" 
-                        value={classItem.quizzes}
-                        prefix={<QuestionCircleOutlined />}
-                      />
-                    </Col>
-                  </Row>
-                </div>
-
-                <div>
-                  <div style={{ marginBottom: '12px' }}>
-                    <CalendarOutlined style={{ marginRight: '8px', color: classItem.color }} />
-                    <Text strong>Next Class: </Text>
-                    <Text>{classItem.nextClass}</Text>
-                  </div>
-                  
-                  {classItem.pendingSubmissions > 0 && (
-                    <Badge count={classItem.pendingSubmissions} offset={[4, 0]}>
-                      <Button type="link" style={{ padding: 0 }}>
-                        Pending submissions to review
-                      </Button>
-                    </Badge>
-                  )}
-                </div>
-              </Card>
+              <ClassCard classItem={classItem} onClick={handleClassSelect} />
             </Col>
           ))}
         </Row>
@@ -303,51 +209,28 @@ const TeacherDashboard = () => {
         <Card 
           style={{ marginTop: '32px' }}
           title="Quick Actions"
-          extra={<Button type="link">View All</Button>}
         >
-          <Row gutter={16}>
-            <Col span={6}>
-              <Button 
-                type="dashed" 
-                block 
-                icon={<PlusOutlined />}
-                size="large"
-                onClick={() => console.log("Navigate to create new class")}
-              >
-                Create New Class
-              </Button>
-            </Col>
-            <Col span={6}>
+          <Row gutter={16} justify="center">
+            <Col span={12}>
               <Button 
                 type="dashed" 
                 block 
                 icon={<QuestionCircleOutlined />}
                 size="large"
-                onClick={() => console.log("Navigate to quiz creation")}
+                onClick={() => window.location.href = '/teacher/quiz'}
               >
                 Create Quiz
               </Button>
             </Col>
-            <Col span={6}>
+            <Col span={12}>
               <Button 
                 type="dashed" 
                 block 
                 icon={<FileTextOutlined />}
                 size="large"
-                onClick={() => console.log("Navigate to assignments")}
+                onClick={() => window.location.href = '/teacher/assignments'}
               >
                 New Assignment
-              </Button>
-            </Col>
-            <Col span={6}>
-              <Button 
-                type="dashed" 
-                block 
-                icon={<BarChartOutlined />}
-                size="large"
-                onClick={() => console.log("Navigate to reports")}
-              >
-                View Reports
               </Button>
             </Col>
           </Row>
