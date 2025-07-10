@@ -58,7 +58,7 @@ const App = () => {
 
       {/* Teacher Routes */}
       
-      
+    <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />  
         <Route path="dashboard" element={<TeacherDashboard />} />
@@ -71,7 +71,7 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
         <Route path="files" element={<Files />} />
       </Route>
-      
+    </Route>
 
 
       
