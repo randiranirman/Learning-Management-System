@@ -24,8 +24,10 @@ import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
-import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+//import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
+import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
+
 
 
 const App = () => {
@@ -34,10 +36,10 @@ const App = () => {
       <Route path="/" element={<Login />} />
 
      
-      {/* Admin routes */}
+      {/* Admin routes 
 
 
-      <Route element={<ProtectedRoute allowedRoles={["admin"]} />} >
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />} >*/}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -49,13 +51,13 @@ const App = () => {
         < Route path="editProfile" element={<EditProfile />}  />
        
       </Route>
-      </Route>
+      {/*</Routes></Route>*/}
      
 
-      {/* Teacher Routes */}
+      {/* Teacher Routes 
       
       
-      <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >
+      <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >*/}
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
@@ -67,23 +69,27 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
         <Route path="files" element={<Files />} />
       </Route>
-      </Route>
+      {/*</Routes></Route>*/}
 
 
       
       {/* Student routes */}
-      <Route element={<ProtectedRoute allowedRoles={["student"] } />} >
+      
+
+
+      
       <Route path="/student"  element={<StudentLayout/>} >
         <Route index element={<StudentDashboard/>}/>
         <Route path="dashboard" element={<StudentDashboard/>}/>
+        <Route path="studentregistration" element={<StudentRegistration/>}/>
       </Route>
-      </Route>
+      
 
       <Route path="/teacher" element={<QuizManagement/>} />
       <Route path="/teacher/quiz" element={<QuizCreation />} />
 
 
-      <Route path="/student/dashboard" element={<StudentDashboard />} />
+     {/*<Route path="/student/dashboard" element={<StudentDashboard />} />*/}
     </Routes>
   );
 };

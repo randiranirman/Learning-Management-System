@@ -17,7 +17,7 @@
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/postcss": "^4.0.9",
     "@uploadcare/react-uploader": "^1.8.1",
-    "antd": "^5.25.1",
+    "antd": "^5.26.4",
     "axios": "^1.8.3",
     "component": "^1.1.0",
     "framer-motion": "^12.12.1",
