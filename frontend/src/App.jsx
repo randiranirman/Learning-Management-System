@@ -42,7 +42,7 @@ const App = () => {
       <Route path="/unauthorized" element={<UnAuthorized />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/firstLogin" element={<FirstLogin />} />
-      <Route path="/request-reset-password" element={<RequestReset />} />
+      <Route path="/request-password-reset" element={<RequestReset />} />
 
      
       {/* Admin routes 
