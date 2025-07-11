@@ -1,6 +1,17 @@
-import React from 'react'
+import React  from 'react'
+import { fetchAllSubjects } from '../../../utils/subjectService'
 
 const StudentNotifications = () => {
+
+
+  const response = fetchAllSubjects();
+    
+
+    
+
+    
+
+    console.log("response from the fetch all subjects", response.data);
   return (
     
 
