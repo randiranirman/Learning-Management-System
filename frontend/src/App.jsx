@@ -30,6 +30,8 @@ import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
+import StudentProfile from "./roles/student/StudentPages/StudentProfile";
+import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 
 
 
@@ -81,7 +83,7 @@ const App = () => {
         <Route path="files" element={<Files />} />
       </Route>
 
-    </Route>
+    
 
       {/*</Routes></Route>*/}
 
@@ -95,12 +97,13 @@ const App = () => {
       <Route path="/student"  element={<StudentLayout/>} >
         <Route index element={<StudentDashboard/>}/>
         <Route path="dashboard" element={<StudentDashboard/>}/>
-        <Route path="studentregistration" element={<StudentRegistration/>}/>
+        <Route path="studentRegistration" element={<StudentRegistration  />}/>
+        <Route path="profile" element= {<StudentProfile />} />
+        <Route path="notifications" element={<StudentNotifications />} />
       </Route>
       
 
-      <Route path="/teacher" element={<QuizManagement/>} />
-      <Route path="/teacher/quiz" element={<QuizCreation />} />
+      
 
 
      {/*<Route path="/student/dashboard" element={<StudentDashboard />} />*/}
