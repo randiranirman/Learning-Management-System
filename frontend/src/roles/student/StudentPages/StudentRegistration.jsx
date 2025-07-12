@@ -1,78 +1,93 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Select, DatePicker, Space } from "antd";
-import { UserOutlined, CheckCircleOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  CheckCircleOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { fetchAllSubjects } from "../../../utils/subjectService";
-import { fetchAllClasses } from "../../../utils/classService"; // Assuming this function is defined similarly to fetchAllSubjects
+import { fetchAllClasses } from "../../../utils/classService";
+import { registerStudent } from "../../../utils/studentRegistrationService";
 
 const { Option } = Select;
 
 const StudentRegistration = () => {
   const [form] = Form.useForm();
-  const [subjectNames, setSubjectNames] = useState([]);
-  const  [classNames, setClassNames] = useState([]);
+  const [classOptions, setClassOptions] = useState([]);
+  const [subjectOptions, setSubjectOptions] = useState([]);
 
-
-  // Fetch subject names on component mount
   useEffect(() => {
-    const fetchSubjectNames = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetchAllSubjects();
-        
-        const names = response.map(subject => subject.name);
-        setSubjectNames(names);
+        const classes = await fetchAllClasses();
+        setClassOptions(classes || []);
+
+        const subjects = await fetchAllSubjects();
+        setSubjectOptions(subjects || []);
       } catch (error) {
         console.log("Something went wrong:", error);
       }
     };
 
-    fetchSubjectNames();
+    fetchData();
   }, []);
-  //  fetch  class  names on component mount
 
-  useEffect(() => {
+  const handleSubmit = async (values) => {
+    try {
+      const studentId = parseInt(localStorage.getItem("UserId"));
 
-    const fetchClassNames =  async ()  => {
-      try {
-        const response = await fetchAllClasses();
-        const names = response.map(classItem => classItem.name);
-        setClassNames(names);
-      } catch (error) {
-        console.log("Something went wrong:", error);
-      }
-    };
+      // Map class name to class ID
+      const selectedClass = classOptions.find(
+        (cls) => cls.name === values.grade
+      );
 
-    fetchClassNames();
-  },[])
+      // Map subject names to subject IDs
+      const selectedSubjectIds = subjectOptions
+        .filter((subject) => values.subjects.includes(subject.name))
+        .map((subject) => subject.subjectId);
 
-  console.log(subjectNames) ;
-  console.log(classNames);
+      const studentRegisterData = {
+        name: values.studentName,
+        studentId: studentId,
+        classId: selectedClass?.id,
+        subjectIds: selectedSubjectIds,
+        indexNumber: values.indexNumber,
+      };
 
-  const handleSubmit = (values) => {
-    console.log("Form Submitted: ", values);
+      const response = await registerStudent(studentRegisterData);
+      console.log("Student registered successfully:", response);
+      form.resetFields();
+    } catch (error) {
+      console.log("Registration failed", error);
+    }
   };
 
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        background: '#f0f2f5',
-        padding: '20px',
-        boxSizing: 'border-box',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        background: "#f0f2f5",
+        padding: "20px",
+        boxSizing: "border-box",
       }}
     >
-      <div style={{
-        width: '100%',
-        maxWidth: 800,
-        margin: 'auto',
-        padding: '40px',
-        background: '#f7f7f7',
-        borderRadius: '10px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)'
-      }}>
-        <h2 style={{ textAlign: 'center', color: '#1890ff', fontWeight: 'bold' }}>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 800,
+          margin: "auto",
+          padding: "40px",
+          background: "#f7f7f7",
+          borderRadius: "10px",
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h2
+          style={{ textAlign: "center", color: "#1890ff", fontWeight: "bold" }}
+        >
           Student Registration Form
         </h2>
 
@@ -97,9 +112,9 @@ const StudentRegistration = () => {
             rules={[{ required: true, message: "Please select your grade!" }]}
           >
             <Select placeholder="Select Grade" allowClear>
-              {classNames.map((className, index) => (
-                <Option key={index} value={className}>
-                  {className}
+              {classOptions.map((cls) => (
+                <Option key={cls.id} value={cls.name}>
+                  {cls.name}
                 </Option>
               ))}
             </Select>
@@ -110,14 +125,10 @@ const StudentRegistration = () => {
             name="subjects"
             rules={[{ required: true, message: "Please select subjects!" }]}
           >
-            <Select
-              mode="multiple"
-              placeholder="Select Subjects"
-              allowClear
-            >
-              {subjectNames.map((subjectName, index) => (
-                <Option key={index} value={subjectName}>
-                  {subjectName}
+            <Select mode="multiple" placeholder="Select Subjects" allowClear>
+              {subjectOptions.map((subject) => (
+                <Option key={subject.subjectId} value={subject.name}>
+                  {subject.name}
                 </Option>
               ))}
             </Select>
@@ -126,9 +137,21 @@ const StudentRegistration = () => {
           <Form.Item
             label="Date of Birth"
             name="dob"
-            rules={[{ required: true, message: "Please select your date of birth!" }]}
+            rules={[
+              { required: true, message: "Please select your date of birth!" },
+            ]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item
+            label="Index Number"
+            name="indexNumber"
+            rules={[
+              { required: true, message: "Please enter index number!" },
+            ]}
+          >
+            <Input placeholder="Enter your index number" />
           </Form.Item>
 
           <Form.Item
@@ -144,7 +167,7 @@ const StudentRegistration = () => {
               <Button
                 type="default"
                 icon={<EditOutlined />}
-                style={{ width: '100px' }}
+                style={{ width: "100px" }}
               >
                 Edit
               </Button>
@@ -153,7 +176,7 @@ const StudentRegistration = () => {
                 type="primary"
                 htmlType="submit"
                 icon={<CheckCircleOutlined />}
-                style={{ width: '100px' }}
+                style={{ width: "100px" }}
               >
                 Submit
               </Button>
