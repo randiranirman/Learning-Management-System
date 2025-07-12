@@ -37,6 +37,7 @@ import StudentNotifications from "./roles/student/StudentPages/StudentNotificati
 import Notification from "./roles/admin/AdminPages/Notification";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
+import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
 
 
 
@@ -90,6 +91,7 @@ const App = () => {
         <Route path="files" element={<Files />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
+        <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
       </Route>
 
     
