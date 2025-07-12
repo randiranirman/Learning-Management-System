@@ -34,6 +34,7 @@ import StudentProfile from "./roles/student/StudentPages/StudentProfile";
 
 
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
+import Notification from "./roles/admin/AdminPages/Notification";
 
 
 
@@ -60,6 +61,7 @@ const App = () => {
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="notifications" element={<Notification />} />
         < Route path="editProfile" element={<EditProfile />}  />
        
       </Route>
