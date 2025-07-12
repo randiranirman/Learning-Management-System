@@ -39,7 +39,7 @@ const TeacherAnalytics = () => {
 
   return (
     <div>
-      this is Analytics page
+      Analytics
         <Row gutter={[24, 24]}>
           {classes.map((classItem) => (
             <Col xs={24} sm={12} lg={8} key={classItem.subjectId}>
