@@ -16,7 +16,7 @@ import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
-import FirstLogin from "./pages/FirstLogin";
+import FirstLogin from "./pages/FirstLogin"; 
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
@@ -25,9 +25,16 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
 //import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
+
+import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
+
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
 import StudentProfile from "./roles/student/StudentPages/StudentProfile";
+
+
+import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
+
 
 
 
@@ -35,6 +42,10 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/unauthorized" element={<UnAuthorized />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/firstLogin" element={<FirstLogin />} />
+      <Route path="/request-password-reset" element={<RequestReset />} />
 
      
       {/* Admin routes 
@@ -57,19 +68,26 @@ const App = () => {
 
       {/* Teacher Routes 
       
+    <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
+
       
       <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >*/}
+
       <Route path="/teacher" element={<TeacherLayout />}>
-        <Route index element={<TeacherDashboard />} />
+        <Route index element={<TeacherDashboard />} />  
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<Assignment />} />
+        <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="notifications" errorElement={<Notifications />} />
         <Route path="quiz/createQuiz" element={<QuizCreation/>} />
         <Route path="files" element={<Files />} />
       </Route>
+
+    
+
       {/*</Routes></Route>*/}
 
 
@@ -82,6 +100,7 @@ const App = () => {
       <Route path="/student"  element={<StudentLayout/>} >
         <Route index element={<StudentDashboard/>}/>
         <Route path="dashboard" element={<StudentDashboard/>}/>
+
         <Route path="studentregistration" element={<StudentRegistration/>}/>
         <Route path="subject/:subjectId" element={<SubjectPage />} />
          <Route path="studentprofile" element={<StudentProfile/>}/>
@@ -89,6 +108,15 @@ const App = () => {
       
       <Route path="/teacher" element={<QuizManagement/>} />
       <Route path="/teacher/quiz" element={<QuizCreation />} />
+
+        <Route path="studentRegistration" element={<StudentRegistration  />}/>
+        <Route path="profile" element= {<StudentProfile />} />
+        <Route path="notifications" element={<StudentNotifications />} />
+      </Route>
+      
+
+      
+
 
 
      {/*<Route path="/student/dashboard" element={<StudentDashboard />} />*/}

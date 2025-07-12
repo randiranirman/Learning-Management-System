@@ -52,7 +52,7 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
 
   const handleSubmit = async () => {
     try {
-      await registerUser(formData);
+      const result = await registerUser(formData);
       message.success("User registered successfully");
       form.resetFields();
        await Swal.fire({
@@ -63,7 +63,8 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
             });
         
       setShowUserPopup(false);
-      onUserAdded && onUserAdded(); // refresh list if provided
+      // Pass the new user data back to parent component
+      onUserAdded && onUserAdded(result || formData);
     } catch (error) {
       await Swal.fire({
     title: 'Error',
