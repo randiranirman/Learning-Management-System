@@ -15,19 +15,12 @@ const { TextArea } = Input;
 const StudentProfile = () => {
   const [student, setStudent] = useState({
     name: 'John Doe',
-    major: 'Computer Science',
-    year: '2nd Year',
-    email: 'john.doe@university.edu',
-    phone: '(555) 987-6543',
-    address: '456 Student Ave, University City, UC 12345',
+    year:'9-A',
+    email: 'john.doe@gmail.com',
+    phone: '+94 771 234 567',
+    address: 'No.27, Main Street, Colombo 03',
     birthday: 'March 9, 2000',
-    education: 'BSc in Computer Science, University of XYZ',
-    bio: 'Motivated computer science student with a passion for programming and developing innovative solutions. Actively involved in tech clubs and hackathons.',
-    certifications: [
-      'Intro to Programming (University of XYZ)',
-      'Data Structures & Algorithms (Coursera)',
-      'Web Development Bootcamp (Udemy)'
-    ]
+   
   });
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -66,11 +59,21 @@ const StudentProfile = () => {
   };
 
   return (
-    <div style={{ 
-      maxWidth: '1100px', margin: '24px auto', padding: '24px 20px',
-      background: '#f0f2f5', minHeight: '100vh'
+     <div style={{ 
+      display: 'flex',                        
+      justifyContent: 'center',              
+      alignItems: 'center',                 
+      minHeight: '100vh',                   
+      padding: '24px 20px',
+      background: '#f0f2f5',
     }}>
-      <Row gutter={[24, 24]}>
+       <div style={{ 
+        margin: '40px', 
+        backgroundColor: '#f9f9f9',     
+        padding: '24px',                
+        borderRadius: '16px',          
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'  }}> 
+     <Row gutter={[24, 24]} style={{ width: '100%', maxWidth: '1100px' }}>
         {/* Student Profile Card */}
         <Col xs={24} md={8}>
           <Card 
@@ -94,18 +97,13 @@ const StudentProfile = () => {
                 style={{ border: '4px solid #ffffff', marginBottom: '16px' }} 
               />
               <Title level={3} style={{ margin: '0 0 4px 0', color: 'white' }}>{student.name}</Title>
-              <Text style={{ fontSize: '16px', display: 'block', color: '#ffffff', fontWeight: 600, opacity: 0.9 }}>
-                {student.major} Major
-              </Text>
+              
               <Tag color="purple" style={{ 
                 margin: '8px 0', borderRadius: '12px', padding: '0 10px', 
                 background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', color: 'white' 
               }}>{student.year}</Tag>
             </div>
-            <Divider style={{ margin: '8px 0 16px', borderColor: 'rgba(255,255,255,0.2)' }} />
-            <div style={{ padding: '0 10px' }}>
-              <Paragraph style={{ color: 'rgba(255,255,255,0.9)' }}>{student.bio}</Paragraph>
-            </div>
+           
           </Card>
         </Col>
 
@@ -131,25 +129,7 @@ const StudentProfile = () => {
 
             <Divider style={{ margin: '16px 0' }} />
             
-            <div>
-              <Space align="center" style={{ marginBottom: '12px' }}>
-                <ReadOutlined style={{ color: '#5e35f6' }} />
-                <Text strong style={{ color: '#2f1b69' }}>Education & Certifications</Text>
-              </Space>
-              <Paragraph style={{ marginBottom: '14px' }}><Text>{student.education}</Text></Paragraph>
-              <List
-                size="small"
-                dataSource={student.certifications}
-                renderItem={(item) => (
-                  <List.Item style={{ borderBottom: 'none', padding: '4px 0' }}>
-                    <List.Item.Meta
-                      avatar={<BulbOutlined style={{ color: '#5e35f6' }} />}
-                      title={<span style={{ color: '#2f1b69' }}>{item}</span>}
-                    />
-                  </List.Item>
-                )}
-              />
-            </div>
+           
           </Card>
         </Col>
       </Row>
@@ -174,14 +154,10 @@ const StudentProfile = () => {
                 <Input prefix={<UserOutlined />} placeholder="Enter your full name" />
               </Form.Item>
             </Col>
+           
             <Col span={12}>
-              <Form.Item name="major" label="Major" rules={[{ required: true, message: 'Please enter your major' }]}>
-                <Input placeholder="Enter your major" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="year" label="Year" rules={[{ required: true, message: 'Please enter your year' }]}>
-                <Input placeholder="Enter your year of study" />
+              <Form.Item name="year" label="Grade" rules={[{ required: true, message: 'Please enter your Grade' }]}>
+                <Input placeholder="Enter your Grade" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -205,19 +181,12 @@ const StudentProfile = () => {
                 <Input prefix={<CalendarOutlined />} placeholder="Enter your birthday" />
               </Form.Item>
             </Col>
-            <Col span={24}>
-              <Form.Item name="bio" label="Bio" rules={[{ required: true, message: 'Please enter your bio' }]}>
-                <TextArea rows={4} placeholder="Write a short bio about yourself" />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item name="education" label="Education" rules={[{ required: true, message: 'Please enter your education' }]}>
-                <Input prefix={<ReadOutlined />} placeholder="Enter your education background" />
-              </Form.Item>
-            </Col>
+           
+            
           </Row>
         </Form>
       </Modal>
+    </div>
     </div>
   );
 };
