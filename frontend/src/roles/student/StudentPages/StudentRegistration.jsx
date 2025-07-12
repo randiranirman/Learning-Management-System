@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Select, DatePicker, Space } from "antd";
 import { UserOutlined, CheckCircleOutlined, EditOutlined } from '@ant-design/icons';
 import { fetchAllSubjects } from "../../../utils/subjectService";
+import { fetchAllClasses } from "../../../utils/classService"; // Assuming this function is defined similarly to fetchAllSubjects
 
 const { Option } = Select;
 
 const StudentRegistration = () => {
   const [form] = Form.useForm();
   const [subjectNames, setSubjectNames] = useState([]);
+  const  [classNames, setClassNames] = useState([]);
+
 
   // Fetch subject names on component mount
   useEffect(() => {
     const fetchSubjectNames = async () => {
       try {
         const response = await fetchAllSubjects();
+        
         const names = response.map(subject => subject.name);
         setSubjectNames(names);
       } catch (error) {
@@ -23,7 +27,25 @@ const StudentRegistration = () => {
 
     fetchSubjectNames();
   }, []);
+  //  fetch  class  names on component mount
+
+  useEffect(() => {
+
+    const fetchClassNames =  async ()  => {
+      try {
+        const response = await fetchAllClasses();
+        const names = response.map(classItem => classItem.name);
+        setClassNames(names);
+      } catch (error) {
+        console.log("Something went wrong:", error);
+      }
+    };
+
+    fetchClassNames();
+  },[])
+
   console.log(subjectNames) ;
+  console.log(classNames);
 
   const handleSubmit = (values) => {
     console.log("Form Submitted: ", values);
@@ -74,13 +96,12 @@ const StudentRegistration = () => {
             name="grade"
             rules={[{ required: true, message: "Please select your grade!" }]}
           >
-            <Select placeholder="Select Grade">
-              <Option value="Grade 6">Grade 6</Option>
-              <Option value="Grade 7">Grade 7</Option>
-              <Option value="Grade 8">Grade 8</Option>
-              <Option value="Grade 9">Grade 9</Option>
-              <Option value="Grade 10">Grade 10</Option>
-              <Option value="Grade 11">Grade 11</Option>
+            <Select placeholder="Select Grade" allowClear>
+              {classNames.map((className, index) => (
+                <Option key={index} value={className}>
+                  {className}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 
