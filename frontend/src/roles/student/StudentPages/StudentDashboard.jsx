@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   BookOutlined,
   DesktopOutlined,
@@ -14,6 +15,7 @@ import {
 } from '@ant-design/icons';
 
 const StudentDashboard = () => {
+  const navigate = useNavigate(); 
   const [visibleCards, setVisibleCards] = useState([]);
 
   const courses = [
@@ -21,7 +23,7 @@ const StudentDashboard = () => {
       id: 1,
       title: 'Sinhala',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+      
       icon: <BookOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       delay: 0
@@ -30,7 +32,7 @@ const StudentDashboard = () => {
       id: 2,
       title: 'Information Communication Technology',
       grade: 'Grade 10 - Information an...',
-      category: 'ICT category',
+      
       icon: <DesktopOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       delay: 200
@@ -39,7 +41,7 @@ const StudentDashboard = () => {
       id: 3,
       title: 'History',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+    
       icon: <HistoryOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
       delay: 400
@@ -48,7 +50,7 @@ const StudentDashboard = () => {
       id: 4,
       title: 'Mathematics',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+    
       icon: <CalculatorOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       delay: 600
@@ -57,7 +59,7 @@ const StudentDashboard = () => {
       id: 5,
       title: 'English',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+     
       icon: <TranslationOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
       delay: 800
@@ -66,7 +68,7 @@ const StudentDashboard = () => {
       id: 6,
       title: 'Science',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+    
       icon: <ExperimentOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
       delay: 1000
@@ -75,7 +77,7 @@ const StudentDashboard = () => {
       id: 7,
       title: 'Commerce',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+      
       icon: <ShoppingOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
       delay: 1200
@@ -84,7 +86,7 @@ const StudentDashboard = () => {
       id: 8,
       title: 'Drama',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+     
       icon: <CustomerServiceOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)',
       delay: 1400
@@ -93,7 +95,7 @@ const StudentDashboard = () => {
       id: 9,
       title: 'Buddhism',
       grade: 'Grade 10 - Sinhala',
-      category: 'Arts category',
+      
       icon: <HeartOutlined style={{ fontSize: '24px', color: 'white' }} />,
       gradient: 'linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%)',
       delay: 1600
@@ -109,9 +111,7 @@ const StudentDashboard = () => {
   }, []);
 
   const handleCardClick = (course) => {
-    // Using native alert as SweetAlert2 is not available in this environment
-    // In a real project, you would use: Swal.fire({...})
-    alert(`Opening ${course.title} course!`);
+     navigate(`/student/subject/${course.id}`);
   };
 
   const cardStyle = (course) => ({
