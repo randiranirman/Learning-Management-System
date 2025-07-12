@@ -102,10 +102,10 @@ export default function TeacherCourseRegistration() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl p-6 mx-auto">
       <Card title="Teacher Course Registration" className="shadow-lg">
         <Form form={form} layout="vertical" onFinish={handleSubmit} className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Form.Item name="teacherName" label="Teacher Name" rules={[{ required: true }]}>
               <Input placeholder="Enter teacher name" />
             </Form.Item>
