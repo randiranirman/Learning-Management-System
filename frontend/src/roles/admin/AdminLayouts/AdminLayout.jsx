@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import AdminSideBar from "../AdminComponents/AdminSideBar";
+import ErrorBoundary from "../../../components/ErrorBoundary";
 import { useState } from "react";
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
@@ -15,7 +16,9 @@ const AdminLayout = () => {
           transition: 'margin-left 0.2s ease-in-out',
         }}
      >
-        <Outlet /> 
+        <ErrorBoundary>
+          <Outlet /> 
+        </ErrorBoundary>
       </div>
     </div>
   );

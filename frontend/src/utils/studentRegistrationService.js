@@ -11,7 +11,7 @@ export const registerStudent = async (studentData) => {
 
   // Prepare the request body to match the backend DTO
   const requestBody = {
-    
+
     studentId: studentId,
     classId: studentData.classId,
     subjectIds: studentData.subjectIds,
@@ -29,6 +29,24 @@ export const registerStudent = async (studentData) => {
     throw error;
   }
 };
+
+
+export const getPendingRegistrations = async () => {
+   try {
+       const response = await axios.get(`${REGISTER_API_URL}/pending`, {
+           headers: {
+               Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+           }
+       });
+       return response.data;
+   } catch (error) {
+       console.error("Error fetching pending registrations:", error);
+       throw error;
+   }
+};
+
+         
+
 
 
 

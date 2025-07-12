@@ -64,6 +64,12 @@ const AdminSideBar = ({ userName = "chanuka", userRole = getUserRole(localStorag
     path: '/admin/manage-courses'
   },
   {
+    key: 'Notifications',
+    icon: <BellOutlined/>,  // Better for courses/educational content
+    label: 'Notifications',
+    path: '/admin/notifications'
+  },
+  {
     key: 'Analytics ',
     icon: <BarChartOutlined />,  // Better for analytics/data
     label: 'Analytics',
