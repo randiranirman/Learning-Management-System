@@ -35,6 +35,7 @@ import StudentProfile from "./roles/student/StudentPages/StudentProfile";
 
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 import Notification from "./roles/admin/AdminPages/Notification";
+import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 
 
 
@@ -86,6 +87,7 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<Files />} />
+        <Route path="analytics" element={<TeacherAnalytics />} />
       </Route>
 
     
