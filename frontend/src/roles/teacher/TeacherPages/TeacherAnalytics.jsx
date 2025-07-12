@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Row, Col } from 'antd';
+import { Row, Col, Typography } from 'antd';
 import AnalyticsClassCard from "../TeacherComponents/AnalyticsClassCard";
 import { useNavigate } from "react-router-dom";
+
+const { Text, Title } = Typography;
 
 const TeacherAnalytics = () => {
 
@@ -38,8 +40,10 @@ const TeacherAnalytics = () => {
   ]
 
   return (
-    <div>
-      Analytics
+    <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
+        <Title level={4}>
+          Analytics
+        </Title>
         <Row gutter={[24, 24]}>
           {classes.map((classItem) => (
             <Col xs={24} sm={12} lg={8} key={classItem.subjectId}>

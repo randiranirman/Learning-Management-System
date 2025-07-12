@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getAllStudentsBySubjectId } from '../../../utils/analyticsService';
 import { Row, Typography, Col } from 'antd';
 import StudentsSubjectCard from '../TeacherComponents/StudentsSubjectCard';
+import DropdownNavigation from '../TeacherComponents/DropdownNavigation';
 
 const { Text, Title } = Typography;
 
@@ -33,8 +34,8 @@ const SubjectStudents = () => {
 
   return (
     <div style={{ padding: '24px' }}>
+      <DropdownNavigation subjectTitle="Science" subjectGrade={10} />
       <Title level={3}>Registered Students for Subject ID: {subjectId}</Title>
-
       <Row gutter={[16, 16]}>
         {students.map((student) => (
             <Col xs={24} sm={12} md={8} lg={6} key={student.id}>

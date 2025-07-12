@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAllAssignmentsWithSubmissionBySubjectId } from "../../../utils/analyticsService";
 import AssignmentsSubjectCard from "../TeacherComponents/AssignmentsSubjectCard";
 import { Row, Col, Card, Typography, Avatar, Space } from 'antd';
+import DropdownNavigation from "../TeacherComponents/DropdownNavigation";
 
 const { Text, Title } = Typography;
 
@@ -30,7 +31,8 @@ const AssignmentsSubject = () => {
     }, [subjectId])
 
     return (
-        <div>
+        <div style={{ padding: '24px' }}>
+            <DropdownNavigation subjectTitle="Science" subjectGrade={10} />
             <Title level={3}>Assignments for Subject Id: {subjectId}</Title>
             <Row gutter={[16, 16]}>
                 {assignments.map((assignment) => (
