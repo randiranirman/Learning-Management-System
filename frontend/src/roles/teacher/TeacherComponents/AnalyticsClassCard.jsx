@@ -49,7 +49,7 @@ const AnalyticsClassCard = ({ classItem, onClick }) => {
           <Col span={8}>
             <Statistic 
               title="Assignments" 
-              value={classItem.NoOfAssignments}
+              value={classItem.noOfAssignments}
               prefix={<FileTextOutlined />}
             />
           </Col>

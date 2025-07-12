@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Card, Row, Col, Button, Typography, Avatar, Statistic, Space, Divider, Badge } from 'antd';
+import { Row, Col } from 'antd';
 import AnalyticsClassCard from "../TeacherComponents/AnalyticsClassCard";
+import { useNavigate } from "react-router-dom";
 
 const TeacherAnalytics = () => {
 
   const [selectedClass, setSelectedClass] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleClassSelect = (subjectId) => {
-    alert(`You clicked : ${subjectId}`);
+    navigate(`/teacher/analytics/${subjectId}`);
   }
 
   const classes = [
