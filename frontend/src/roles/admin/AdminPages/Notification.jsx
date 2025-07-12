@@ -5,10 +5,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const { Title } = Typography;
-const REGISTER_API_URL = 'https://localhost:7293/api/StudentRegistration/pending'; 
-// Replace with your API URL
-
-const APPROVE_API_URL = 'https://localhost:7293/api/StudentRegistration'
+const BASE_API_URL = 'https://localhost:7293/api/StudentRegistration';
+const REGISTER_API_URL = `${BASE_API_URL}/pending`;
+const APPROVE_API_URL = BASE_API_URL;
 
 
 const Notification = () => {
@@ -88,11 +87,13 @@ const Notification = () => {
             )
           : []
       );
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: "Registration approved successfully",
-      });
+    await Swal.fire({
+      title: "Success",
+      text: "Registration approved successfully",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+      message.success("Registration approved successfully");
     } catch (error) {
       console.error("Error approving registration:", error);
       if (error.response) {
@@ -102,12 +103,7 @@ const Notification = () => {
       } else {
         message.error("Failed to approve registration");
       }
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: "Failed to approve registration",
-      });
+      await Swal.Fire("Error", "Failed to approve registration", "error");
     } finally {
       setActionLoading(false);
     }
@@ -116,7 +112,7 @@ const Notification = () => {
   const handleReject = async (studentRegistrationId) => {
     setActionLoading(true);
     try {
-      await axios.post(`${REGISTER_API_URL}/reject/${studentRegistrationId}`, null, {
+      await axios.post(`${BASE_API_URL}/${studentRegistrationId}/reject`, null, {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
       });
       setRegistrations(prevRegistrations => 
@@ -136,7 +132,7 @@ const Notification = () => {
   const handleDelete = async (studentRegistrationId) => {
     setActionLoading(true);
     try {
-      await axios.delete(`${REGISTER_API_URL}/${studentRegistrationId}`, {
+      await axios.delete(`${BASE_API_URL}/${studentRegistrationId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
       });
       setRegistrations(prevRegistrations => 
