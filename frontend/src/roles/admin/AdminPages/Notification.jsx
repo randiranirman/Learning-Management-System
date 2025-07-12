@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, Space, Modal, Typography, message, Tag, Descriptions } from 'antd';
 import { EyeOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const { Title } = Typography;
-const REGISTER_API_URL = 'https://localhost:7293/api/StudentRegistration/pending'; // Replace with your API URL
+const REGISTER_API_URL = 'https://localhost:7293/api/StudentRegistration/pending'; 
+// Replace with your API URL
 
+const APPROVE_API_URL = 'https://localhost:7293/api/StudentRegistration'
 
 
 const Notification = () => {
@@ -14,6 +17,7 @@ const Notification = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRegistration, setSelectedRegistration] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const adminId = parseInt(localStorage.getItem("UserId"));
 
   const getPendingRegistrations = async () => {
     try {
@@ -28,6 +32,13 @@ const Notification = () => {
       throw error;
     }
   };
+
+  console.log("Admin ID from localStorage:", adminId);
+  
+  // Validate adminId
+  if (!adminId || isNaN(adminId)) {
+    console.error("Invalid admin ID:", adminId);
+  }
 
   useEffect(() => {
     const fetchRegistrations = async () => {
@@ -54,20 +65,49 @@ const Notification = () => {
   };
 
   const handleApprove = async (studentRegistrationId) => {
+    // Validate adminId before making the API call
+    if (!adminId || isNaN(adminId)) {
+      message.error("Invalid admin ID. Please log in again.");
+      return;
+    }
+    
     setActionLoading(true);
     try {
-      await axios.post(`${REGISTER_API_URL}/approve/${studentRegistrationId}`, null, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
-      });
-      setRegistrations(prevRegistrations => 
-        Array.isArray(prevRegistrations) 
-          ? prevRegistrations.filter(reg => reg.studentRegistrationId !== studentRegistrationId)
+      console.log(`Making API call to: ${APPROVE_API_URL}/${studentRegistrationId}/approve?adminId=${adminId}`);
+      await axios.post(
+        `${APPROVE_API_URL}/${studentRegistrationId}/approve?adminId=${adminId}`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        }
+      );
+      setRegistrations((prevRegistrations) =>
+        Array.isArray(prevRegistrations)
+          ? prevRegistrations.filter(
+              (reg) => reg.studentRegistrationId !== studentRegistrationId
+            )
           : []
       );
-      message.success('Registration approved successfully');
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: "Registration approved successfully",
+      });
     } catch (error) {
-      console.error('Error approving registration:', error);
-      message.error('Failed to approve registration');
+      console.error("Error approving registration:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        message.error(`Failed to approve registration: ${error.response.data?.message || error.response.status}`);
+      } else {
+        message.error("Failed to approve registration");
+      }
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: "Failed to approve registration",
+      });
     } finally {
       setActionLoading(false);
     }
@@ -100,7 +140,7 @@ const Notification = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
       });
       setRegistrations(prevRegistrations => 
-        Array.isArray(prevRegistrations) 
+        Array.isArray(prevRegistrations)
           ? prevRegistrations.filter(reg => reg.studentRegistrationId !== studentRegistrationId)
           : []
       );
