@@ -28,7 +28,7 @@ import RequestReset from "./pages/RequestReset";
 
 
 import StudentSettings from "./roles/student/StudentPages/Settings";
-
+import StudentCalendar from "./roles/student/StudentPages/Calendar";
 
 const App = () => {
   return (
@@ -77,6 +77,7 @@ const App = () => {
       <Route path="/student"  element={<StudentLayout/>} >
         
         <Route path="settings" element={<StudentSettings/>} />
+        <Route path="calendar" element={<StudentCalendar/>} />
       </Route>
       
       

@@ -1,0 +1,5 @@
+ <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
+</Route>
+
+
+<Route element={<ProtectedRoute allowedRoles={["student"]} />}>
