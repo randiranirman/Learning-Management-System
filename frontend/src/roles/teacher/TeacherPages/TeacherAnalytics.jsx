@@ -7,8 +7,6 @@ const { Text, Title } = Typography;
 
 const TeacherAnalytics = () => {
 
-  const [selectedClass, setSelectedClass] = useState(null);
-
   const navigate = useNavigate();
 
   const handleClassSelect = (subjectId) => {
