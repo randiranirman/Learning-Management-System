@@ -299,7 +299,7 @@ const handleSubmissionSubmit = async (values) => {
           <CalendarOutlined style={{ marginRight: '8px' }} />
           Academic Calendar
         </Title>
-        <Text type="secondary">View your homework, exams, and important dates</Text>
+        
       </div>
 
       {/* Calendar */}
