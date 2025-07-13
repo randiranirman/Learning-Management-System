@@ -12,7 +12,7 @@ const StudentsSubjectCard = ({ student, onClick }) => {
           shape="circle"
           size={48}
           icon={<UserOutlined />}
-          style={{ backgroundColor: '#f5222d' }}
+          style={{ backgroundColor: '#722ed1' }}
         />
         <div>
           <Text strong>Student Id: {student.id}</Text><br />

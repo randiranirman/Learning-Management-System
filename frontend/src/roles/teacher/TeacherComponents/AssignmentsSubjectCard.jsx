@@ -11,7 +11,7 @@ const AssignmentsSubjectCard = ({ assignment, onClick }) => {
           shape="circle"
           size={48}
           icon={<FileTextOutlined />}
-          style={{ backgroundColor: '#bbadadff' }}
+          style={{ backgroundColor: '#722ed1' }}
         />
         <div>
           <Text strong>Assignment Id: {assignment.id}</Text><br />

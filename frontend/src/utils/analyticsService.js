@@ -77,9 +77,28 @@ const getAllStudentsThatMadeSubmissionByAssignmentId = async (assignmentId) => {
     }
 }
 
+const getAllSubjectsForGivenTeacher = async (teacherId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/teacher`, {
+            params: {
+                teacherId
+            }
+        })
+        return response.data;
+    } catch (error) {
+        if (error.response?.status === 404) {
+            console.warn("No Subejct was assigned for this teacher.");
+            return [];
+        }
+        console.log("Failed to load Subejcts for this teacher: ", error);
+        throw error;
+    }
+}
+
 export {
     getAllStudentsBySubjectId,
     getAllAssignmentsMarksByStudentId,
     getAllAssignmentsWithSubmissionBySubjectId,
-    getAllStudentsThatMadeSubmissionByAssignmentId
+    getAllStudentsThatMadeSubmissionByAssignmentId,
+    getAllSubjectsForGivenTeacher
 }

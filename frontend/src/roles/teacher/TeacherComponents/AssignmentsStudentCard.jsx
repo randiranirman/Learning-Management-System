@@ -1,5 +1,5 @@
 import { Row, Col, Card, Typography, Avatar, Space } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { FileTextOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
 
@@ -10,8 +10,8 @@ const AssignmentsStudentCard = ({ assignment }) => {
         <Avatar
           shape="circle"
           size={48}
-          icon={<UserOutlined />}
-          style={{ backgroundColor: '#f5222d' }}
+          icon={<FileTextOutlined />}
+          style={{ backgroundColor: '#722ed1' }}
         />
         <div>
           <Text strong>Assignment Id: {assignment.assignmentId}</Text><br />
