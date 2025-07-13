@@ -1,19 +1,22 @@
 import { useState } from "react";
 
-const TeacherSettings = () => {
-  const [teacher, setTeacher] = useState({
-    firstName: "Sarah",
-    lastName: "Johnson",
-    email: "sarah.johnson@school.edu",
-    contactNumber: "(555) 987-6543",
-    subject: "Mathematics",
-    classroom: "Grade 6 - A",
+const StudentSettings = () => {
+  const [student, setStudent] = useState({
+    firstName: "Emily",
+    lastName: "Davis",
+    email: "emily.davis@student.school.edu",
+    contactNumber: "(555) 123-4567",
+    grade: "Grade 10 - B",
+    studentId: "STU-2024-001",
+    parentName: "Michael Davis",
+    parentContact: "(555) 987-6543",
+    address: "123 Oak Street, Springfield",
     profileImage: null
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [formData, setFormData] = useState(teacher);
+  const [formData, setFormData] = useState(student);
   const [previewImage, setPreviewImage] = useState(null);
 
   const handleImageUpload = (event) => {
@@ -35,13 +38,13 @@ const TeacherSettings = () => {
   };
 
   const showModal = () => {
-    setFormData(teacher);
-    setPreviewImage(teacher.profileImage);
+    setFormData(student);
+    setPreviewImage(student.profileImage);
     setIsModalVisible(true);
   };
 
   const handleSave = () => {
-    setTeacher(formData);
+    setStudent(formData);
     setIsModalVisible(false);
     setShowAlert(true);
     
@@ -66,9 +69,9 @@ const TeacherSettings = () => {
   );
 
   return (
-    <div className="teacher-settings">
+    <div className="student-settings">
       <style jsx>{`
-        .teacher-settings {
+        .student-settings {
           padding: 24px 32px;
           background: #F4F4F9;
           min-height: 100vh;
@@ -85,9 +88,9 @@ const TeacherSettings = () => {
           margin-bottom: 24px;
           padding: 16px;
           border-radius: 8px;
-          border: 1px solid rgba(101, 241, 120, 0.3);
+          border: 1px solid #65F178;
           background-color: rgba(101, 241, 120, 0.1);
-          color: #22543d;
+          color: #065f46;
           display: flex;
           align-items: center;
           gap: 12px;
@@ -117,7 +120,7 @@ const TeacherSettings = () => {
           border: none;
           font-size: 16px;
           cursor: pointer;
-          color: #65F178;
+          color: #065f46;
           opacity: 0.7;
         }
         
@@ -126,11 +129,11 @@ const TeacherSettings = () => {
         }
         
         .profile-header {
-          background: linear-gradient(135deg, #4f39f6 0%, #6b46c1 100%);
+          background: linear-gradient(135deg, #4f39f6 0%, #6366f1 100%);
           border-radius: 16px;
           padding: 32px;
           margin-bottom: 32px;
-          box-shadow: 0 6px 24px rgba(79, 57, 246, 0.2);
+          box-shadow: 0 6px 24px rgba(79, 57, 246, 0.15);
         }
         
         .profile-content {
@@ -178,6 +181,13 @@ const TeacherSettings = () => {
           font-size: 16px;
         }
         
+        .student-id {
+          margin: 2px 0 0 0;
+          color: rgba(255,255,255,0.7);
+          font-size: 14px;
+          font-family: monospace;
+        }
+        
         .edit-btn {
           background: rgba(255,255,255,0.2);
           border: 2px solid white;
@@ -190,17 +200,15 @@ const TeacherSettings = () => {
           display: flex;
           align-items: center;
           gap: 8px;
-          transition: all 0.3s ease;
         }
         
         .edit-btn:hover {
           background: rgba(255,255,255,0.3);
-          transform: translateY(-2px);
         }
         
         .details-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 24px;
         }
         
@@ -210,11 +218,7 @@ const TeacherSettings = () => {
           padding: 24px;
           box-shadow: 0 4px 20px rgba(0,0,0,0.08);
           height: 100%;
-          transition: transform 0.3s ease;
-        }
-        
-        .info-card:hover {
-          transform: translateY(-4px);
+          border: 1px solid rgba(79, 57, 246, 0.1);
         }
         
         .info-content {
@@ -247,6 +251,7 @@ const TeacherSettings = () => {
           font-size: 16px;
           font-weight: 600;
           color: #262626;
+          word-break: break-word;
         }
         
         .modal-overlay {
@@ -265,16 +270,15 @@ const TeacherSettings = () => {
         .modal {
           background: white;
           border-radius: 12px;
-          width: 600px;
+          width: 700px;
           max-width: 90vw;
           max-height: 90vh;
           overflow-y: auto;
-          box-shadow: 0 20px 40px rgba(79, 57, 246, 0.3);
         }
         
         .modal-header {
           padding: 24px;
-          border-bottom: 1px solid #F4F4F9;
+          border-bottom: 1px solid #f0f0f0;
           display: flex;
           align-items: center;
           gap: 12px;
@@ -314,7 +318,6 @@ const TeacherSettings = () => {
           border-radius: 6px;
           font-size: 14px;
           box-sizing: border-box;
-          transition: all 0.3s ease;
         }
         
         .form-input:focus {
@@ -325,7 +328,7 @@ const TeacherSettings = () => {
         
         .modal-footer {
           padding: 16px 24px;
-          border-top: 1px solid #F4F4F9;
+          border-top: 1px solid #f0f0f0;
           display: flex;
           justify-content: flex-end;
           gap: 12px;
@@ -338,7 +341,6 @@ const TeacherSettings = () => {
           background: white;
           cursor: pointer;
           font-size: 14px;
-          transition: all 0.3s ease;
         }
         
         .btn-primary {
@@ -348,14 +350,12 @@ const TeacherSettings = () => {
         }
         
         .btn-primary:hover {
-          background: #6b46c1;
-          border-color: #6b46c1;
-          transform: translateY(-2px);
+          background: #6366f1;
+          border-color: #6366f1;
         }
         
         .btn:hover {
           border-color: #4f39f6;
-          color: #4f39f6;
         }
         
         .profile-image-section {
@@ -373,7 +373,7 @@ const TeacherSettings = () => {
           width: 120px;
           height: 120px;
           border-radius: 50%;
-          background: #F4F4F9;
+          background: #f0f0f0;
           border: 2px solid #d9d9d9;
           display: flex;
           align-items: center;
@@ -405,12 +405,10 @@ const TeacherSettings = () => {
           justify-content: center;
           font-size: 16px;
           box-shadow: 0 2px 8px rgba(79, 57, 246, 0.3);
-          transition: all 0.3s ease;
         }
         
         .image-upload-btn:hover {
-          background: #6b46c1;
-          transform: scale(1.1);
+          background: #6366f1;
         }
         
         .image-upload-input {
@@ -437,13 +435,37 @@ const TeacherSettings = () => {
         }
         
         .btn-danger:hover {
-          background: #e53e3e;
-          border-color: #e53e3e;
-          transform: translateY(-2px);
+          background: #f87171;
+          border-color: #f87171;
+        }
+        
+        @media (max-width: 768px) {
+          .student-settings {
+            padding: 16px;
+          }
+          
+          .profile-content {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+          }
+          
+          .details-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .modal {
+            width: 95vw;
+            margin: 20px;
+          }
+          
+          .form-row {
+            flex-direction: column;
+          }
         }
       `}</style>
       
-      <h1 className="page-title">Teacher Settings</h1>
+      <h1 className="page-title">Student Settings</h1>
       
       {/* Success Alert */}
       {showAlert && (
@@ -451,7 +473,7 @@ const TeacherSettings = () => {
           <span className="alert-icon">✓</span>
           <div className="alert-content">
             <div className="alert-title">Profile Updated Successfully!</div>
-            <div className="alert-description">Your teacher profile information has been saved and updated.</div>
+            <div className="alert-description">Your student profile information has been saved and updated.</div>
           </div>
           <button className="close-alert" onClick={() => setShowAlert(false)}>×</button>
         </div>
@@ -462,15 +484,16 @@ const TeacherSettings = () => {
         <div className="profile-content">
           <div className="profile-info">
             <div className="avatar">
-              {teacher.profileImage ? (
-                <img src={teacher.profileImage} alt="Profile" />
+              {student.profileImage ? (
+                <img src={student.profileImage} alt="Profile" />
               ) : (
-                "👤"
+                "👨‍🎓"
               )}
             </div>
             <div className="profile-text">
-              <h3>{teacher.firstName} {teacher.lastName}</h3>
-              <p>{teacher.subject} Teacher</p>
+              <h3>{student.firstName} {student.lastName}</h3>
+              <p>{student.grade}</p>
+              <p className="student-id">ID: {student.studentId}</p>
             </div>
           </div>
           <button className="edit-btn" onClick={showModal}>
@@ -484,26 +507,44 @@ const TeacherSettings = () => {
         <InfoCard 
           icon="📧"
           title="Email Address"
-          value={teacher.email}
+          value={student.email}
           color="#4f39f6"
         />
         <InfoCard 
           icon="📞"
           title="Phone Number"
-          value={teacher.contactNumber}
+          value={student.contactNumber}
           color="#65F178"
-        />
-        <InfoCard 
-          icon="📚"
-          title="Subject"
-          value={teacher.subject}
-          color="#4f39f6"
         />
         <InfoCard 
           icon="🎓"
           title="Grade & Section"
-          value={teacher.classroom}
+          value={student.grade}
+          color="#4f39f6"
+        />
+        <InfoCard 
+          icon="🆔"
+          title="Student ID"
+          value={student.studentId}
           color="#65F178"
+        />
+        <InfoCard 
+          icon="👨‍👩‍👧‍👦"
+          title="Parent/Guardian"
+          value={student.parentName}
+          color="#4f39f6"
+        />
+        <InfoCard 
+          icon="📱"
+          title="Parent Contact"
+          value={student.parentContact}
+          color="#65F178"
+        />
+        <InfoCard 
+          icon="🏠"
+          title="Address"
+          value={student.address}
+          color="#4f39f6"
         />
       </div>
 
@@ -513,7 +554,7 @@ const TeacherSettings = () => {
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <span style={{ color: '#4f39f6' }}>✏️</span>
-              <span className="modal-title">Edit Profile</span>
+              <span className="modal-title">Edit Student Profile</span>
             </div>
             <div className="modal-body">
               {/* Profile Image Section */}
@@ -523,7 +564,7 @@ const TeacherSettings = () => {
                     {previewImage ? (
                       <img src={previewImage} alt="Preview" />
                     ) : (
-                      "👤"
+                      "👨‍🎓"
                     )}
                   </div>
                   <label htmlFor="imageUpload" className="image-upload-btn">
@@ -580,26 +621,15 @@ const TeacherSettings = () => {
                 />
               </div>
               
-              <div className="form-group">
-                <label className="form-label">Phone Number</label>
-                <input
-                  type="tel"
-                  className="form-input"
-                  value={formData.contactNumber}
-                  onChange={(e) => setFormData({...formData, contactNumber: e.target.value})}
-                  placeholder="Enter phone number"
-                />
-              </div>
-              
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Subject</label>
+                  <label className="form-label">Phone Number</label>
                   <input
-                    type="text"
+                    type="tel"
                     className="form-input"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                    placeholder="Enter subject"
+                    value={formData.contactNumber}
+                    onChange={(e) => setFormData({...formData, contactNumber: e.target.value})}
+                    placeholder="Enter phone number"
                   />
                 </div>
                 <div className="form-group">
@@ -607,11 +637,56 @@ const TeacherSettings = () => {
                   <input
                     type="text"
                     className="form-input"
-                    value={formData.classroom}
-                    onChange={(e) => setFormData({...formData, classroom: e.target.value})}
-                    placeholder="Enter grade and section (e.g., Grade 6 - A)"
+                    value={formData.grade}
+                    onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                    placeholder="Enter grade and section"
                   />
                 </div>
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Student ID</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.studentId}
+                  onChange={(e) => setFormData({...formData, studentId: e.target.value})}
+                  placeholder="Enter student ID"
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Parent/Guardian Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.parentName}
+                    onChange={(e) => setFormData({...formData, parentName: e.target.value})}
+                    placeholder="Enter parent/guardian name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Parent Contact</label>
+                  <input
+                    type="tel"
+                    className="form-input"
+                    value={formData.parentContact}
+                    onChange={(e) => setFormData({...formData, parentContact: e.target.value})}
+                    placeholder="Enter parent contact number"
+                  />
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Address</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  placeholder="Enter home address"
+                />
               </div>
             </div>
             <div className="modal-footer">
@@ -629,4 +704,4 @@ const TeacherSettings = () => {
   );
 };
 
-export default TeacherSettings;
+export default StudentSettings;

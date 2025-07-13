@@ -85,12 +85,6 @@ const TeacherSideBar = ({
       path: '/teacher/quiz'
     },
     {
-      key: 'quizCreation',
-      icon: <DiffOutlined />,
-      label: 'Quiz Creation',
-      path: '/teacher/quiz/createQuiz'
-    },
-    {
       key: 'Logout',
       icon: <LogoutOutlined />,
       label: 'Logout',

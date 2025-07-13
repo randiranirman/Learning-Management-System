@@ -27,6 +27,9 @@ import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
 
 
+import StudentSettings from "./roles/student/StudentPages/Settings";
+
+
 const App = () => {
   return (
     <Routes>
@@ -52,26 +55,28 @@ const App = () => {
       </Route>
 
       {/* Teacher Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
+     
       <Route path="/teacher" element={<TeacherLayout />}>
-        <Route index element={<TeacherDashboard />} />
-        <Route path="dashboard" element={<TeacherDashboard />} />
+       <Route path="dashboard" element={<TeacherDashboard />} />
+        <Route path="settings" element={<TeacherSettings />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<TeacherAssignments />} />
-        <Route path="registration" element={<CourseRegistration />} />
-        <Route path="settings" element={<TeacherSettings />} />
-        <Route path="quiz" element={<QuizManagement />} />
-        <Route path="notifications" errorElement={<Notifications />} />
-        <Route path="quiz/createQuiz" element={<QuizCreation/>} />
+        <Route path="quiz-management" element={<QuizManagement />} />
+        <Route path="quiz-creation" element={<QuizCreation />} />
         <Route path="files" element={<Files />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="registration" element={<CourseRegistration />} />
+
       </Route>
-      </Route>
+      
 
 
       
       {/* Student routes */}
-       <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-      <Route path="/student"  element={<StudentLayout/>} />
+       
+      <Route path="/student"  element={<StudentLayout/>} >
+        
+        <Route path="settings" element={<StudentSettings/>} />
       </Route>
       
       
