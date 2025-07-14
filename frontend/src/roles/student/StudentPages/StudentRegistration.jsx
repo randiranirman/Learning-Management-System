@@ -54,6 +54,8 @@ const StudentRegistration = () => {
         indexNumber: values.indexNumber,
       };
 
+      console.log(studentRegisterData)
+
       const response = await registerStudent(studentRegisterData);
       console.log("Student registered successfully:", response);
       form.resetFields();
