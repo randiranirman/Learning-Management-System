@@ -5,7 +5,7 @@ import swal from "sweetalert2";
 
 const BASE_API_URL = "https://localhost:7293/api/StudentRegistration";
 const REGISTER_API_URL = `${BASE_API_URL}/register`;
-const FETCH_SUBJECTS_URL = "https://localhost:7293/studentSubjects/StudentSubject/subject/"
+const FETCH_SUBJECTS_URL = "https://localhost:7293/studentSubjects/StudentSubject/subject"
 
 export const registerStudent = async (studentData) => {
   const studentId = parseInt(localStorage.getItem("UserId"));
