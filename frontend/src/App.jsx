@@ -35,6 +35,8 @@ import StudentProfile from "./roles/student/StudentPages/StudentProfile";
 
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 import Notification from "./roles/admin/AdminPages/Notification";
+import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
+import StudentSettings from "./roles/student/StudentPages/StudentSettings";
 
 
 
@@ -106,6 +108,9 @@ const App = () => {
         <Route path="subject/:subjectId" element={<SubjectPage />} />
         <Route path="studentProfile" element={<StudentProfile />} />
         <Route path="notifications" element={<StudentNotifications />} />
+
+        <Route path="assignments" element= {<StudentAssignment />} />
+        <Route path ="settings" element={<StudentSettings />} /> 
       </Route>
       
 

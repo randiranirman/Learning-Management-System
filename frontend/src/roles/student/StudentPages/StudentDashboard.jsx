@@ -12,8 +12,8 @@ import {
   CustomerServiceOutlined,
   HeartOutlined
 } from '@ant-design/icons';
-import { fetchAllSubjects } from '../../../utils/subjectService';
 
+import { fetchSubjectsFromStudentRegistration } from '../../../utils/studentRegistrationService';
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const [visibleCards, setVisibleCards] = useState([]);
@@ -79,18 +79,17 @@ const StudentDashboard = () => {
   const fetchSubjects = async () => {
     try {
       setLoading(true);
-      const subjects = await fetchAllSubjects(parseInt(localStorage.getItem("UserId"))); // ✅ Use the correct function
-      
+      const subjects = (await fetchSubjectsFromStudentRegistration(parseInt(localStorage.getItem("UserId")))).data; // 
 
       console.log("Fetched subjects:", subjects);
 
       const formattedCourses = subjects.map((subject, index) => ({
         id: subject.subjectId,
-        title: subject.name.charAt(0).toUpperCase() + subject.name.slice(1),
+        title: subject.subjectName.charAt(0).toUpperCase() + subject.subjectName.slice(1),
         grade: 'Grade 10 - Sinhala', // or dynamically use real grade info if available
-        category: subjectStyles[subject.name.toLowerCase()]?.category || subjectStyles.default.category,
-        gradient: subjectStyles[subject.name.toLowerCase()]?.gradient || subjectStyles.default.gradient,
-        icon: subjectStyles[subject.name.toLowerCase()]?.icon || subjectStyles.default.icon,
+        category: subjectStyles[subject.subjectName.toLowerCase()]?.category || subjectStyles.default.category,
+        gradient: subjectStyles[subject.subjectName.toLowerCase()]?.gradient || subjectStyles.default.gradient,
+        icon: subjectStyles[subject.subjectName.toLowerCase()]?.icon || subjectStyles.default.icon,
         delay: index * 200
       }));
 
