@@ -35,8 +35,14 @@ import StudentProfile from "./roles/student/StudentPages/StudentProfile";
 
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 import Notification from "./roles/admin/AdminPages/Notification";
+import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
+import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
+import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
+import AssignmentsSubject from "./roles/teacher/TeacherPages/AssignmentsSubject";
+import AllStudentsPerAssignment from "./roles/teacher/TeacherPages/AllStudentsPerAssignment";
 import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
 import StudentSettings from "./roles/student/StudentPages/StudentSettings";
+
 
 
 
@@ -88,6 +94,11 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<Files />} />
+        <Route path="analytics" element={<TeacherAnalytics />} />
+        <Route path="analytics/:subjectId" element={<SubjectStudents />} />
+        <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
+        <Route path="analytics/assignments/:subjectId" element={<AssignmentsSubject />} />
+        <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
       </Route>
 
     

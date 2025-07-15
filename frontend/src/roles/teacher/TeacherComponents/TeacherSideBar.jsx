@@ -90,6 +90,12 @@ const TeacherSideBar = ({
       label: 'Quiz Creation',
       path: '/teacher/quiz/createQuiz'
     },
+     {
+        key: 'Analytics ',
+        icon: <BarChartOutlined />,  // Better for analytics/data
+        label: 'Analytics',
+        path: '/teacher/analytics'
+    },
     {
       key: 'Logout',
       icon: <LogoutOutlined />,
