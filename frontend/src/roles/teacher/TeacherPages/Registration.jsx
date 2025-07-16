@@ -123,7 +123,7 @@ export default function TeacherCourseRegistration() {
         await window.Swal.fire({
           icon: "success",
           title: "Registration Successful!",
-          text: "Course has been registered successfully.",
+          text: "You Will be notified after admin approval.",
           confirmButtonText: "OK",
         });
       } else {

@@ -2,6 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const API_URL = "https://localhost:7293/api/TeacherRegistration/register";
+const REGISTER_API_URL ="https://localhost:7293/api/TeacherRegistration"
 
 export const teacherRegistration = async (teacherData) => {
   console.log("Teacher data received:", teacherData);
@@ -61,3 +62,20 @@ export const teacherRegistration = async (teacherData) => {
     throw error;
   }
 };
+
+export const getPendingRegistrations = async () => {
+
+
+  try {
+    const response = await axios.get(`${REGISTER_API_URL}/pending`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+    console.log("Pending registrations fetched:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching pending registrations:", error);
+    throw new Error("Failed to fetch pending registrations.");
+  }
+}
