@@ -43,6 +43,7 @@ import AllStudentsPerAssignment from "./roles/teacher/TeacherPages/AllStudentsPe
 import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
 import StudentSettings from "./roles/student/StudentPages/StudentSettings";
 import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
+import TeacherRegistrationManagement from "./roles/admin/AdminPages/TeacherRegistrationManagement";
 
 
 
@@ -71,6 +72,7 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element = {<AdminTasks />} />
+        <Route path="registrationManagement" element={<TeacherRegistrationManagement />} />
         <Route path="notifications" element={<Notification />} />
         < Route path="editProfile" element={<EditProfile />}  />
        

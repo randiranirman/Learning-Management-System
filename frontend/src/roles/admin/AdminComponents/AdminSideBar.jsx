@@ -72,6 +72,13 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     path: '/admin/manage-courses'
   },
   {
+    key:'Teacher Registration Management',
+    icon: <UserOutlined />,
+    label: 'Teacher Registration Management',
+    path: '/admin/registrationManagement'
+  },
+
+  {
     key: 'Notifications',
     icon: <BellOutlined/>,  // Better for courses/educational content
     label: 'Notifications',
