@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
 
 const API_URL = "https://localhost:7033/api/auth"; // Base API URL
@@ -292,3 +293,52 @@ export const resetPassword= async( data) => {
       throw error.response?.data || "Reset failed";
     });
 }
+
+export const useLogout = () => {
+  const navigate = useNavigate();
+  
+  const logout = async () => {
+    console.log("logout function called");
+
+    const result = await swal.fire({
+      title: 'Are you sure?',
+      text: "You will be logged out.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log out!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        // Clear token immediately
+        localStorage.removeItem("accessToken");
+        
+        // Use React Router navigation (faster than window.location)
+        navigate('/', { replace: true });
+        
+        // Optional: Make logout API call in background
+        axios.post(
+          `${API_URL}/logout`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+            timeout: 3000
+          }
+        ).catch(error => {
+          console.error("Logout API call failed", error);
+        });
+
+      } catch (error) {
+        console.error("Logout failed", error);
+        localStorage.removeItem("accessToken");
+        navigate('/', { replace: true });
+      }
+    }
+  };
+  
+  return logout;
+};
