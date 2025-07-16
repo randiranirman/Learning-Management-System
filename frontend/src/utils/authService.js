@@ -43,48 +43,41 @@ export const registerUser = async (userData) => {
   }
 };
 
-
-//logout  the users  by removing the tokens 
 export const logout = async () => {
-  console.log("logout function called")
-  try {
-    await axios.post(
-      `${API_URL}/logout`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    const result = await swal.fire({
-          title: 'Are you sure?',
-          text: "You will be logged out.",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, log out!'
-        });
+  console.log("logout function called");
 
-        
-    
-        if (result.isConfirmed) {
-          // clear session/local storage
-           // Clear tokens from localStorage
-    localStorage.removeItem("accessToken");
-    
+  const result = await swal.fire({
+    title: 'Are you sure?',
+    text: "You will be logged out.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, log out!'
+  });
 
-    // Redirect to the login page
-    window.location.href = "/";
-          
+  if (result.isConfirmed) {
+    try {
+      await axios.post(
+        `${API_URL}/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         }
+      );
 
-   
-  } catch (error) {
-    console.error("Logout failed", error);
+      // Clear token and redirect
+      localStorage.removeItem("accessToken");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed", error);
+      swal.fire("Error", "Failed to logout. Try again.", "error");
+    }
   }
 };
+
 
 // this is the function for deconding the role from the token 
 

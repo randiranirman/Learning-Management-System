@@ -46,6 +46,14 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     path: '/admin/dashboard'
   },
   {
+    key:'manage-tasks',
+    icon: <FileTextOutlined />,  // Better for tasks than Calendar
+    label: 'Manage Tasks',
+    path: '/admin/manage-tasks'
+  }
+
+  ,
+  {
     key: 'manage users',
     icon: <TeamOutlined />,  // Better for user management than Calendar
     label: 'manage users',
@@ -81,6 +89,7 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     label: 'Settings',
     path: '/admin/settings'
   },
+
   {
     key: 'Logout',
     icon: <LogoutOutlined />,  // This one is already appropriate

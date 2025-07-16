@@ -42,6 +42,7 @@ import AssignmentsSubject from "./roles/teacher/TeacherPages/AssignmentsSubject"
 import AllStudentsPerAssignment from "./roles/teacher/TeacherPages/AllStudentsPerAssignment";
 import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
 import StudentSettings from "./roles/student/StudentPages/StudentSettings";
+import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
 
 
 
@@ -69,6 +70,7 @@ const App = () => {
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="manage-tasks" element = {<AdminTasks />} />
         <Route path="notifications" element={<Notification />} />
         < Route path="editProfile" element={<EditProfile />}  />
        
