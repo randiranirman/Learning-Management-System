@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import {
   Card,
   Form,
@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { fetchAllClasses } from "../../../utils/classService";
 import { fetchAllSubjects } from "../../../utils/subjectService";
+import { teacherRegistration } from "../../../utils/teacherRegistrationService";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -98,9 +99,24 @@ export default function TeacherCourseRegistration() {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      // Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Form values:", values);
+      // Transform form values to match backend API structure
+      const apiPayload = {
+        teacherId: parseInt(localStorage.getItem("UserId"), 10),
+        employeeId: values.employeeId,
+        classIds: values.classIds || [], // Array of class IDs
+        subjectIds: values.subjectIds || [], // Array of subject IDs
+        remarks: values.remarks || "",
+        teacherEmail: values.teacherEmail,
+        numberOfStudents: values.numberOfStudents || 0,
+        firstName: values.firstName,
+        subjectCode: values.subjectCode || [] // Array of subject codes
+      };
+
+      console.log("API Payload:", apiPayload);
+
+      // Call the actual API
+      const response = await teacherRegistration(apiPayload);
+      console.log("Registration response:", response);
 
       // Show success alert - try multiple approaches
       if (window.Swal) {
@@ -122,18 +138,21 @@ export default function TeacherCourseRegistration() {
     } catch (error) {
       console.error("Registration error:", error);
 
+      // Extract error message
+      const errorMessage = error.message || "Something went wrong. Please try again.";
+
       // Show error alert
       if (window.Swal) {
         await window.Swal.fire({
           icon: "error",
           title: "Registration Failed!",
-          text: "Something went wrong. Please try again.",
+          text: errorMessage,
           confirmButtonText: "OK",
         });
       } else {
         // Fallback to alert and message
-        alert("Registration Failed! Something went wrong. Please try again.");
-        message.error("Registration failed. Please try again.");
+        alert(`Registration Failed! ${errorMessage}`);
+        message.error(errorMessage);
       }
     } finally {
       setLoading(false);
@@ -151,27 +170,44 @@ export default function TeacherCourseRegistration() {
         >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Form.Item
-              name="teacherName"
-              label="Teacher Name"
-              rules={[{ required: true }]}
+              name="firstName"
+              label="First Name"
+              rules={[{ required: true, message: "Please enter first name" }]}
             >
-              <Input placeholder="Enter teacher name" />
+              <Input placeholder="Enter first name" />
             </Form.Item>
 
             <Form.Item
-              name="email"
-              label="Email"
-              rules={[{ required: true, type: "email" }]}
+              name="teacherEmail"
+              label="Teacher Email"
+              rules={[{ required: true, type: "email", message: "Please enter a valid email" }]}
             >
-              <Input placeholder="Enter email" />
+              <Input placeholder="Enter teacher email" />
             </Form.Item>
 
-            <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
-              <Input placeholder="Enter phone number" />
+            <Form.Item 
+              name="employeeId" 
+              label="Employee ID" 
+              rules={[{ required: true, message: "Please enter employee ID" }]}
+            >
+              <Input placeholder="Enter employee ID" />
             </Form.Item>
 
-            <Form.Item name="grade" label="Grade" rules={[{ required: true }]}>
-              <Select placeholder="Select grade">
+           
+
+            <Form.Item 
+              name="classIds" 
+              label="Classes" 
+              rules={[{ required: true, message: "Please select at least one class" }]}
+            >
+              <Select 
+                mode="multiple" 
+                placeholder="Select classes"
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
                 {grades.map((grade, index) => (
                   <Option
                     key={`grade-${grade.value || index}`}
@@ -184,11 +220,18 @@ export default function TeacherCourseRegistration() {
             </Form.Item>
 
             <Form.Item
-              name="subjectName"
-              label="Subject Name"
-              rules={[{ required: true }]}
+              name="subjectIds"
+              label="Subjects"
+              rules={[{ required: true, message: "Please select at least one subject" }]}
             >
-              <Select placeholder="Select subject name">
+              <Select 
+                mode="multiple" 
+                placeholder="Select subjects"
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
                 {subjectNames.map((subject) => (
                   <Option key={subject.value} value={subject.value}>
                     {subject.label}
@@ -199,10 +242,17 @@ export default function TeacherCourseRegistration() {
 
             <Form.Item
               name="subjectCode"
-              label="Subject Code"
-              rules={[{ required: true }]}
+              label="Subject Codes"
+              rules={[{ required: true, message: "Please select at least one subject code" }]}
             >
-              <Select placeholder="Select subject code">
+              <Select 
+                mode="multiple" 
+                placeholder="Select subject codes"
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
                 {subjectCodes.map((code) => (
                   <Option key={code.value} value={code.value}>
                     {code.label}
@@ -212,9 +262,9 @@ export default function TeacherCourseRegistration() {
             </Form.Item>
 
             <Form.Item
-              name="noOfStudents"
-              label="No of Students"
-              rules={[{ required: true }]}
+              name="numberOfStudents"
+              label="Number of Students"
+              rules={[{ required: true, message: "Please enter number of students" }]}
             >
               <InputNumber
                 min={1}
@@ -223,18 +273,15 @@ export default function TeacherCourseRegistration() {
                 className="w-full"
               />
             </Form.Item>
-
-            <Form.Item
-              name="startDate"
-              label="Start Date"
-              rules={[{ required: true }]}
-            >
-              <DatePicker className="w-full" />
-            </Form.Item>
           </div>
 
-          <Form.Item name="subjectContent" label="Subject Content">
-            <TextArea rows={4} placeholder="Enter subject content details" />
+          <Form.Item name="remarks" label="Remarks">
+            <TextArea 
+              rows={4} 
+              placeholder="Enter any additional remarks or notes" 
+              maxLength={500}
+              showCount
+            />
           </Form.Item>
 
           <Form.Item className="mb-0">
