@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getUserNameFromToken, logout } from '../../../utils/authService';
+import { getUserNameFromToken, useLogout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
 import {
@@ -31,7 +31,7 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const fastLogout = useLogout();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -99,8 +99,8 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
 ];
   const handleMenuClick = ({ key }) => {
     if (key === 'Logout') {
-      logout(); // Call the logout function
-      
+      fastLogout(); // Call the logout function
+
     } else {
       const selectedItem = menuItems.find(item => item.key === key);
       if (selectedItem) {
