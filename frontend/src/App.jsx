@@ -40,6 +40,9 @@ import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
 import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
 import AssignmentsSubject from "./roles/teacher/TeacherPages/AssignmentsSubject";
 import AllStudentsPerAssignment from "./roles/teacher/TeacherPages/AllStudentsPerAssignment";
+import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
+import StudentSettings from "./roles/student/StudentPages/StudentSettings";
+
 import AllTeachersDisplay from "./roles/admin/AdminPages/AllTeachersDisplay";
 import AllStudentsDisplay from "./roles/admin/AdminPages/AllStudentsDisplay";
 import AllTeacherAssigedSubjects from "./roles/admin/AdminPages/AllTeacherAssigedSubjects";
@@ -121,6 +124,9 @@ const App = () => {
         <Route path="subject/:subjectId" element={<SubjectPage />} />
         <Route path="studentProfile" element={<StudentProfile />} />
         <Route path="notifications" element={<StudentNotifications />} />
+
+        <Route path="assignments" element= {<StudentAssignment />} />
+        <Route path ="settings" element={<StudentSettings />} /> 
       </Route>
       
 
