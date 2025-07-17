@@ -17,7 +17,6 @@ import {
   Col,
   Statistic,
   Typography,
-  Popconfirm,
   Spin
 } from 'antd';
 import {
@@ -27,12 +26,11 @@ import {
   UserOutlined,
   BookOutlined,
   CalendarOutlined,
-  FileTextOutlined,
   SearchOutlined,
   FilterOutlined,
   ReloadOutlined
 } from '@ant-design/icons';
-import { getPendingRegistrations } from '../../../utils/teacherRegistrationService';
+import { getPendingRegistrations, approveTeacherRegistration } from '../../../utils/teacherRegistrationService';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -42,10 +40,7 @@ const { RangePicker } = DatePicker;
 
 const TeacherRegistrationManagement = () => {
   const [loading, setLoading] = useState(false);
-  const [registrations, setRegistrations] = useState({
-    classRegistrations: [],
-    subjectRegistrations: []
-  });
+const [registrations, setRegistrations] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [actionModalVisible, setActionModalVisible] = useState(false);
@@ -70,10 +65,28 @@ const TeacherRegistrationManagement = () => {
     setLoading(true);
     try {
       const data = await getPendingRegistrations();
-      setRegistrations(data);
+      console.log('Fetched registrations:', data);
+      
+      // Handle different data structures from backend
+      if (Array.isArray(data)) {
+        setRegistrations(data);
+      } else if (data && typeof data === 'object') {
+        // If backend returns object with arrays, combine them
+        const allRegistrations = [];
+        if (Array.isArray(data.classRegistrations)) {
+          allRegistrations.push(...data.classRegistrations);
+        }
+        if (Array.isArray(data.subjectRegistrations)) {
+          allRegistrations.push(...data.subjectRegistrations);
+        }
+        setRegistrations(allRegistrations);
+      } else {
+        setRegistrations([]);
+      }
     } catch (error) {
       message.error('Failed to fetch registrations');
       console.error('Error fetching registrations:', error);
+      setRegistrations([]);
     } finally {
       setLoading(false);
     }
@@ -98,7 +111,7 @@ const TeacherRegistrationManagement = () => {
   };
 
   // Handle approve/reject actions
-  const handleAction = async (record, action) => {
+const handleAction = async (record, action) => {
     setSelectedRecord(record);
     setActionType(action);
     setActionModalVisible(true);
@@ -106,17 +119,16 @@ const TeacherRegistrationManagement = () => {
 
   const confirmAction = async () => {
     try {
-      // Here you would call your approve/reject API
       const actionData = {
-        id: selectedRecord.teacherRegistrationId || selectedRecord.id,
-        action: actionType,
-        remarks: actionRemarks
+        registrationId: selectedRecord.teacherRegistrationId || selectedRecord.id,
+        remarks: actionRemarks,
+        status: actionType === 'approve' ? 1 : 2,
+        adminId: adminId
       };
       
       console.log('Action data:', actionData);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await approveTeacherRegistration(actionData);
       
       if (window.Swal) {
         await window.Swal.fire({
@@ -145,8 +157,12 @@ const TeacherRegistrationManagement = () => {
   };
 
   // Filter functions
-  const getFilteredData = (data) => {
-    return data.filter(item => {
+  const getFilteredData = () => {
+    if (!Array.isArray(registrations)) {
+      return [];
+    }
+    
+    return registrations.filter(item => {
       const matchesSearch = searchText === '' || 
         item.employeeId?.toLowerCase().includes(searchText.toLowerCase()) ||
         item.subjectName?.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -158,192 +174,22 @@ const TeacherRegistrationManagement = () => {
     });
   };
 
-  // Class registrations table columns
-  const classColumns = [
-    {
-      title: 'Registration ID',
-      dataIndex: 'teacherRegistrationId',
-      key: 'teacherRegistrationId',
-      render: (text) => <Text code>{text}</Text>
-    },
-    {
-      title: 'Employee ID',
-      dataIndex: 'employeeId',
-      key: 'employeeId',
-      render: (text) => (
-        <Space>
-          <UserOutlined />
-          <Text strong>{text}</Text>
-        </Space>
-      )
-    },
-    {
-      title: 'Class',
-      dataIndex: 'className',
-      key: 'className',
-      render: (text) => (
-        <Space>
-          <BookOutlined />
-          <Text>{text}</Text>
-        </Space>
-      )
-    },
-    {
-      title: 'Subject',
-      dataIndex: 'subjectName',
-      key: 'subjectName'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => getStatusTag(status)
-    },
-    {
-      title: 'Registered At',
-      dataIndex: 'registeredAt',
-      key: 'registeredAt',
-      render: (date) => new Date(date).toLocaleDateString()
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="View Details">
-            <Button
-              icon={<EyeOutlined />}
-              size="small"
-              onClick={() => showDetails(record)}
-            />
-          </Tooltip>
-          {record.status === 0 && (
-            <>
-              <Tooltip title="Approve">
-                <Button
-                  icon={<CheckCircleOutlined />}
-                  size="small"
-                  type="primary"
-                  onClick={() => handleAction(record, 'approve')}
-                />
-              </Tooltip>
-              <Tooltip title="Reject">
-                <Button
-                  icon={<CloseCircleOutlined />}
-                  size="small"
-                  danger
-                  onClick={() => handleAction(record, 'reject')}
-                />
-              </Tooltip>
-            </>
-          )}
-        </Space>
-      )
-    }
-  ];
-
-  // Subject registrations table columns
-  const subjectColumns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text) => <Text code>{text}</Text>
-    },
-    {
-      title: 'Employee ID',
-      dataIndex: 'employeeId',
-      key: 'employeeId',
-      render: (text) => (
-        <Space>
-          <UserOutlined />
-          <Text strong>{text}</Text>
-        </Space>
-      )
-    },
-    {
-      title: 'Subject',
-      dataIndex: 'subjectName',
-      key: 'subjectName',
-      render: (text) => (
-        <Space>
-          <BookOutlined />
-          <Text>{text}</Text>
-        </Space>
-      )
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => getStatusTag(status)
-    },
-    {
-      title: 'Active',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      render: (isActive) => (
-        <Tag color={isActive ? 'green' : 'red'}>
-          {isActive ? 'Active' : 'Inactive'}
-        </Tag>
-      )
-    },
-    {
-      title: 'Registered At',
-      dataIndex: 'registeredAt',
-      key: 'registeredAt',
-      render: (date) => new Date(date).toLocaleDateString()
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="View Details">
-            <Button
-              icon={<EyeOutlined />}
-              size="small"
-              onClick={() => showDetails(record)}
-            />
-          </Tooltip>
-          {record.status === 0 && (
-            <>
-              <Tooltip title="Approve">
-                <Button
-                  icon={<CheckCircleOutlined />}
-                  size="small"
-                  type="primary"
-                  onClick={() => handleAction(record, 'approve')}
-                />
-              </Tooltip>
-              <Tooltip title="Reject">
-                <Button
-                  icon={<CloseCircleOutlined />}
-                  size="small"
-                  danger
-                  onClick={() => handleAction(record, 'reject')}
-                />
-              </Tooltip>
-            </>
-          )}
-        </Space>
-      )
-    }
-  ];
 
   // Calculate statistics
   const getStatistics = () => {
-    const classRegs = registrations.classRegistrations || [];
-    const subjectRegs = registrations.subjectRegistrations || [];
+    if (!Array.isArray(registrations)) {
+      return { totalPending: 0, totalApproved: 0, totalRejected: 0 };
+    }
     
-    const totalPending = [...classRegs, ...subjectRegs].filter(item => item.status === 0).length;
-    const totalApproved = [...classRegs, ...subjectRegs].filter(item => item.status === 1).length;
-    const totalRejected = [...classRegs, ...subjectRegs].filter(item => item.status === 2).length;
+    const totalPending = registrations.filter(item => item.status === 0).length;
+    const totalApproved = registrations.filter(item => item.status === 1).length;
+    const totalRejected = registrations.filter(item => item.status === 2).length;
     
     return { totalPending, totalApproved, totalRejected };
   };
 
-  const statistics = getStatistics();
+const statistics = getStatistics();
+const adminId = parseInt(localStorage.getItem("UserId"));
 
   return (
     <div className="p-6">
@@ -433,57 +279,104 @@ const TeacherRegistrationManagement = () => {
 
       {/* Main Content */}
       <Card>
-        <Tabs defaultActiveKey="1">
-          <TabPane
-            tab={
-              <span>
-                <BookOutlined />
-                Class Registrations
-                <Badge count={registrations.classRegistrations?.length || 0} style={{ marginLeft: 8 }} />
-              </span>
-            }
-            key="1"
-          >
-            <Table
-              columns={classColumns}
-              dataSource={getFilteredData(registrations.classRegistrations || [])}
-              rowKey="teacherRegistrationId"
-              loading={loading}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
-              }}
-              scroll={{ x: 1000 }}
-            />
-          </TabPane>
-          
-          <TabPane
-            tab={
-              <span>
-                <UserOutlined />
-                Subject Registrations
-                <Badge count={registrations.subjectRegistrations?.length || 0} style={{ marginLeft: 8 }} />
-              </span>
-            }
-            key="2"
-          >
-            <Table
-              columns={subjectColumns}
-              dataSource={getFilteredData(registrations.subjectRegistrations || [])}
-              rowKey="id"
-              loading={loading}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
-              }}
-              scroll={{ x: 1000 }}
-            />
-          </TabPane>
-        </Tabs>
+        <div>
+          <Title level={4}>All Teacher Registrations</Title>
+          <Table
+            columns={[
+              {
+                title: 'Registration ID',
+                dataIndex: 'teacherRegistrationId',
+                key: 'teacherRegistrationId',
+                render: (text) => <Text code>{text}</Text>
+              },
+              {
+                title: 'Employee ID',
+                dataIndex: 'employeeId',
+                key: 'employeeId',
+                render: (text) => (
+                  <Space>
+                    <UserOutlined />
+                    <Text strong>{text}</Text>
+                  </Space>
+                )
+              },
+              {
+                title: 'Class',
+                dataIndex: 'className',
+                key: 'className',
+                render: (text) => text || 'N/A'
+              },
+              {
+                title: 'Subject',
+                dataIndex: 'subjectName',
+                key: 'subjectName',
+                render: (text) => (
+                  <Space>
+                    <BookOutlined />
+                    <Text>{text}</Text>
+                  </Space>
+                )
+              },
+              {
+                title: 'Status',
+                dataIndex: 'status',
+                key: 'status',
+                render: (status) => getStatusTag(status)
+              },
+              {
+                title: 'Registered At',
+                dataIndex: 'registeredAt',
+                key: 'registeredAt',
+                render: (date) => new Date(date).toLocaleDateString()
+              },
+              {
+                title: 'Actions',
+                key: 'actions',
+                render: (_, record) => (
+                  <Space size="small">
+                    <Tooltip title="View Details">
+                      <Button
+                        icon={<EyeOutlined />}
+                        size="small"
+                        onClick={() => showDetails(record)}
+                      />
+                    </Tooltip>
+                    {record.status === 0 && (
+                      <>
+                        <Tooltip title="Approve">
+                          <Button
+                            icon={<CheckCircleOutlined />}
+                            size="small"
+                            type="primary"
+                            onClick={() => handleAction(record, 'approve')}
+                          />
+                        </Tooltip>
+                        <Tooltip title="Reject">
+                          <Button
+                            icon={<CloseCircleOutlined />}
+                            size="small"
+                            danger
+                            onClick={() => handleAction(record, 'reject')}
+                          />
+                        </Tooltip>
+                      </>
+                    )}
+                  </Space>
+                )
+              }
+            ]}
+            dataSource={getFilteredData()}
+            rowKey={(record) => record.teacherRegistrationId || record.id}
+            loading={loading}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
+            }}
+            scroll={{ x: 1000 }}
+          />
+        </div>
       </Card>
 
       {/* Details Modal */}
