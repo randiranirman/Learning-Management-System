@@ -79,3 +79,51 @@ export const getPendingRegistrations = async () => {
     throw new Error("Failed to fetch pending registrations.");
   }
 }
+
+
+export const approveTeacherRegistration = async (registrationBody) => {
+  console.log("Approving registration with data:", registrationBody);
+
+  const requestBody = {
+    registrationId: registrationBody.registrationId,
+    status: registrationBody.status, // Should be 0 (pending), 1 (approved), or 2 (rejected)
+    adminId: registrationBody.adminId,
+    remarks: registrationBody.remarks || ""
+  };
+  
+  console.log("Request body being sent:", requestBody);
+
+  try {
+    const response = await axios.post(`${REGISTER_API_URL}/approve`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+    console.log("Teacher registration approved:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error approving teacher registration:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      
+      // Handle validation errors
+      if (error.response.status === 400 && error.response.data?.errors) {
+        const validationErrors = error.response.data.errors;
+        const errorMessages = Object.keys(validationErrors).map(key => 
+          `${key}: ${validationErrors[key].join(', ')}`
+        ).join('; ');
+        throw new Error(`Validation failed: ${errorMessages}`);
+      }
+      
+      throw new Error(`Failed to approve registration: ${error.response.data?.message || error.response.status}`);
+    } else if (error.request) {
+      console.error("Request:", error.request);
+      throw new Error("No response from server");
+    } else {
+      console.error("Error message:", error.message);
+      throw new Error("Failed to approve registration");
+    }
+  }
+}

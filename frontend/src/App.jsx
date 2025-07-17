@@ -44,6 +44,7 @@ import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
 import StudentSettings from "./roles/student/StudentPages/StudentSettings";
 import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
 import TeacherRegistrationManagement from "./roles/admin/AdminPages/TeacherRegistrationManagement";
+import StudentCalender from "./roles/student/StudentPages/StudentCalender";
 
 
 
@@ -123,6 +124,7 @@ const App = () => {
         <Route path="subject/:subjectId" element={<SubjectPage />} />
         <Route path="studentProfile" element={<StudentProfile />} />
         <Route path="notifications" element={<StudentNotifications />} />
+        <Route path="calendar" element={<StudentCalender />} />
 
         <Route path="assignments" element= {<StudentAssignment />} />
         <Route path ="settings" element={<StudentSettings />} /> 
