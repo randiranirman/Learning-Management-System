@@ -34,7 +34,7 @@ import StudentProfile from "./roles/student/StudentPages/StudentProfile";
 
 
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
-import Notification from "./roles/admin/AdminPages/Notification";
+import Notification from "./roles/admin/AdminPages/StudentRegistrationManagement";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
 import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
@@ -45,6 +45,9 @@ import StudentSettings from "./roles/student/StudentPages/StudentSettings";
 import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
 import TeacherRegistrationManagement from "./roles/admin/AdminPages/TeacherRegistrationManagement";
 import StudentCalender from "./roles/student/StudentPages/StudentCalender";
+import StudentRegistrationManagement from "./roles/admin/AdminPages/StudentRegistrationManagement";
+import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
+
 
 
 
@@ -52,6 +55,7 @@ import StudentCalender from "./roles/student/StudentPages/StudentCalender";
 
 const App = () => {
   return (
+    
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/unauthorized" element={<UnAuthorized />} />
@@ -73,8 +77,10 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element = {<AdminTasks />} />
-        <Route path="registrationManagement" element={<TeacherRegistrationManagement />} />
-        <Route path="notifications" element={<Notification />} />
+        <Route path="notifications" element={<AdminNotifications />} />
+
+        <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
+        <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
         < Route path="editProfile" element={<EditProfile />}  />
        
       </Route>

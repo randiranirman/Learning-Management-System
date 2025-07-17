@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getUserNameFromToken, useLogout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
+import NotificationBadge from '../../../components/NotificationBadge';
 import {
   HomeOutlined,
   UserOutlined,
@@ -75,12 +76,19 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     key:'Teacher Registration Management',
     icon: <UserOutlined />,
     label: 'Teacher Registration Management',
-    path: '/admin/registrationManagement'
+    path: '/admin/teacherRegistrationManagement'
+  },
+
+  {
+    key:'Student Registration Management',
+    icon: <UserOutlined />,
+    label: 'Student Registration Management',
+    path: '/admin/studentRegistrationsManagement'
   },
 
   {
     key: 'Notifications',
-    icon: <BellOutlined/>,  // Better for courses/educational content
+    icon: <NotificationBadge><BellOutlined/></NotificationBadge>,
     label: 'Notifications',
     path: '/admin/notifications'
   },
