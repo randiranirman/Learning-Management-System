@@ -70,7 +70,7 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     key: 'Manage-Courses',
     icon: <BookOutlined />,  // Better for courses/educational content
     label: 'Manage Courses',
-    path: '/admin/manage-courses'
+    path: '/admin/test'
   },
   {
     key:'Teacher Registration Management',
