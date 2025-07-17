@@ -10,7 +10,7 @@ const REGISTER_API_URL = `${BASE_API_URL}/pending`;
 const APPROVE_API_URL = BASE_API_URL;
 
 
-const Notification = () => {
+const StudentRegistrationManagement = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -339,4 +339,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default StudentRegistrationManagement;
