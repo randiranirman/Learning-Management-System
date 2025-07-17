@@ -22,7 +22,7 @@ export const NotificationProvider = ({ children }) => {
             try {
                 // Check if user is authenticated
                 const token = localStorage.getItem('accessToken');
-                const userId = localStorage.getItem('UserId');
+                const userId = parseInt(localStorage.getItem('UserId'), 10);
                 const userRole = localStorage.getItem('UserRole');
 
                 if (token && userId && userRole) {
