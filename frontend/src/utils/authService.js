@@ -23,6 +23,7 @@ export const login = async (username, password) => {
       ;
     localStorage.setItem("usernameFromToken", usernameFromToken);
     localStorage.setItem("UserId", id);
+    localStorage.setItem("UserRole", role);
     console.log("Role", role);
     return role;
 
@@ -71,6 +72,11 @@ export const logout = async () => {
 
       // Clear token and redirect
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("UserId");
+      localStorage.removeItem("usernameFromToken");
+      localStorage.removeItem("isFirstLogin");
+      localStorage.removeItem("UserRole");
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed", error);
@@ -141,6 +147,7 @@ export const isAuthenticated = () => {
       localStorage.removeItem("UserId");
       localStorage.removeItem("usernameFromToken");
       localStorage.removeItem("isFirstLogin");
+      localStorage.removeItem("UserRole");
       return false;
     }
     
@@ -312,8 +319,13 @@ export const useLogout = () => {
 
     if (result.isConfirmed) {
       try {
-        // Clear token immediately
+        // Clear all localStorage items immediately
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("UserId");
+        localStorage.removeItem("usernameFromToken");
+        localStorage.removeItem("isFirstLogin");
+        localStorage.removeItem("UserRole");
         
         // Use React Router navigation (faster than window.location)
         navigate('/', { replace: true });
