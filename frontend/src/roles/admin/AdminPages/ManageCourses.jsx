@@ -233,21 +233,14 @@ const ManageCourses = () => {
 
         {/* Right side: Buttons */}
         <Space>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            style={{ background: '#5038ED' }}
-            onClick={() => setShowAddModal(true)}
-          >
-            Add Subject
-          </Button>
+         
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
             style={{ background: '#5038ED' }}
             onClick={() => setShowCoursePopup(true)}
           >
-            Add Course
+            Add Subject
           </Button>
         </Space>
       </div>
@@ -302,29 +295,7 @@ const ManageCourses = () => {
             width: '500px',
             maxWidth: '90%'
           }}>
-            <h2 style={{ marginBottom: '20px', color: '#5038ED' }}>Add New Subject</h2>
             
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Subject Name</label>
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Enter subject name"
-                size="large"
-              />
-            </div>
-            
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Subject Code</label>
-              <Input
-                name="code"
-                value={formData.code}
-                onChange={handleInputChange}
-                placeholder="Enter subject code"
-                size="large"
-              />
-            </div>
             
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Description</label>
@@ -448,9 +419,13 @@ const ManageCourses = () => {
             width: '500px',
             maxWidth: '90%'
           }}>
-            <AddCoursePopup setShowCoursePopup={setShowCoursePopup} onCourseAdded={handleCourseAdded} />
+            
           </div>
+
+
+         { <AddCoursePopup setShowCoursePopup={setShowCoursePopup} onCourseAdded={handleCourseAdded} />}
         </div>
+        
       )}
     </>
   );
