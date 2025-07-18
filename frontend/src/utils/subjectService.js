@@ -20,3 +20,14 @@ export const fetchAllSubjects =  async () =>  {
 
 
 }
+
+export const addSubject =  async (subjectData) => {
+    try {
+        const response = await axios.post(`${API_URL}/create-subjects`, subjectData);
+        console.log("Subject added successfully:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding subject:", error);
+        throw error;
+    }
+}
