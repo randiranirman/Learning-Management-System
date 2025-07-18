@@ -50,7 +50,7 @@ function Files() {
 
     // Create form data
     const formData = new FormData();
-    formData.append('UPLOADCARE_PUB_KEY', '6cc797dafbd41f00efac');
+    formData.append('UPLOADCARE_PUB_KEY', 'c437a5cc83605b82c636');
     formData.append('UPLOADCARE_STORE', '1');
     formData.append('file', fileToUpload);
 

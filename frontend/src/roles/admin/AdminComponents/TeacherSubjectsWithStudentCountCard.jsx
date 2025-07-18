@@ -14,10 +14,3 @@ const TeacherSubjectsWithStudentCountCard = ({ subject }) => {
 
 
 export default TeacherSubjectsWithStudentCountCard;
-
-// {
-//     "subjectId": 1,
-//     "subjectTitle": "t1",
-//     "grade": 10,
-//     "registeredStudentCount": 5
-// }

@@ -11,7 +11,8 @@ import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 import SubjectPage from './roles/student/StudentPages/SubjectPage';
-import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
+import TeacherDashboard from "./roles/teacher/TeacherPages/TestDashboard"; // Dashboard is the main teacher dashboard this for testing purposes
+import TDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
 import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
@@ -46,6 +47,7 @@ import StudentSettings from "./roles/student/StudentPages/StudentSettings";
 import AllTeachersDisplay from "./roles/admin/AdminPages/AllTeachersDisplay";
 import AllStudentsDisplay from "./roles/admin/AdminPages/AllStudentsDisplay";
 import AllTeacherAssigedSubjects from "./roles/admin/AdminPages/AllTeacherAssigedSubjects";
+import TeacherSubject from "./roles/teacher/TeacherPages/TeacherSubject";
 
 
 
@@ -91,6 +93,7 @@ const App = () => {
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
+        <Route path="dashboard-old" element={<TDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
@@ -104,6 +107,7 @@ const App = () => {
         <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
         <Route path="analytics/assignments/:subjectId" element={<AssignmentsSubject />} />
         <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
+        <Route path="subject/:subjectId" element={<TeacherSubject />} />
       </Route>
 
     
