@@ -1,75 +1,89 @@
-const AddCoursePopup = ({
-  onClose,
-  subjectTitle,
-  setSubjectTitle,
-  grade,
-  setGrade,
-  teacherId,
-  setTeacherId,
-  handleSubmit,
-}) => {
+import React from 'react';
+import { Form, Input, Button, Typography, Modal, message } from 'antd';
+import { addSubject } from '../../../utils/subjectService';
+import Swal from 'sweetalert2';
+
+const { Title } = Typography;
+
+const AddCoursePopup = ({ setShowCoursePopup, onCourseAdded }) => {
+  const [form] = Form.useForm();
+
+  const handleSubmit = async (values) => {
+    try {
+      const payload = {
+        name: values.name,
+        code: values.code,
+        description: values.description,
+      };
+
+      await addSubject(payload);
+
+      message.success('Subject added successfully');
+      Swal.fire({
+        title: 'Success!',
+        text: 'Subject added successfully',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
+
+      form.resetFields();
+      setShowCoursePopup(false);
+      onCourseAdded && onCourseAdded(payload);
+
+    } catch (error) {
+      console.error('Error adding subject:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to add subject',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg- bg-opacity-10 flex items-center justify-center z-50 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all duration-300 scale-100 animate-slideIn">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-black">Add Course</h2>
-        </div>
+    <Modal
+      open
+      title={<Title level={4}>Add Subject</Title>}
+      onCancel={() => setShowCoursePopup(false)}
+      footer={null}
+    >
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={handleSubmit}
+      >
+        <Form.Item
+          label="Subject Name"
+          name="name"
+          rules={[{ required: true, message: 'Please enter subject name' }]}
+        >
+          <Input placeholder="Enter subject name" />
+        </Form.Item>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-black">Subject Title:</label>
-            <input
-              type="text"
-              name="subjectTitle"
-              value={subjectTitle}
-              onChange={(e) => setSubjectTitle(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+        <Form.Item
+          label="Code"
+          name="code"
+          rules={[{ required: true, message: 'Please enter subject code' }]}
+        >
+          <Input placeholder="Enter subject code" />
+        </Form.Item>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-black">Grade:</label>
-            <input
-              type="number"
-              name="grade"
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: 'Please enter description' }]}
+        >
+          <Input.TextArea placeholder="Enter subject description" rows={4} />
+        </Form.Item>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Teacher Id:</label>
-            <input
-              type="text"
-              name="teacherId"
-              value={teacherId}
-              onChange={(e) => setTeacherId(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-red  text-white font-medium rounded-md hover cursor-pointer hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-white cursor-pointer font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Add Subject
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };
 

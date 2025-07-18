@@ -48,6 +48,7 @@ import StudentCalender from "./roles/student/StudentPages/StudentCalender";
 import StudentRegistrationManagement from "./roles/admin/AdminPages/StudentRegistrationManagement";
 import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
 import NotificationTest from "./test/NotificationTest";
+import ManageClasses from "./roles/admin/AdminPages/ManageClasses";
 
 
 
@@ -79,7 +80,8 @@ const App = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element = {<AdminTasks />} />
         <Route path="notifications" element={<AdminNotifications />} />
-      <Route path="test" element={<NotificationTest />} />    
+      <Route path="test" element={<NotificationTest />} />
+      <Route path="manage-classes"  element={<ManageClasses />} />  
         
 
         <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
