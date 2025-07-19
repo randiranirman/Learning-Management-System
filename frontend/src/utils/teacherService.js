@@ -1,6 +1,9 @@
 import axios from "axios";
 
 const BASE_URL = "https://localhost:7033/api/teacher";
+const BASE_API_URL= "https://localhost:7033/user/edit-teacher"
+const URL= "https://localhost:7033/user/teachers"
+
 
 export const editTeacherDetails = async (updatedData) => {
     const id = localStorage.getItem("UserId"); 
@@ -11,7 +14,7 @@ export const editTeacherDetails = async (updatedData) => {
     console.log("Updating teacher with ID:", id);
 
     try {
-        const response = await axios.put(`${BASE_URL}/${id}`, updatedData, {
+        const response = await axios.put(`${BASE_API_URL}/${id}`, updatedData, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}` 
@@ -30,7 +33,7 @@ export const editTeacherDetails = async (updatedData) => {
 
 export const getTeacherDetails = async (id) => {
     try {
-        const response = await axios.get(`${BASE_URL}/${id}`, {
+        const response = await axios.get(`${URL}/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
@@ -42,3 +45,5 @@ export const getTeacherDetails = async (id) => {
         throw new Error(error.response?.data?.message || "Failed to fetch teacher details");
     }
 };
+
+
