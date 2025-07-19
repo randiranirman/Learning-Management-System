@@ -13,7 +13,6 @@ import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 import SubjectPage from './roles/student/StudentPages/SubjectPage';
 import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
-import TeacherProfile from "./roles/teacher/TeacherPages/Profile";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin"; 
@@ -24,17 +23,10 @@ import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
-//import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
-
 import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
-
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
-import StudentProfile from "./roles/student/StudentPages/StudentProfile";
-
-
 import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
-import Notification from "./roles/admin/AdminPages/StudentRegistrationManagement";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
 import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
@@ -55,6 +47,7 @@ import ManageClasses from "./roles/admin/AdminPages/ManageClasses";
 
 
 
+
 const App = () => {
   return (
     
@@ -66,44 +59,28 @@ const App = () => {
       <Route path="/request-password-reset" element={<RequestReset />} />
 
      
-      {/* Admin routes 
-
-
-      <Route element={<ProtectedRoute allowedRoles={["admin"]} />} >*/}
+      {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="manage-users" element={<ManageUsers />} />
-        <Route path="manage-assignments" element={<ManageAssignments  />} />
+        <Route path="manage-assignments" element={<ManageAssignments />} />
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="manage-tasks" element = {<AdminTasks />} />
+        <Route path="manage-tasks" element={<AdminTasks />} />
         <Route path="notifications" element={<AdminNotifications />} />
-        
-      <Route path="test" element={<NotificationTest />} />
-      <Route path="manage-classes"  element={<ManageClasses />} />  
-        
-
+        <Route path="test" element={<NotificationTest />} />
+        <Route path="manage-classes" element={<ManageClasses />} />
         <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
         <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
-        < Route path="editProfile" element={<EditProfile />}  />
-       
+        <Route path="editProfile" element={<EditProfile />} />
       </Route>
-      {/*</Routes></Route>*/}
-     
 
-      {/* Teacher Routes 
-      
-    <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
-
-      
-      <Route element={<ProtectedRoute allowedRoles={["teacher"] } />} >*/}
-
+      {/* Teacher Routes */}
       <Route path="/teacher" element={<TeacherLayout />}>
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
-        <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
@@ -118,35 +95,21 @@ const App = () => {
         <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
       </Route>
 
-    
-
-      {/*</Routes></Route>*/}
-
 
       
+
       {/* Student routes */}
-      
-
-
-      
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<StudentDashboard />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="studentRegistration" element={<StudentRegistration />} />
         <Route path="subject/:subjectId" element={<SubjectPage />} />
-        <Route path="studentProfile" element={<StudentProfile />} />
+        
         <Route path="notifications" element={<StudentNotifications />} />
         <Route path="calendar" element={<StudentCalender />} />
-
-        <Route path="assignments" element= {<StudentAssignment />} />
-        <Route path ="settings" element={<StudentSettings />} /> 
+        <Route path="assignments" element={<StudentAssignment />} />
+        <Route path="settings" element={<StudentSettings />} />
       </Route>
-      
-
-      
-
-
-
      {/*<Route path="/student/dashboard" element={<StudentDashboard />} />*/}
     </Routes>
   );
