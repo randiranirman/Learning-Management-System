@@ -82,8 +82,8 @@ const StudentSideBar = ({
     {
       key: 'calander',
       icon: <CalendarOutlined />,
-      label: 'Calander',
-      path: '/Student/calander'
+      label: 'Calendar',
+      path: '/Student/calendar'
     },
    
     {
