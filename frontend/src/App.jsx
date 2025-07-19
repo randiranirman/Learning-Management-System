@@ -95,7 +95,7 @@ const App = () => {
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="dashboard-old" element={<TDashboard />} />
         <Route path="profile" element={<TeacherProfile />} />
-        <Route path="assignments" element={<Assignment />} />
+        <Route path="assignments/:subjectId" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
