@@ -40,7 +40,7 @@ const StudentSettings = () => {
   const { token } = theme.useToken();
 
   const fetchStudentDetails = async () => {
-    const id = localStorage.getItem("UserId");
+    const id = parseInt(localStorage.getItem("UserId"));
     if (!id) {
       console.error("User ID not found in localStorage");
       setLoading(false);

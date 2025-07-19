@@ -49,12 +49,7 @@ const StudentSideBar = ({
       label: 'Dashboard',
       path: '/student/dashboard'
     },
-    {
-      key: 'profile',
-      icon: <TeamOutlined />,
-      label: 'Profile',
-      path: '/student/StudentProfile'
-    },
+    
     {
       key: 'notifications',
       icon: <NotificationBadge><MailOutlined /></NotificationBadge>,

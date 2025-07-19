@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://localhost:7033/api/student";
+const BASE_URL = "https://localhost:7033/user/edit-student";
+const URL = "https://localhost:7033/user/students";
 
 export const editStudentDetails = async (updatedData) => {
     const id = localStorage.getItem("UserId"); 
@@ -30,7 +31,7 @@ export const editStudentDetails = async (updatedData) => {
 
 export const getStudentDetails = async (id) => {
     try {
-        const response = await axios.get(`${BASE_URL}/${id}`, {
+        const response = await axios.get(`${URL}/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }

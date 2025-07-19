@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, DatePicker, Space } from "antd";
+import { 
+  Form, 
+  Input, 
+  Button, 
+  Select, 
+  DatePicker, 
+  message,
+  Row,
+  Col,
+  Divider
+} from "antd";
 import {
   UserOutlined,
   CheckCircleOutlined,
-  EditOutlined,
+  BookOutlined,
+  NumberOutlined,
+  TrophyOutlined
 } from "@ant-design/icons";
 import { fetchAllSubjects } from "../../../utils/subjectService";
 import { fetchAllClasses } from "../../../utils/classService";
@@ -15,6 +27,7 @@ const StudentRegistration = () => {
   const [form] = Form.useForm();
   const [classOptions, setClassOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +47,7 @@ const StudentRegistration = () => {
 
   const handleSubmit = async (values) => {
     try {
+      setLoading(true);
       const studentId = parseInt(localStorage.getItem("UserId"));
 
       // Map class name to class ID
@@ -58,134 +72,182 @@ const StudentRegistration = () => {
 
       const response = await registerStudent(studentRegisterData);
       console.log("Student registered successfully:", response);
+      message.success('Registration submitted successfully!');
       form.resetFields();
+      setCurrentStep(2);
     } catch (error) {
       console.log("Registration failed", error);
+      message.error('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "#f0f2f5",
-        padding: "20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 800,
-          margin: "auto",
-          padding: "40px",
-          background: "#f7f7f7",
-          borderRadius: "10px",
-          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h2
-          style={{ textAlign: "center", color: "#1890ff", fontWeight: "bold" }}
-        >
-          Student Registration Form
-        </h2>
+    <div style={{ 
+      minHeight: '100vh', 
+      background: '#f5f5f5', 
+      padding: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <Row justify="center" style={{ width: '100%', maxWidth: '1200px' }}>
+        <Col xs={24} sm={20} md={16} lg={14} xl={12}>
+<div style={{ 
+            background: '#5038ED', 
+            borderRadius: '16px', 
+            padding: '32px',
+            color: 'white',
+            textAlign: 'center',
+            marginBottom: '32px'
+          }}>
+            <h2 style={{ color: 'white', margin: '0 0 8px 0', fontSize: '24px' }}>Course Registration</h2>
+            <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', margin: 0 }}>Complete your student registration form</p>
+          </div>
 
-        <Form
-          form={form}
-          onFinish={handleSubmit}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 16 }}
-          layout="horizontal"
-        >
-          <Form.Item
-            label="Student Name"
-            name="studentName"
-            rules={[{ required: true, message: "Please enter your name!" }]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="Full Name" />
-          </Form.Item>
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '16px'
+          }}>
+            <Form
+              form={form}
+              onFinish={handleSubmit}
+              layout="vertical"
+              size="large"
+            >
+              {/* Personal Information */}
+              <div style={{ marginBottom: '24px' }}>
+                <h3 style={{ fontSize: '16px', color: '#333', fontWeight: 'bold', margin: '0 0 12px 0' }}>
+                  Personal Information
+                </h3>
+                <Divider style={{ margin: '12px 0 20px' }} />
+                
+                <Form.Item 
+                  name="studentName" 
+                  label="Student Name" 
+                  rules={[{ required: true, message: "Please enter your name!" }]}
+                >
+                  <Input 
+                    prefix={<UserOutlined style={{ color: '#999' }} />} 
+                    placeholder="Enter your full name"
+                    style={{ borderRadius: '8px' }}
+                  />
+                </Form.Item>
 
-          <Form.Item
-            label="New Grade"
-            name="grade"
-            rules={[{ required: true, message: "Please select your grade!" }]}
-          >
-            <Select placeholder="Select Grade" allowClear>
-              {classOptions.map((cls) => (
-                <Option key={cls.id} value={cls.name}>
-                  {cls.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item 
+                      label="Date of Birth" 
+                      name="dob" 
+                      rules={[{ required: true, message: "Select your birth date" }]}
+                    >
+                      <DatePicker 
+                        style={{ width: '100%', borderRadius: '8px' }} 
+                        placeholder="Select date"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item 
+                      name="indexNumber" 
+                      label="Index Number" 
+                      rules={[{ required: true, message: "Enter your index number" }]}
+                    >
+                      <Input 
+                        prefix={<NumberOutlined style={{ color: '#999' }} />} 
+                        placeholder="Index Number"
+                        style={{ borderRadius: '8px' }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-          <Form.Item
-            label="Subjects"
-            name="subjects"
-            rules={[{ required: true, message: "Please select subjects!" }]}
-          >
-            <Select mode="multiple" placeholder="Select Subjects" allowClear>
-              {subjectOptions.map((subject) => (
-                <Option key={subject.subjectId} value={subject.name}>
-                  {subject.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+                <Form.Item 
+                  name="address" 
+                  label="Address" 
+                  rules={[{ required: true, message: "Please enter your address!" }]}
+                >
+                  <Input.TextArea 
+                    rows={3} 
+                    placeholder="Enter your residential address"
+                    style={{ borderRadius: '8px', resize: 'none' }}
+                  />
+                </Form.Item>
+              </div>
 
-          <Form.Item
-            label="Date of Birth"
-            name="dob"
-            rules={[
-              { required: true, message: "Please select your date of birth!" },
-            ]}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
+              {/* Academic Information */}
+              <div style={{ marginBottom: '32px' }}>
+                <h3 style={{ fontSize: '16px', color: '#333', fontWeight: 'bold', margin: '0 0 12px 0' }}>
+                  Academic Information
+                </h3>
+                <Divider style={{ margin: '12px 0 20px' }} />
+                
+                <Form.Item 
+                  name="grade" 
+                  label="Select Grade" 
+                  rules={[{ required: true, message: "Please select your grade!" }]}
+                >
+                  <Select 
+                    placeholder="Choose your grade"
+                    style={{ borderRadius: '8px' }}
+                    suffixIcon={<TrophyOutlined style={{ color: '#999' }} />}
+                  >
+                    {classOptions.map((cls) => (
+                      <Option key={cls.id} value={cls.name}>{cls.name}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
 
-          <Form.Item
-            label="Index Number"
-            name="indexNumber"
-            rules={[
-              { required: true, message: "Please enter index number!" },
-            ]}
-          >
-            <Input placeholder="Enter your index number" />
-          </Form.Item>
+                <Form.Item 
+                  name="subjects" 
+                  label="Choose Subjects" 
+                  rules={[{ required: true, message: "Please select subjects!" }]}
+                >
+                  <Select 
+                    mode="multiple" 
+                    placeholder="Select your subjects" 
+                    allowClear
+                    style={{ borderRadius: '8px' }}
+                    maxTagCount={3}
+                    maxTagPlaceholder={(omittedValues) => `+${omittedValues.length} more`}
+                  >
+                    {subjectOptions.map((subject) => (
+                      <Option key={subject.subjectId} value={subject.name}>
+                        <BookOutlined style={{ marginRight: '8px', color: '#5038ED' }} />
+                        {subject.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
 
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[{ required: true, message: "Please enter your address!" }]}
-          >
-            <Input.TextArea rows={4} placeholder="Enter your address" />
-          </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Space size="large">
-              <Button
-                type="default"
-                icon={<EditOutlined />}
-                style={{ width: "100px" }}
-              >
-                Edit
-              </Button>
-
-              <Button
-                type="primary"
-                htmlType="submit"
-                icon={<CheckCircleOutlined />}
-                style={{ width: "100px" }}
-              >
-                Submit
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </div>
+              {/* Submit Button */}
+              <Form.Item>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  block 
+                  loading={loading}
+                  size="large"
+                  style={{
+                    borderRadius: '8px',
+                    height: '48px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    backgroundColor: '#5038ED',
+                    borderColor: '#5038ED'
+                  }}
+                  icon={<CheckCircleOutlined />}
+                >
+                  {loading ? 'Submitting Registration...' : 'Submit Registration'}
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 };
