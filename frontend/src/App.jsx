@@ -80,6 +80,7 @@ const App = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element = {<AdminTasks />} />
         <Route path="notifications" element={<AdminNotifications />} />
+        
       <Route path="test" element={<NotificationTest />} />
       <Route path="manage-classes"  element={<ManageClasses />} />  
         
