@@ -46,32 +46,16 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
     label: 'Dashboard',
     path: '/admin/dashboard'
   },
-  {
-    key:'manage-tasks',
-    icon: <FileTextOutlined />,  // Better for tasks than Calendar
-    label: 'Manage Tasks',
-    path: '/admin/manage-tasks'
-  }
+  
 
-  ,
-  {
-    key: 'manage users',
-    icon: <TeamOutlined />,  // Better for user management than Calendar
-    label: 'manage users',
-    path: '/admin/manage-users'
-  },
+  
   {
     key: 'Manage Assignments',
     icon: <ScheduleOutlined />,  // Better for assignments/tasks
     label: 'Manage Assignments',
     path: '/admin/manage-assignments'
   },
-  {
-    key: 'Manage-Courses',
-    icon: <BookOutlined />,  // Better for courses/educational content
-    label: 'Manage Courses',
-    path: '/admin/test'
-  },
+  
   {
     key:'Teacher Registration Management',
     icon: <UserOutlined />,

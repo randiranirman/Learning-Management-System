@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Table, Space, Typography, message, Popconfirm, Tag } from 'antd';
+import { Card, Button, Table, Space, Typography, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { fetchAllClasses } from '../../../utils/classService';
+import { fetchAllClasses, deleteClass } from '../../../utils/classService';
 import AddClassPopup from './../AdminComponents/AddClassPopup';
+import Swal from 'sweetalert2';
 
 const { Title, Text } = Typography;
 
@@ -17,9 +18,29 @@ const ManageClasses = () => {
     try {
       const response = await fetchAllClasses();
       console.log("All classes fetched:", response);
-      setClasses(response || []);
+      
+      // Map backend response to frontend expected format
+      const mappedClasses = (response || []).map(cls => ({
+        id: cls.classId || cls.id,
+        name: cls.name,
+        code: cls.code,
+        description: cls.description,
+        credit: cls.grade || cls.credit || 0,
+        createdAt: cls.createdAt,
+        maxStudents: cls.maxStudents,
+        status: cls.status,
+        // Keep original data as well for reference
+        ...cls
+      }));
+      
+      setClasses(mappedClasses);
     } catch (error) {
-      message.error("Failed to fetch classes");
+      await Swal.fire({
+        title: 'Error',
+        text: 'Failed to fetch classes.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
       console.error("Error fetching classes:", error);
     } finally {
       setIsLoadingClasses(false);
@@ -28,35 +49,63 @@ const ManageClasses = () => {
 
   // Handle when a new class is added
   const handleClassAdded = async (newClass) => {
-    await getAllClasses(); // Refresh the classes list
+    setClasses([...classes, newClass]); // Optimistically update the state
     setShowClassPopup(false);
-    message.success("Class added successfully!");
+    await Swal.fire({
+      title: 'Success',
+      text: 'Class added successfully!',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    });
   };
 
-  // Handle class deletion
-  const handleDeleteClass = async (classId) => {
-    try {
-      await deleteClass(classId);
-      message.success("Class deleted successfully!");
-      await getAllClasses(); // Refresh the list
-    } catch (error) {
-      message.error("Failed to delete class");
-      console.error("Error deleting class:", error);
+  // Handle class deletion with SweetAlert confirmation
+  const handleDeleteClass = async (classData) => {
+    const result = await Swal.fire({
+      title: 'Delete Class',
+      text: `Are you sure you want to delete "${classData.name || 'this class'}"? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const deleteResult = await deleteClass(classData.id);
+        if (deleteResult !== false) {
+          // Remove the class from the local state
+          setClasses(classes.filter((cls) => cls.id !== classData.id));
+        }
+      } catch (error) {
+        // Error is already handled in deleteClass with Swal
+        console.error("Error in handleDeleteClass:", error);
+      }
     }
   };
 
-  // Handle class edit (placeholder for now)
+  // Handle class edit (placeholder)
   const handleEditClass = (classData) => {
-    // You can implement edit functionality here
     console.log("Edit class:", classData);
-    message.info("Edit functionality to be implemented");
+    Swal.fire({
+      title: 'Info',
+      text: 'Edit functionality to be implemented.',
+      icon: 'info',
+      confirmButtonText: 'OK',
+    });
   };
 
-  // Handle view class details (placeholder for now)
+  // Handle view class details (placeholder)
   const handleViewClass = (classData) => {
-    // You can implement view details functionality here
     console.log("View class:", classData);
-    message.info("View details functionality to be implemented");
+    Swal.fire({
+      title: 'Info',
+      text: 'View details functionality to be implemented.',
+      icon: 'info',
+      confirmButtonText: 'OK',
+    });
   };
 
   // Table columns configuration
@@ -65,7 +114,7 @@ const ManageClasses = () => {
       title: 'Class Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <strong>{text}</strong>,
+      render: (text) => <strong>{text || 'Unnamed Class'}</strong>,
     },
     {
       title: 'Class Code',
@@ -114,20 +163,13 @@ const ManageClasses = () => {
             onClick={() => handleEditClass(record)}
             title="Edit Class"
           />
-          <Popconfirm
+          <Button
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDeleteClass(record)}
             title="Delete Class"
-            description="Are you sure you want to delete this class?"
-            onConfirm={() => handleDeleteClass(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              title="Delete Class"
-            />
-          </Popconfirm>
+          />
         </Space>
       ),
     },

@@ -12,6 +12,7 @@ const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
         className: "",
         classCode: "",
         description: "",
+        credit: 0,
       });
       const [errors , setErrors]= useState({
         className: "",
@@ -52,23 +53,45 @@ const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
               }
       }
 
-      const handleSubmit   = async () => {
+      const handleSubmit = async () => {
         try {
-            const result = await createClass(formData);
+            // Map frontend form data to backend expected format
+            const classData = {
+                name: formData.className,
+                code: formData.classCode,
+                description: formData.description,
+                credit: parseInt(formData.credit) || 0
+            };
+            
+            const result = await createClass(classData);
             console.log("Class created successfully:", result);
-            message.success("Class created successfully");
+            
+            // Map backend response to frontend expected format
+            const mappedResult = {
+                id: result.classId,
+                name: result.name || formData.className,
+                code: result.code || formData.classCode,
+                description: result.description || formData.description,
+                credit: result.grade || parseInt(formData.credit) || 0,
+                createdAt: result.createdAt,
+                maxStudents: result.maxStudents,
+                status: result.status
+            };
+            
             form.resetFields();
-            await Swal.fire({
-                title: 'Success!',
-                text: 'Class added successfully',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                });
-                setShowAddClassPopup(false);
-            onClassAdded && onClassAdded(result);
+            setFormData({
+                className: "",
+                classCode: "",
+                description: "",
+                credit: 0,
+            });
+            
+            setShowAddClassPopup(false);
+            onClassAdded && onClassAdded(mappedResult);
                 
         } catch (error) {
-            message.error("Failed to create class" , error.message || error.response?.data || 'There was an error creating the class.');
+            console.error("Error creating class:", error);
+            message.error("Failed to create class: " + (error.message || error.response?.data || 'There was an error creating the class.'));
         }
       }
       
@@ -115,6 +138,21 @@ return (
                     rules={[{ required: true }]}
                 >
                     <Input name="description" onChange={handleChange} />
+                </Form.Item>
+
+                <Form.Item
+                    label="Credit Hours"
+                    name="credit"
+                    rules={[{ required: true, message: 'Credit hours is required' }]}
+                >
+                    <Input 
+                        name="credit" 
+                        type="number" 
+                        min="0" 
+                        max="10" 
+                        onChange={handleChange} 
+                        placeholder="Enter credit hours (e.g., 3)"
+                    />
                 </Form.Item>
 
                 <Form.Item>
