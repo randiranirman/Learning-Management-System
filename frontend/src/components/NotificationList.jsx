@@ -4,13 +4,16 @@ import { CheckOutlined, DeleteOutlined, BellOutlined, CheckCircleOutlined, Excla
 import { useNotifications } from '../contexts/NotificationContext';
 import moment from 'moment';
 
-const NotificationList = () => {
+const NotificationList = ({ notifications: propNotifications }) => {
     const {
-        notifications,
+        notifications: contextNotifications,
         markAsRead,
         removeNotification,
         clearAllNotifications
     } = useNotifications();
+
+    // Use prop notifications if provided, otherwise use context notifications
+    const notifications = propNotifications || contextNotifications;
 
     const getNotificationIcon = (type) => {
         switch (type) {
