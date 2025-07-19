@@ -66,14 +66,12 @@ export const getPendingRegistrations = async () => {
 };
 
 
-export const  fetchSubjectsFromStudentRegistration= async (studentId) => {
-
+export const fetchSubjectsFromStudentRegistration = async (studentId) => {
     studentId = parseInt(localStorage.getItem("UserId"));
     console.log("Fetching subjects for student ID:", studentId);
 
-
     try {
-        const response = await  axios.get(`${FETCH_SUBJECTS_URL}/${studentId}`, {
+        const response = await axios.get(`${FETCH_SUBJECTS_URL}/${studentId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             }
@@ -84,7 +82,90 @@ export const  fetchSubjectsFromStudentRegistration= async (studentId) => {
         console.error("Error fetching subjects:", error);
         throw error;
     }
-}
+};
+
+// Approve student registration
+export const approveRegistration = async (registrationId, adminId) => {
+    try {
+        const response = await axios.post(
+            `${BASE_API_URL}/approve/${registrationId}`,
+            { adminId }, // Send adminId in request body
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            }
+        );
+        console.log("Registration approved successfully:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error approving registration:", error);
+        if (error.response) {
+            console.error("Approval error response:", error.response.data);
+        }
+        throw error;
+    }
+};
+
+// Reject student registration
+export const rejectRegistration = async (registrationId, adminId, reason) => {
+    try {
+        const response = await axios.put(
+            `${BASE_API_URL}/reject/${registrationId}`,
+            { 
+                adminId, 
+                reason 
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            }
+        );
+        console.log("Registration rejected successfully:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error rejecting registration:", error);
+        if (error.response) {
+            console.error("Rejection error response:", error.response.data);
+        }
+        throw error;
+    }
+};
+
+// Get student registrations by student ID
+export const getStudentRegistrations = async (studentId) => {
+    try {
+        const response = await axios.get(`${BASE_API_URL}/student/${studentId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        });
+        console.log("Student registrations fetched:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching student registrations:", error);
+        throw error;
+    }
+};
+
+// Get registration by ID
+export const getRegistrationById = async (registrationId) => {
+    try {
+        const response = await axios.get(`${BASE_API_URL}/${registrationId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        });
+        console.log("Registration details fetched:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching registration details:", error);
+        throw error;
+    }
+};
 
 
 
