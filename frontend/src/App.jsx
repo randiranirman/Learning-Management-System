@@ -20,7 +20,6 @@ import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import FirstLogin from "./pages/FirstLogin"; 
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
-import Files from "./roles/teacher/TeacherPages/Files";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
