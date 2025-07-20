@@ -73,6 +73,7 @@ const StudentRegistration = () => {
       const response = await registerStudent(studentRegisterData);
       console.log("Student registered successfully:", response);
       message.success('Registration submitted successfully!');
+      
       form.resetFields();
       setCurrentStep(2);
     } catch (error) {

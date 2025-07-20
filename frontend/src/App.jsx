@@ -19,14 +19,14 @@ import FirstLogin from "./pages/FirstLogin";
 import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
-import Notifications from "./roles/teacher/TeacherPages/Notifications";
+// import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
 import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
-import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
+// import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
 import StudentAssignments from "./roles/teacher/TeacherPages/StudentAssignments";
@@ -38,8 +38,9 @@ import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
 import TeacherRegistrationManagement from "./roles/admin/AdminPages/TeacherRegistrationManagement";
 import StudentCalender from "./roles/student/StudentPages/StudentCalender";
 import StudentRegistrationManagement from "./roles/admin/AdminPages/StudentRegistrationManagement";
-import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
+// import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
 import NotificationTest from "./test/NotificationTest";
+import SignalRDebugger from "./components/SignalRDebugger";
 import ManageClasses from "./roles/admin/AdminPages/ManageClasses";
 
 
@@ -69,8 +70,9 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element={<AdminTasks />} />
-        <Route path="notifications" element={<AdminNotifications />} />
+        {/* <Route path="notifications" element={<AdminNotifications />} /> */}
         <Route path="test" element={<NotificationTest />} />
+        <Route path="debug" element={<SignalRDebugger />} />
         <Route path="manage-classes" element={<ManageClasses />} />
         <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
         <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
@@ -86,7 +88,7 @@ const App = () => {
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
-        <Route path="notifications" element={<Notifications />} />
+        {/* <Route path="notifications" element={<Notifications />} /> */}
         <Route path="files" element={<Files />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
@@ -105,7 +107,7 @@ const App = () => {
         <Route path="studentRegistration" element={<StudentRegistration />} />
         <Route path="subject/:subjectId" element={<SubjectPage />} />
         
-        <Route path="notifications" element={<StudentNotifications />} />
+        {/* <Route path="notifications" element={<StudentNotifications />} /> */}
         <Route path="calendar" element={<StudentCalender />} />
         <Route path="assignments" element={<StudentAssignment />} />
         <Route path="settings" element={<StudentSettings />} />

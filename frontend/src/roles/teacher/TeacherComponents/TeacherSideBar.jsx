@@ -2,7 +2,6 @@ import React from 'react';
 import { getUserNameFromToken,  useLogout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
-import NotificationBadge from '../../../components/NotificationBadge';
 import {
   HomeOutlined,
   UserOutlined,
@@ -60,7 +59,7 @@ const TeacherSideBar = ({
     },
     {
       key: 'notifications',
-      icon: <NotificationBadge><MailOutlined /></NotificationBadge>,
+      icon: <MailOutlined />,
       label: 'Notifications',
       path: '/teacher/notifications'
     },
