@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 
 const API_URL = "https://localhost:7293/classes/Class"; // Base API URL
 
+
 // this is the function for creating class
 export const createClass = async ( classData) => {
 
@@ -45,4 +46,32 @@ export const fetchAllClasses = async ( ) => {
      }catch( error) {
         console.log("Error fetching classes:", error);
      }
+}
+
+export const deleteClass = async  ( classID) => {
+    try {
+        const response = await axios.delete(`${API_URL}/deleteClassById/${classID}`);
+        console.log("Class deleted successfully:", response.data);
+        
+        await Swal.fire({
+            title: 'Deleted!',
+            text: 'The class has been deleted successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+        
+        return true; // Return true on successful deletion
+
+    } catch( error) {
+        console.log("Error deleting class:", error);
+        
+        await Swal.fire({
+            title: 'Error',
+            text: 'Failed to delete class. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        
+        return false; // Return false on error
+    }
 }

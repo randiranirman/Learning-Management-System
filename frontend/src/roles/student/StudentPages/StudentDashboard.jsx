@@ -12,14 +12,15 @@ import {
   CustomerServiceOutlined,
   HeartOutlined
 } from '@ant-design/icons';
+import { fetchSubjectsFromStudentRegistration, getStudentRegistrations } from '../../../utils/studentRegistrationService';
 
-import { fetchSubjectsFromStudentRegistration } from '../../../utils/studentRegistrationService';
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const [visibleCards, setVisibleCards] = useState([]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [studentInfo, setStudentInfo] = useState(null);
 
   // Map subject names to icons, gradients, and categories - Light colors matching sidebar theme
   const subjectStyles = {
@@ -76,34 +77,49 @@ const StudentDashboard = () => {
   };
 
   useEffect(() => {
-  const fetchSubjects = async () => {
-    try {
-      setLoading(true);
-      const subjects = (await fetchSubjectsFromStudentRegistration(parseInt(localStorage.getItem("UserId")))).data; // 
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const studentId = parseInt(localStorage.getItem("UserId"));
+        
+        // Fetch both subjects and student registration info in parallel
+        const [subjectsResponse, studentRegistrations] = await Promise.all([
+          fetchSubjectsFromStudentRegistration(studentId),
+          getStudentRegistrations(studentId).catch(() => null) // Don't fail if this fails
+        ]);
+        
+        const subjects = subjectsResponse.data;
+        console.log("Fetched subjects:", subjects);
+        console.log("Student registration info:", studentRegistrations);
+        
+        setStudentInfo(studentRegistrations);
+        
+        // Use student registration info to get grade information
+        const gradeInfo = studentRegistrations?.className || studentRegistrations?.[0]?.className || 'Grade Unknown';
+        
+        const formattedCourses = subjects.map((subject, index) => ({
+          id: subject.subjectId,
+          title: subject.subjectName.charAt(0).toUpperCase() + subject.subjectName.slice(1),
+          grade: gradeInfo,
+          category: subjectStyles[subject.subjectName.toLowerCase()]?.category || subjectStyles.default.category,
+          gradient: subjectStyles[subject.subjectName.toLowerCase()]?.gradient || subjectStyles.default.gradient,
+          icon: subjectStyles[subject.subjectName.toLowerCase()]?.icon || subjectStyles.default.icon,
+          delay: index * 200,
+          // Pass additional subject data
+          subjectData: subject
+        }));
 
-      console.log("Fetched subjects:", subjects);
+        setCourses(formattedCourses);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Failed to load subjects. Please try again.');
+        setLoading(false);
+      }
+    };
 
-      const formattedCourses = subjects.map((subject, index) => ({
-        id: subject.subjectId,
-        title: subject.subjectName.charAt(0).toUpperCase() + subject.subjectName.slice(1),
-        grade: 'Grade 10 - Sinhala', // or dynamically use real grade info if available
-        category: subjectStyles[subject.subjectName.toLowerCase()]?.category || subjectStyles.default.category,
-        gradient: subjectStyles[subject.subjectName.toLowerCase()]?.gradient || subjectStyles.default.gradient,
-        icon: subjectStyles[subject.subjectName.toLowerCase()]?.icon || subjectStyles.default.icon,
-        delay: index * 200
-      }));
-
-      setCourses(formattedCourses);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching subjects:", error);
-      setError('Failed to load subjects. Please try again.');
-      setLoading(false);
-    }
-  };
-
-  fetchSubjects();
-}, []);;
+    fetchData();
+  }, []);
 
   useEffect(() => {
     courses.forEach((course, index) => {
@@ -114,7 +130,16 @@ const StudentDashboard = () => {
   }, [courses]);
 
   const handleCardClick = (course) => {
-    navigate(`/student/subject/${course.id}`);
+    // Create a serializable version of the course object without React elements
+    const serializableCourse = {
+      id: course.id,
+      title: course.title,
+      grade: course.grade,
+      category: course.category,
+      gradient: course.gradient,
+      subjectData: course.subjectData
+    };
+    navigate(`/student/subject/${course.id}`, { state: { course: serializableCourse } });
   };
 
   const cardStyle = (course) => ({

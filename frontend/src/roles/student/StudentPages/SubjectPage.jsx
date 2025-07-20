@@ -1,36 +1,48 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Card, Row, Col } from 'antd';
-import {
-  BookOutlined,
-  DesktopOutlined,
-  HistoryOutlined,
-  CalculatorOutlined,
-  TranslationOutlined,
-  ExperimentOutlined,
-  ShoppingOutlined,
-  CustomerServiceOutlined,
-  HeartOutlined,
-} from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { Card, Row, Col, Spin, Alert } from 'antd';
+import { BookOutlined } from '@ant-design/icons';
+import { getStudentRegistrations } from '../../../utils/studentRegistrationService';
 
 const SubjectPage = () => {
   const { subjectId } = useParams(); // Get the subjectId from the URL
+  const location = useLocation(); // Get the navigation state
+  const { course } = location.state || {}; // Extract the course object from state
+  
+  const [loading, setLoading] = useState(true);
+  const [studentData, setStudentData] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Sample subject data for all 9 subjects
-  const subjects = {
-    1: { title: 'Sinhala', grade: 'Grade 10 - Sinhala', icon: <BookOutlined />, gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-    2: { title: 'Information Communication Technology', grade: 'Grade 10 - ICT',  icon: <DesktopOutlined />, gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-    3: { title: 'History', grade: 'Grade 10 - History',  icon: <HistoryOutlined />, gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-    4: { title: 'Mathematics', grade: 'Grade 10 - Math',  icon: <CalculatorOutlined />, gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-    5: { title: 'English', grade: 'Grade 10 - English',  icon: <TranslationOutlined />, gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)' },
-    6: { title: 'Science', grade: 'Grade 10 - Science',  icon: <ExperimentOutlined />, gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
-    7: { title: 'Commerce', grade: 'Grade 10 - Commerce',  icon: <ShoppingOutlined />, gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
-    8: { title: 'Drama', grade: 'Grade 10 - Drama',  icon: <CustomerServiceOutlined />, gradient: 'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)' },
-    9: { title: 'Buddhism', grade: 'Grade 10 - Buddhism',  icon: <HeartOutlined />, gradient: 'linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%)' },
+  // Fallback subject data if course is not available
+  const defaultSubject = {
+    title: 'Unknown Subject',
+    grade: 'Grade Unknown',
+    icon: <BookOutlined style={{ fontSize: '24px', color: '#5038ED' }} />,
+    gradient: 'linear-gradient(135deg, #F7F3FF 0%, #EDE7FF 100%)',
+    category: 'General'
   };
 
-  // Get the subject data based on the subjectId
-  const subject = subjects[subjectId] || {};
+  // Use course from state or fallback to default
+  const subject = course || defaultSubject;
+  
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        setLoading(true);
+        const studentId = parseInt(localStorage.getItem("UserId"));
+        const registrations = await getStudentRegistrations(studentId);
+        setStudentData(registrations);
+        console.log('Student registration data:', registrations);
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+        setError('Failed to load additional subject information');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchStudentData();
+  }, [subjectId]);
 
   return (
     <div style={{ padding: '40px 20px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -69,15 +81,49 @@ const SubjectPage = () => {
             </div>
           </Card>
 
-          {/* Subject Content (Add your subject content here) */}
+          {/* Subject Content */}
           <div style={{ backgroundColor: '#fff', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 15px rgba(0,0,0,0.08)' }}>
             <h3 style={{ fontSize: '24px', fontWeight: '600' }}>Subject Details</h3>
-           
-            <ul style={{ fontSize: '16px', color: '#555' }}>
-              <li>Lectures</li>
-              <li>Assignments</li>
-              <li>Resources</li>
-            </ul>
+            
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <Spin size="large" />
+                <p style={{ marginTop: '16px', color: '#666' }}>Loading subject information...</p>
+              </div>
+            ) : error ? (
+              <Alert
+                message="Error"
+                description={error}
+                type="error"
+                style={{ marginBottom: '16px' }}
+              />
+            ) : null}
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+              <Card size="small" title="Basic Information" style={{ borderRadius: '8px' }}>
+                <p><strong>Subject ID:</strong> {subjectId}</p>
+                <p><strong>Subject Name:</strong> {subject.title}</p>
+                <p><strong>Category:</strong> {subject.category}</p>
+                <p><strong>Grade Level:</strong> {subject.grade}</p>
+              </Card>
+              
+              <Card size="small" title="Academic Progress" style={{ borderRadius: '8px' }}>
+                <p><strong>Status:</strong> <span style={{ color: '#52c41a' }}>Active</span></p>
+                <p><strong>Enrollment Date:</strong> {studentData?.createdAt ? new Date(studentData.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p><strong>Class:</strong> {studentData?.className || 'Not Available'}</p>
+                <p><strong>Index Number:</strong> {studentData?.indexNumber || 'N/A'}</p>
+              </Card>
+            </div>
+            
+            <Card size="small" title="Subject Resources" style={{ borderRadius: '8px' }}>
+              <ul style={{ fontSize: '16px', color: '#555', marginBottom: 0 }}>
+                <li> Course Materials and Lectures</li>
+                <li> Assignments and Projects</li>
+                <li>📊 Grades and Performance Analytics</li>
+                <li>💬 Discussion Forums</li>
+                <li>📅 Class Schedule and Announcements</li>
+              </ul>
+            </Card>
           </div>
         </Col>
       </Row>

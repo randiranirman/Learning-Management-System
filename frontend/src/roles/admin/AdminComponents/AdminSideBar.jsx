@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getUserNameFromToken, logout } from '../../../utils/authService';
+import { getUserNameFromToken, useLogout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
 import {
@@ -31,7 +31,7 @@ const AdminSideBar = ({ userName = 'Chanuka', userRole = 'Admin'
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const fastLogout = useLogout();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -45,27 +45,33 @@ const AdminSideBar = ({ userName = 'Chanuka', userRole = 'Admin'
     label: 'Dashboard',
     path: '/admin/dashboard'
   },
-  {
-    key: 'manage users',
-    icon: <TeamOutlined />,  // Better for user management than Calendar
-    label: 'manage users',
-    path: '/admin/manage-users'
-  },
+  
+
+  
   {
     key: 'Manage Assignments',
     icon: <ScheduleOutlined />,  // Better for assignments/tasks
     label: 'Manage Assignments',
     path: '/admin/manage-assignments'
   },
+  
   {
-    key: 'Manage-Courses',
-    icon: <BookOutlined />,  // Better for courses/educational content
-    label: 'Manage Courses',
-    path: '/admin/manage-courses'
+    key:'Teacher Registration Management',
+    icon: <UserOutlined />,
+    label: 'Teacher Registration Management',
+    path: '/admin/teacherRegistrationManagement'
   },
+
+  {
+    key:'Student Registration Management',
+    icon: <UserOutlined />,
+    label: 'Student Registration Management',
+    path: '/admin/studentRegistrationsManagement'
+  },
+
   {
     key: 'Notifications',
-    icon: <BellOutlined/>,  // Better for courses/educational content
+    icon: <BellOutlined/>,
     label: 'Notifications',
     path: '/admin/notifications'
   },
@@ -81,6 +87,7 @@ const AdminSideBar = ({ userName = 'Chanuka', userRole = 'Admin'
     label: 'Settings',
     path: '/admin/settings'
   },
+
   {
     key: 'Logout',
     icon: <LogoutOutlined />,  // This one is already appropriate
@@ -90,8 +97,8 @@ const AdminSideBar = ({ userName = 'Chanuka', userRole = 'Admin'
 ];
   const handleMenuClick = ({ key }) => {
     if (key === 'Logout') {
-      logout(); // Call the logout function
-      
+      fastLogout(); // Call the logout function
+
     } else {
       const selectedItem = menuItems.find(item => item.key === key);
       if (selectedItem) {
