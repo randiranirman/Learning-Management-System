@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { getUserNameFromToken, useLogout } from '../../../utils/authService';
 import { getUserRole } from '../../../utils/authService';
 import { Layout, Menu, Typography, Avatar, Button, Tooltip } from 'antd';
-import NotificationBadge from '../../../components/NotificationBadge';
 import {
   HomeOutlined,
   UserOutlined,
@@ -72,7 +71,7 @@ const AdminSideBar = ({ userName = getUserNameFromToken(localStorage.getItem("ac
 
   {
     key: 'Notifications',
-    icon: <NotificationBadge><BellOutlined/></NotificationBadge>,
+    icon: <BellOutlined/>,
     label: 'Notifications',
     path: '/admin/notifications'
   },
