@@ -64,10 +64,120 @@ const deleteAssignmentById = async (id) => {
     }
 }
 
+const getAllSubjectMaterialsBySubjectId = async (subjectId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/TeacherFiles/files`, {
+            params: { 
+                subjectId: subjectId
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching subject materials:", error);
+        throw error;
+    }
+}
+
+const createMaterial = async (topicid, materialRequest) => {
+    try {
+        console.log("request for material creation:", topicid, materialRequest);
+        const response = await axios.post(`${BASE_URL}/TeacherFiles/files/create-material`, materialRequest, {
+            params: { topicId: topicid }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating material:", error);
+        throw error;
+    }
+}
+
+const deleteTopicMaterials = async (materialId) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/TeacherFiles/files/delete-material`, {
+            params: { materialId: materialId }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting topic materials:", error);
+        throw error;
+    }
+}
+
+const updateTopicMaterials = async (materialId, materialRequest) => {
+    try {
+        console.log("Updating material with ID:", materialId, "Data:", materialRequest);
+        const response = await axios.put(`${BASE_URL}/TeacherFiles/files/edit-material`, materialRequest, {
+            params: { 
+                materialId: materialId
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating topic materials:", error);
+        throw error;
+    }
+}
+
+const createSubjectTopic = async (subjectId, topicName) => {
+    try{
+        const response = await axios.post(`${BASE_URL}/TeacherFiles/files/create-subject-topic`, 
+            topicName,
+            {
+                params: { subjectId },
+                headers: {
+                "Content-Type": "application/json", // ensure correct content type
+                },
+            }
+            );
+        return response.data;
+    } catch (error) {
+        console.error("Error creating subject topic:", error);
+        throw error;
+    }
+}
+
+const editSubjectTopic = async (topicId, newTopicName)   => {
+    try{
+        const response = await axios.put(`${BASE_URL}/TeacherFiles/files/edit-subject-topic`, newTopicName, {
+            params: {
+                topicId: topicId
+            },
+            headers: {
+                "Content-Type": "application/json", // ensure correct content type
+            },
+        });
+        return response.data;
+    } catch(error) {
+        console.log("Error editing subject topic:", error);
+        throw error;
+    }
+}
+
+const deleteSubjectTopic = async (topicId) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/TeacherFiles/files/delete-subject-topic`, {
+            params: {
+                topicId: topicId
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting subject topic:", error);
+        throw error;
+    }
+}
+
 export {
     getSubjectsByTeacherId,
     getAssignmentsBySubjectId,
     addNewAssignment,
     updateAssignmentById,
-    deleteAssignmentById
+    deleteAssignmentById,
+    getAllSubjectMaterialsBySubjectId,
+    createMaterial,
+    deleteTopicMaterials,
+    createSubjectTopic,
+    editSubjectTopic,
+    updateTopicMaterials,
+    deleteSubjectTopic
 }

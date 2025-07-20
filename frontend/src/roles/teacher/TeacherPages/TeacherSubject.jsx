@@ -59,7 +59,7 @@ const TeacherSubject = () => {
       icon: <BookOutlined />,
       color: theme.accentColor2,
       description: "Upload and manage resources",
-      action: () => navigate("/teacher/files"),
+      action: () => navigate(`/teacher/files?subjectId=${subjectId}`),
       buttonType: "view",
     },
   ];

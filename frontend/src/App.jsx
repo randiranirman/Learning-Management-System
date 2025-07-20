@@ -48,6 +48,7 @@ import AllTeachersDisplay from "./roles/admin/AdminPages/AllTeachersDisplay";
 import AllStudentsDisplay from "./roles/admin/AdminPages/AllStudentsDisplay";
 import AllTeacherAssigedSubjects from "./roles/admin/AdminPages/AllTeacherAssigedSubjects";
 import TeacherSubject from "./roles/teacher/TeacherPages/TeacherSubject";
+import TestMaterials from "./roles/teacher/TeacherPages/TestMaterials";
 
 
 
@@ -101,7 +102,7 @@ const App = () => {
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
         <Route path="notifications" element={<Notifications />} />
-        <Route path="files" element={<Files />} />
+        <Route path="files" element={<TestMaterials />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
         <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
