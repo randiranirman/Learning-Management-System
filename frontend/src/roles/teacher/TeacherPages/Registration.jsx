@@ -12,6 +12,7 @@ import {
 import { fetchAllClasses } from "../../../utils/classService";
 import { fetchAllSubjects } from "../../../utils/subjectService";
 import { teacherRegistration } from "../../../utils/teacherRegistrationService";
+import signalRService from "../../../services/signalRService";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -22,16 +23,7 @@ export default function TeacherCourseRegistration() {
   const [grades, setGrades] = useState([]);
   const [subjectNames, setSubjectNames] = useState([]);
 
-  // Load SweetAlert2 if not already loaded
-  React.useEffect(() => {
-    if (!window.Swal) {
-      const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.all.min.js";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
+  
 
   useEffect(() => {
     const loadGrades = async () => {
@@ -126,6 +118,14 @@ export default function TeacherCourseRegistration() {
           text: "You Will be notified after admin approval.",
           confirmButtonText: "OK",
         });
+
+        signalRService.sendNotification(
+        "Teacher Registration", 
+        "New teacher registration request", 
+        "New", 
+        "Admin",
+        [parseInt(localStorage.getItem("UserId"), 10)]
+        )
       } else {
         // Fallback to alert and message
         alert(
