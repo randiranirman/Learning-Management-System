@@ -21,7 +21,7 @@ import UnAuthorized from "./pages/UnAuthorized";
 import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import Files from "./roles/teacher/TeacherPages/Files";
 // import Notifications from "./roles/teacher/TeacherPages/Notifications";
-import Notifications from "./roles/teacher/TeacherPages/Notifications";
+// import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
 import RequestReset from "./pages/RequestReset";
@@ -52,6 +52,8 @@ import AllStudentsDisplay from "./roles/admin/AdminPages/AllStudentsDisplay";
 import AllTeacherAssigedSubjects from "./roles/admin/AdminPages/AllTeacherAssigedSubjects";
 import TeacherSubject from "./roles/teacher/TeacherPages/TeacherSubject";
 import TestMaterials from "./roles/teacher/TeacherPages/TestMaterials";
+import AssignmentSubmission from "./roles/student/StudentPages/AssignmentSubmission";
+import SubjectLayout from "./roles/student/StudentLayout/SubjectLayout";
 
 
 
@@ -97,7 +99,6 @@ const App = () => {
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="assignments" element={<Assignment />} />
         <Route path="dashboard-old" element={<TDashboard />} />
-        <Route path="profile" element={<TeacherProfile />} />
         <Route path="assignments/:subjectId" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
@@ -105,7 +106,6 @@ const App = () => {
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
         {/* <Route path="notifications" element={<Notifications />} /> */}
         <Route path="files" element={<Files />} />
-        <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<TestMaterials />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
@@ -123,14 +123,17 @@ const App = () => {
         <Route index element={<StudentDashboard />} />
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="studentRegistration" element={<StudentRegistration />} />
-        <Route path="subject/:subjectId" element={<SubjectPage />} />
-        
         {/* <Route path="notifications" element={<StudentNotifications />} /> */}
         <Route path="calendar" element={<StudentCalender />} />
         <Route path="assignments" element={<StudentAssignment />} />
         <Route path="settings" element={<StudentSettings />} />
+        <Route path="subject/:subjectId/assignments/submission" element={<AssignmentSubmission />} />
+        <Route path="subject/:subjectId" element={<SubjectLayout />}>
+        <Route index element={<SubjectPage />} />
+          <Route path="assignments" element={<StudentAssignment />} />
+        </Route>
       </Route>
-     {/*<Route path="/student/dashboard" element={<StudentDashboard />} />*/}
+      
     </Routes>
   );
 };
