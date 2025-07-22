@@ -125,10 +125,10 @@ export const approveTeacherRegistration = async (registrationBody) => {
   console.log("Approving registration with data:", registrationBody);
 
   const requestBody = {
-    registrationId: registrationBody.registrationId,
-    status: registrationBody.status, // Should be 0 (pending), 1 (approved), or 2 (rejected)
-    adminId: registrationBody.adminId,
-    remarks: registrationBody.remarks || ""
+    RegistrationId: registrationBody.registrationId,
+    Status: registrationBody.status, // Should be 0 (pending), 1 (approved), or 2 (rejected)
+    AdminId: registrationBody.adminId,
+    Remarks: registrationBody.remarks || ""
   };
   
   console.log("Request body being sent:", requestBody);
