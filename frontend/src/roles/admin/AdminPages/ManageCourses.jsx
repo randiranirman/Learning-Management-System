@@ -1,434 +1,359 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Typography, Input, message } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import AddCoursePopup from '../AdminComponents/AddCoursePopup';
-import { fetchAllSubjects } from '../../../utils/subjectService';
+import { 
+  Table, 
+  Button, 
+  Modal, 
+  Form, 
+  Input, 
+  Space, 
+  Typography, 
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Tag,
+  Tooltip,
+  Popconfirm
+} from 'antd';
+import {
+  BookOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+  CodeOutlined,
+  FileTextOutlined
+} from '@ant-design/icons';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+import { addSubject, fetchAllSubjects } from '../../../utils/subjectService';
 
 const { Title } = Typography;
-const { Search } = Input;
 
-const ManageCourses = () => {
+const ManageCourse = () => {
   const [subjects, setSubjects] = useState([]);
-  const [filteredSubjects, setFilteredSubjects] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isLoadingSubjects, setIsLoadingSubjects] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showCoursePopup, setShowCoursePopup] = useState(false);
-  const [editingSubject, setEditingSubject] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentSubject, setCurrentSubject] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
 
-  // Form state for subjects
-  const [formData, setFormData] = useState({
-    name: '',
-    code: '',
-    description: ''
-  });
-
-  // Function to refresh subjects list
-  const refreshSubjectsList = async () => {
-    setIsLoadingSubjects(true);
+  // Fetch subjects from API
+  const fetchSubjects = async () => {
+    setLoading(true);
     try {
-      const subjectsData = await fetchAllSubjects();
-      if (subjectsData) {
-        setSubjects(subjectsData);
-        setFilteredSubjects(subjectsData);
-      }
+      const response = await fetchAllSubjects();
+      setSubjects(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      console.error("Failed to fetch subjects:", error);
-      message.error('Failed to load subjects');
+      console.error('Error fetching subjects:', error);
+      Swal.fire('Error', 'Failed to fetch subjects', 'error');
+      setSubjects([]);
     } finally {
-      setIsLoadingSubjects(false);
+      setLoading(false);
     }
   };
+
 
   useEffect(() => {
-    refreshSubjectsList();
+    fetchSubjects();
   }, []);
 
-  // Search functionality
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    if (!value) {
-      setFilteredSubjects(subjects);
-    } else {
-      const filtered = subjects.filter(subject =>
-        subject.name.toLowerCase().includes(value.toLowerCase()) ||
-        subject.code.toLowerCase().includes(value.toLowerCase()) ||
-        subject.description.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredSubjects(filtered);
-    }
+  const handleAddSubject = () => {
+
+    setIsEditMode(false);
+    form.resetFields();
+    setIsModalVisible(true);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleEditSubject = (record) => {
+    setIsEditMode(true);
+    setCurrentSubject(record);
+    form.setFieldsValue({
+      name: record.name,
+      code: record.code,
+      description: record.description,
+    });
+    setIsModalVisible(true);
   };
 
-  const handleAddSubject = async () => {
-    try {
-      // Replace with your actual API call
-      // const response = await addSubject(formData);
-      
-      // For now, simulate success
-      message.success('Subject added successfully!');
-      setFormData({ name: '', code: '', description: '' });
-      setShowAddModal(false);
-      await refreshSubjectsList();
-    } catch (error) {
-      console.error('Error adding subject:', error);
-      message.error('Failed to add subject');
-    }
-  };
-
-  const handleEditSubject = async () => {
-    try {
-      // Replace with your actual API call
-      // const response = await updateSubject(editingSubject.subjectId, formData);
-      
-      // For now, simulate success
-      message.success('Subject updated successfully!');
-      setFormData({ name: '', code: '', description: '' });
-      setShowEditModal(false);
-      setEditingSubject(null);
-      await refreshSubjectsList();
-    } catch (error) {
-      console.error('Error updating subject:', error);
-      message.error('Failed to update subject');
-    }
-  };
-
-  const handleDeleteSubject = async (subjectId, subjectName) => {
-    const result = await Swal.fire({
+  const handleDeleteSubject = (subjectId) => {
+    Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete "${subjectName}". This action cannot be undone!`,
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-    
-    if (result.isConfirmed) {
-      try {
-        // Replace with your actual API call
-        // const response = await deleteSubject(subjectId);
-        
-        // For now, simulate success
-        setSubjects(prevSubjects => prevSubjects.filter(subject => subject.subjectId !== subjectId));
-        setFilteredSubjects(prevSubjects => prevSubjects.filter(subject => subject.subjectId !== subjectId));
-        Swal.fire('Deleted!', 'Subject has been deleted successfully.', 'success');
-      } catch (error) {
-        console.error("Error deleting subject:", error);
-        Swal.fire('Error!', 'Something went wrong.', 'error');
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`/api/subjects/${subjectId}`); // Replace with your actual API
+          setSubjects(subjects.filter((subject) => subject.subjectId !== subjectId));
+          Swal.fire('Deleted!', 'The subject has been deleted.', 'success');
+        } catch (error) {
+          console.error('Error deleting subject:', error);
+          Swal.fire('Error', 'Failed to delete subject', 'error');
+        }
       }
+    });
+  };
+const handleModalOk = async () => {
+  try {
+    const values = await form.validateFields();
+
+    if (isEditMode && currentSubject) {
+      // Update subject using subjectService
+      const updatedSubject = await updateSubject(currentSubject.subjectId, values);
+      setSubjects(
+        subjects.map((subject) =>
+          subject.subjectId === currentSubject.subjectId
+            ? { ...subject, ...updatedSubject }
+            : subject
+        )
+      );
+    } else {
+      // Add subject using subjectService
+      const newSubject = await addSubject(values);
+      setSubjects([...subjects, newSubject]);
     }
+
+    setIsModalVisible(false);
+    form.resetFields();
+  } catch (error) {
+    console.error('Error saving subject:', error);
+    Swal.fire('Error', `Failed to ${isEditMode ? 'update' : 'add'} subject`, 'error');
+  }
+};
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    form.resetFields();
   };
 
-  const openEditModal = (subject) => {
-    setEditingSubject(subject);
-    setFormData({
-      name: subject.name,
-      code: subject.code,
-      description: subject.description
-    });
-    setShowEditModal(true);
+
+
+  // Get statistics
+  const getStatistics = () => {
+    return {
+      totalSubjects: subjects.length,
+      recentlyAdded: subjects.filter(s => {
+        const createdDate = new Date(s.createdAt);
+        const now = new Date();
+        const diffTime = Math.abs(now - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 7;
+      }).length
+    };
   };
 
-  const closeModals = () => {
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setShowCoursePopup(false);
-    setEditingSubject(null);
-    setFormData({ name: '', code: '', description: '' });
-  };
-
-  const handleCourseAdded = async () => {
-    // Optionally refresh subjects list if courses affect subjects
-    // await refreshSubjectsList();
-    setShowCoursePopup(false);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  // Ant Design Table columns configuration
-  const columns = [
-    {
-      title: 'Subject Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <strong>{text}</strong>,
-    },
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      key: 'code',
-      render: (text) => (
-        <span style={{
-          background: '#f0f0ff',
-          color: '#5038ED',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          fontSize: '12px',
-          fontWeight: 'bold'
-        }}>
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true,
-    },
-    {
-      title: 'Created Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date) => formatDate(date),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space>
-          <Button 
-            type="primary" 
-            icon={<EditOutlined />}
-            style={{ background: '#5038ED' }}
-            onClick={() => openEditModal(record)}
-          >
-            Edit
-          </Button>
-          <Button 
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteSubject(record.subjectId, record.name)}
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+  const stats = getStatistics();
 
   return (
-    <>
-      {/* Header Section */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 16px', maxWidth: '90%' }}>
-        {/* Left side: Heading */}
-        <Title level={3} style={{ margin: 0 }}>Manage Subjects</Title>
+    <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
+      <Title level={2} style={{ marginBottom: '24px' }}>
+        Manage Subjects
+      </Title>
 
-        {/* Right side: Buttons */}
-        <Space>
-         
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            style={{ background: '#5038ED' }}
-            onClick={() => setShowCoursePopup(true)}
+      {/* Statistics Cards */}
+      <Row gutter={16} style={{ marginBottom: '24px' }}>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              title="Total Subjects"
+              value={stats.totalSubjects}
+              prefix={<BookOutlined />}
+              valueStyle={{ color: '#5e35f6' }}
+              loading={loading}
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              title="Recently Added (7 days)"
+              value={stats.recentlyAdded}
+              prefix={<PlusOutlined />}
+              valueStyle={{ color: '#52c41a' }}
+              loading={loading}
+            />
+          </Card>
+        </Col>
+        <Col span={6} offset={6}>
+          <Card>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleAddSubject}
+              style={{ width: '100%' }}
+            >
+              Add New Subject
+            </Button>
+          </Card>
+        </Col>
+      </Row>
+
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <Title level={4} style={{ margin: 0 }}>Subject List</Title>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchSubjects}
           >
-            Add Subject
+            Refresh
           </Button>
-        </Space>
-      </div>
-
-      {/* Search Section */}
-      <div style={{ margin: '16px 16px' }}>
-        <Search
-          placeholder="Search subjects by name, code, or description..."
-          allowClear
-          enterButton={<SearchOutlined />}
-          size="large"
-          onSearch={handleSearch}
-          onChange={(e) => handleSearch(e.target.value)}
-          style={{ maxWidth: 400 }}
-        />
-      </div>
-
-      {/* Table Section */}
-      <div style={{ margin: '16px 16px' }}>
-        <Table 
-          columns={columns} 
-          dataSource={filteredSubjects}
-          rowKey="subjectId"
-          pagination={{ pageSize: 10 }}
-          bordered
-          scroll={{ x: 'max-content' }}
-          loading={isLoadingSubjects}
-          locale={{
-            emptyText: 'No subjects found'
+        </div>
+        <Table
+        loading={loading}
+        columns={[
+          {
+            title: 'Subject Name',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text) => (
+              <Space>
+                <BookOutlined style={{ color: '#5e35f6' }} />
+                <span>{text}</span>
+              </Space>
+            )
+          },
+          {
+            title: 'Code',
+            dataIndex: 'code',
+            key: 'code',
+            render: (text) => (
+              <Tag icon={<CodeOutlined />} color="blue">
+                {text}
+              </Tag>
+            )
+          },
+          {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+            render: (text) => (
+              <Space>
+                <FileTextOutlined />
+                <span>{text.length > 50 ? `${text.substring(0, 50)}...` : text}</span>
+              </Space>
+            )
+          },
+          {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (text) => {
+              const date = new Date(text);
+              return (
+                <Tooltip title={date.toLocaleString()}>
+                  {date.toLocaleDateString()}
+                </Tooltip>
+              );
+            }
+          },
+          {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+              <Space>
+                <Tooltip title="Edit Subject">
+                  <Button
+                    type="primary"
+                    icon={<EditOutlined />}
+                    onClick={() => handleEditSubject(record)}
+                  />
+                </Tooltip>
+                <Popconfirm
+                  title="Delete Subject"
+                  description="Are you sure you want to delete this subject? This action cannot be undone."
+                  onConfirm={() => handleDeleteSubject(record.subjectId)}
+                  okText="Yes"
+                  cancelText="No"
+                  okButtonProps={{ danger: true }}
+                >
+                  <Tooltip title="Delete Subject">
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                    />
+                  </Tooltip>
+                </Popconfirm>
+              </Space>
+            )
+          }
+        ]}
+        dataSource={subjects}
+        rowKey="subjectId"
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (total) => `Total ${total} subjects`
+        }}
+        style={{ background: '#fff' }}
+      />
+      </Card>
+      <Modal
+        title={
+          <Space>
+            {isEditMode ? <EditOutlined /> : <PlusOutlined />}
+            <span>{isEditMode ? 'Edit Subject' : 'Add New Subject'}</span>
+          </Space>
+        }
+        open={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okText={isEditMode ? 'Update Subject' : 'Add Subject'}
+        cancelText="Cancel"
+        width={600}
+        centered
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ marginTop: '16px' }}
+          validateMessages={{
+            required: '${label} is required!',
+            types: {
+              string: '${label} must be a valid string!'
+            }
           }}
-        />
-      </div>
-
-      {/* Add Subject Modal */}
-      {showAddModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '24px',
-            borderRadius: '8px',
-            width: '500px',
-            maxWidth: '90%'
-          }}>
-            
-            
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Description</label>
-              <Input.TextArea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Enter subject description"
-                rows={4}
-              />
-            </div>
-            
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <Button onClick={closeModals} size="large">
-                Cancel
-              </Button>
-              <Button 
-                type="primary" 
-                onClick={handleAddSubject}
-                style={{ background: '#5038ED' }}
-                size="large"
-              >
-                Add Subject
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Subject Modal */}
-      {showEditModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '24px',
-            borderRadius: '8px',
-            width: '500px',
-            maxWidth: '90%'
-          }}>
-            <h2 style={{ marginBottom: '20px', color: '#5038ED' }}>Edit Subject</h2>
-            
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Subject Name</label>
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Enter subject name"
-                size="large"
-              />
-            </div>
-            
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Subject Code</label>
-              <Input
-                name="code"
-                value={formData.code}
-                onChange={handleInputChange}
-                placeholder="Enter subject code"
-                size="large"
-              />
-            </div>
-            
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Description</label>
-              <Input.TextArea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Enter subject description"
-                rows={4}
-              />
-            </div>
-            
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <Button onClick={closeModals} size="large">
-                Cancel
-              </Button>
-              <Button 
-                type="primary" 
-                onClick={handleEditSubject}
-                style={{ background: '#5038ED' }}
-                size="large"
-              >
-                Update Subject
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add Hawkins: Add Course Popup */}
-      {showCoursePopup && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '24px',
-            borderRadius: '8px',
-            width: '500px',
-            maxWidth: '90%'
-          }}>
-            
-          </div>
-
-
-         { <AddCoursePopup setShowCoursePopup={setShowCoursePopup} onCourseAdded={handleCourseAdded} />}
-        </div>
-        
-      )}
-    </>
+        >
+          <Form.Item
+            name="name"
+            label="Subject Name"
+            rules={[{ required: true }]}
+          >
+            <Input
+              prefix={<BookOutlined style={{ color: '#5e35f6' }} />}
+              placeholder="Enter subject name"
+            />
+          </Form.Item>
+          <Form.Item
+            name="code"
+            label="Subject Code"
+            rules={[{ required: true }]}
+          >
+            <Input
+              prefix={<CodeOutlined style={{ color: '#5e35f6' }} />}
+              placeholder="Enter subject code"
+            />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true }]}
+          >
+            <Input.TextArea
+              rows={4}
+              placeholder="Enter detailed description of the subject"
+              showCount
+              maxLength={500}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 };
 
-export default ManageCourses;
+export default ManageCourse;

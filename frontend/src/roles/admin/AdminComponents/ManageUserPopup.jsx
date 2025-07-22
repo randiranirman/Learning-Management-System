@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Select, Button, Typography, message } from "antd";
 import { registerUser } from "../../../utils/authService";
-import Swal from "sweetalert2";
 
 const { Option } = Select;
 const { Title } = Typography;
 
 const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -52,29 +52,18 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       const result = await registerUser(formData);
       message.success("User registered successfully");
       form.resetFields();
-       await Swal.fire({
-              title: 'Success!',
-              text: 'User added successfully',
-              icon: 'success',
-              confirmButtonText: 'OK'
-            });
-        
-      setShowUserPopup(false);
-      // Pass the new user data back to parent component
       onUserAdded && onUserAdded(result || formData);
     } catch (error) {
-      await Swal.fire({
-    title: 'Error',
-    text: 'Username already exists',
-    icon: 'error',
-    confirmButtonText: 'OK'
-  });
-  
-  message.error("Failed to register user");
-  console.error("Registration error:", error);
+      console.error("Registration error:", error);
+      const errorMessage = error.response?.data?.message || error.message || 'Username already exists.';
+      message.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setShowUserPopup(false);
     }
   };
 
@@ -84,6 +73,9 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
       title={<Title level={4}>Add User</Title>}
       onCancel={() => setShowUserPopup(false)}
       footer={null}
+      maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+      width={600}
+      destroyOnClose={true}
     >
       <Form
         layout="vertical"
@@ -118,8 +110,8 @@ const ManageUserPopup = ({ setShowUserPopup, onUserAdded }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block >
-            Add User
+          <Button type="primary" htmlType="submit" block loading={loading} disabled={loading}>
+            {loading ? 'Adding User...' : 'Add User'}
           </Button>
         </Form.Item>
       </Form>

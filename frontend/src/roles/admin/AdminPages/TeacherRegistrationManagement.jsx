@@ -50,15 +50,6 @@ const [registrations, setRegistrations] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState([]);
 
-  // Load SweetAlert2 for notifications
-  React.useEffect(() => {
-    if (!window.Swal) {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.all.min.js';
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
 
   // Group registrations by teacher
   const groupRegistrationsByTeacher = (data) => {
@@ -69,17 +60,17 @@ const [registrations, setRegistrations] = useState([]);
     // Process class registrations
     if (Array.isArray(data.classRegistrations)) {
       data.classRegistrations.forEach(reg => {
-        const key = `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`;
+        const key = reg.teacherId;
         if (!teacherRegistrations.has(key)) {
           teacherRegistrations.set(key, {
             teacherId: reg.teacherId,
             employeeId: reg.employeeId,
             firstName: reg.firstName || '',
             teacherEmail: reg.teacherEmail || '',
-            numberOfStudents: reg.numberOfStudents || 0,
-            remarks: reg.remarks || '',
             status: reg.status,
             registeredAt: reg.registeredAt,
+            remarks: reg.remarks || '',
+            numberOfStudents: reg.numberOfStudents || 0,
             classRegistrations: [],
             subjectRegistrations: [],
             registrationIds: []
@@ -98,17 +89,17 @@ const [registrations, setRegistrations] = useState([]);
     // Process subject registrations
     if (Array.isArray(data.subjectRegistrations)) {
       data.subjectRegistrations.forEach(reg => {
-        const key = `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`;
+        const key = reg.teacherId;
         if (!teacherRegistrations.has(key)) {
           teacherRegistrations.set(key, {
             teacherId: reg.teacherId,
             employeeId: reg.employeeId,
             firstName: reg.firstName || '',
             teacherEmail: reg.teacherEmail || '',
-            numberOfStudents: reg.numberOfStudents || 0,
-            remarks: reg.remarks || '',
             status: reg.status,
             registeredAt: reg.registeredAt,
+            remarks: reg.remarks || '',
+            numberOfStudents: reg.numberOfStudents || 0,
             classRegistrations: [],
             subjectRegistrations: [],
             registrationIds: []
@@ -116,18 +107,17 @@ const [registrations, setRegistrations] = useState([]);
         }
         const teacher = teacherRegistrations.get(key);
         teacher.subjectRegistrations.push({
-          id: reg.teacherRegistrationId,
+          id: reg.id || reg.teacherRegistrationId,
           subjectId: reg.subjectId,
           subjectName: reg.subjectName
         });
-        teacher.registrationIds.push(reg.teacherRegistrationId);
+        teacher.registrationIds.push(reg.id || reg.teacherRegistrationId);
       });
     }
     
-    return Array.from(teacherRegistrations.values()).map((reg, index) => ({
-      ...reg,
-      key: `teacher-${reg.teacherId}-${index}`,
-      uniqueId: `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`
+    return Array.from(teacherRegistrations.values()).map(teacher => ({
+      ...teacher,
+      key: `teacher-${teacher.teacherId}`
     }));
   };
 
@@ -429,7 +419,7 @@ const adminId = parseInt(localStorage.getItem("UserId"));
               }
             ]}
             dataSource={getFilteredData()}
-            rowKey={(record) => record.key || record.uniqueId}
+            rowKey={(record) => record.key}
             loading={loading}
             pagination={{
               pageSize: 10,
