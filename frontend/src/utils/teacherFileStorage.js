@@ -167,6 +167,20 @@ const deleteSubjectTopic = async (topicId) => {
     }
 }
 
+const getAllSubmissionsByAssignmentId = async (assignmentId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/TeacherFiles/submissions`, {
+            params: {
+                assignmentId: assignmentId
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching submissions by assignment ID:", error);
+        throw error;
+    }
+}
+
 export {
     getSubjectsByTeacherId,
     getAssignmentsBySubjectId,
@@ -179,5 +193,6 @@ export {
     createSubjectTopic,
     editSubjectTopic,
     updateTopicMaterials,
-    deleteSubjectTopic
+    deleteSubjectTopic,
+    getAllSubmissionsByAssignmentId
 }

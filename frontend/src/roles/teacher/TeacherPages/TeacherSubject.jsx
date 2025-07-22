@@ -51,7 +51,7 @@ const TeacherSubject = () => {
       icon: <EditOutlined />,
       color: theme.accentColor1,
       description: "Review pending submissions",
-      action: () => navigate("/teacher/grading"),
+      action: () => navigate(`/teacher/subject/${subjectId}/view-submissions`),
       buttonType: "view",
     },
     {
@@ -68,7 +68,7 @@ const TeacherSubject = () => {
     <div
       style={{
         padding: theme.spacing.large,
-        background: "#f5f5f5",
+        background: "#ffffff",
         minHeight: "100vh",
       }}
     >

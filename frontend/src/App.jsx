@@ -54,6 +54,8 @@ import TeacherSubject from "./roles/teacher/TeacherPages/TeacherSubject";
 import TestMaterials from "./roles/teacher/TeacherPages/TestMaterials";
 import AssignmentSubmission from "./roles/student/StudentPages/AssignmentSubmission";
 import SubjectLayout from "./roles/student/StudentLayout/SubjectLayout";
+import AssignmentSubmissions from "./roles/teacher/TeacherPages/AssignmentSubmissions";
+import ViewSubmissions from "./roles/teacher/TeacherPages/ViewSubmissions";
 
 
 
@@ -98,14 +100,13 @@ const App = () => {
         <Route index element={<TeacherDashboard />} />
         <Route path="dashboard" element={<TeacherDashboard />} />
         <Route path="assignments" element={<Assignment />} />
-        <Route path="dashboard-old" element={<TDashboard />} />
         <Route path="assignments/:subjectId" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
         {/* <Route path="notifications" element={<Notifications />} /> */}
-        <Route path="files" element={<Files />} />
+        {/* <Route path="files" element={<Files />} /> */}
         <Route path="files" element={<TestMaterials />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
@@ -113,6 +114,8 @@ const App = () => {
         <Route path="analytics/assignments/:subjectId" element={<AssignmentsSubject />} />
         <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
         <Route path="subject/:subjectId" element={<TeacherSubject />} />
+        <Route path="subject/:subjectId/view-submissions" element={<AssignmentSubmissions />} />
+        <Route path="subject/:subjectId/view-submissions/:assignmentId" element={<ViewSubmissions />} />
       </Route>
 
 
@@ -133,7 +136,7 @@ const App = () => {
           <Route path="assignments" element={<StudentAssignment />} />
         </Route>
       </Route>
-      
+
     </Routes>
   );
 };
