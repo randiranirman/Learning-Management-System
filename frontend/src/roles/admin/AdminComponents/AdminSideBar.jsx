@@ -24,7 +24,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-// userName = getUserNameFromToken(localStorage.getItem("accessToken"))
+
 const AdminSideBar = ({ userName = "Randira" ||  getUserNameFromToken(localStorage.getItem("accessToken")), userRole = getUserRole(localStorage.getItem("accessToken"))
 
  }) => {

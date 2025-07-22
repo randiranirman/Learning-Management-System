@@ -208,7 +208,7 @@ const StudentDashboard = () => {
   return (
     <div style={{
       padding: '40px 20px',
-      backgroundColor: '#FAFAFA',
+      backgroundColor: '#ffffff',
       minHeight: '100vh'
     }}>
       <div style={{
