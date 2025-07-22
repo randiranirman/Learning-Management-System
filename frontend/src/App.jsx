@@ -40,6 +40,7 @@ import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import Files from "./roles/teacher/TeacherPages/Files";
 
+
 // import Notifications from "./roles/teacher/TeacherPages/Notifications";
 // import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -116,11 +117,17 @@ const App = () => {
         <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
         <Route path="editProfile" element={<EditProfile />} />
 
+
         <Route path="notifications" element={<Notification />} />
         < Route path="editProfile" element={<EditProfile />}  />
         <Route path="analytics/teachers" element={<AllTeachersDisplay />} />
         <Route path="analytics/teacher" element={<AllTeacherAssigedSubjects />} />
         <Route path="analytics/students" element={<AllStudentsDisplay />} />
+
+        {/* Debug routes */}
+        <Route path="test" element={<NotificationTest />} />
+        <Route path="debug" element={<SignalRDebugger />} />
+
 
         {/* Debug routes */}
         <Route path="test" element={<NotificationTest />} />
@@ -138,6 +145,7 @@ const App = () => {
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
+
 
         {/* <Route path="notifications" element={<Notifications />} /> */}
         {/* <Route path="files" element={<Files />} /> */}
@@ -161,8 +169,13 @@ const App = () => {
         <Route index element={<StudentDashboard />} />
         <Route path="dashboard" element={<StudentDashboard />} />
 
+
         <Route path="studentRegistration" element={<StudentRegistration />} />
         {/* <Route path="notifications" element={<StudentNotifications />} /> */}
+
+        <Route path="registration" element={<StudentRegistration />} />
+        <Route path="subject/:subjectId" element={<SubjectPage />} />
+        <Route path="notifications" element={<StudentNotifications />} />
 
         <Route path="registration" element={<StudentRegistration />} />
         <Route path="subject/:subjectId" element={<SubjectPage />} />
