@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './auth/authContext.jsx'
 import NotificationProvider from './contexts/NotificationContext.jsx'
+import '@ant-design/v5-patch-for-react-19';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

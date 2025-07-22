@@ -97,7 +97,7 @@ export default function FirstLogin() {
         newPassword: values.newPassword,
         confirmPassword: values.confirmPassword
       };
-      
+      console.log("Submitting credentials:", credentials, localStorage.getItem("usernameFromToken"));
       await changeCredentials(localStorage.getItem("usernameFromToken"), credentials);
       setMessage('Password changed successfully!');
     } catch (error) {

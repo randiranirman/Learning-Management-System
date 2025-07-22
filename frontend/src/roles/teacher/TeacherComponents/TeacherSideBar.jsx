@@ -64,12 +64,6 @@ const TeacherSideBar = ({
       path: '/teacher/notifications'
     },
     {
-      key: 'assignments',
-      icon: <ScheduleOutlined />,
-      label: 'Assignments',
-      path: '/teacher/assignments'
-    },
-    {
       key: 'registration',
       icon: <SnippetsOutlined/>,
       label: 'Registration',

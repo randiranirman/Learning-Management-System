@@ -19,6 +19,8 @@ const { Title, Text } = Typography;
 const TeacherDashboard = () => {
   const [selectedClass, setSelectedClass] = useState(null);
 
+  const teacherId = 1; // this must be dynamically set based on logged-in teacher
+
   // Sample data for teacher's classes
   const classes = [
     {

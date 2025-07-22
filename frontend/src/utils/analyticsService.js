@@ -95,6 +95,7 @@ const getAllSubjectsForGivenTeacher = async (teacherId) => {
     }
 }
 
+
 export {
     getAllStudentsBySubjectId,
     getAllAssignmentsMarksByStudentId,

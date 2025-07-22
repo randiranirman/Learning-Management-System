@@ -56,12 +56,6 @@ const StudentSideBar = ({
       path: '/student/notifications'
     },
     {
-      key: 'assignments',
-      icon: <ScheduleOutlined />,
-      label: 'Assignments',
-      path: '/Student/assignments'
-    },
-    {
       key: 'registration',
       icon: <SnippetsOutlined/>,
       label: 'Registration',
