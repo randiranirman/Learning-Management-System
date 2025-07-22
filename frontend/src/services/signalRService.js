@@ -6,23 +6,50 @@ class SignalRService {
   constructor() {
     this.connection = null;
     this.isConnected = false;
+    this.maxRetries = 3;
+    this.retryDelay = 2000;
   }
 
-  async initializeConnection() {
-    if (this.connection) {
-      console.log("SignalR already initialized");
-      return;
+  
+  async initializeConnection(userRole = null, userId = null) {
+    if (this.connection && this.connection.state === signalR.HubConnectionState.Connected) {
+      console.log("SignalR already connected");
+      return true;
+    }
+
+    if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
+      console.log("SignalR connection in progress or reconnecting...");
+      return false;
+    }
+
+    // Validate token before attempting connection
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.error('[SignalR] Cannot connect: No access token available');
+      toast.error('Authentication required for notifications');
+      return false;
     }
 
     try {
+      console.log('[SignalR] Starting connection negotiation...');
       this.connection = new signalR.HubConnectionBuilder()
         .withUrl("https://localhost:7293/notificationHub", {
           accessTokenFactory: () => {
-            return localStorage.getItem('token') || '';
+            const token = localStorage.getItem('accessToken');
+            
+            console.log('[SignalR] Token available:', !!token);
+            if (!token) {
+              console.warn('[SignalR] No access token found');
+              return '';
+            }
+            return token;
           },
+          skipNegotiation: false,
+          transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents | signalR.HttpTransportType.LongPolling,
+          withCredentials: false
         })
         .configureLogging(signalR.LogLevel.Information)
-        .withAutomaticReconnect()
+        .withAutomaticReconnect([0, 2000, 10000, 30000])
         .build();
 
       this.connection.onreconnecting(() => {
@@ -77,17 +104,45 @@ class SignalRService {
         toast.info(`Message from ${user}: ${message}`);
       });
 
+      this.connection.on('NotifyRegistrationCompleted', (data) => {
+        console.log('Registration completed notification received:', data);
+        const { ClassName, Message } = data;
+        toast.success(
+          `✅ Registration Completed: ${Message}`
+        );
+      });
+
+      this.connection.on('NotifyAdminsOnRegistration', (data) => {
+        console.log('Admin registration notification received:', data);
+        const { StudentId, ClassName, SubjectNames } = data;
+        toast.info(
+          `📝 Student ${StudentId} registered for ${ClassName} with subjects: ${SubjectNames ? SubjectNames.join(', ') : 'N/A'}`
+        );
+      });
+
       await this.connection.start();
       this.isConnected = true;
       console.log("SignalR connected successfully!");
       
-      await this.connection.invoke("JoinAdminGroup");
-      console.log("Joined admin group successfully!");
+      // Join appropriate groups based on user role
+      if (userRole === 'Admin') {
+        await this.connection.invoke("JoinAdminGroup");
+        console.log("Joined admin group successfully!");
+      } else if (userRole === 'Student' && userId) {
+        await this.connection.invoke("JoinStudentGroup", parseInt(userId));
+        console.log(`Joined student group for user ${userId}`);
+      } else if (userRole === 'Teacher' && userId) {
+        await this.connection.invoke("JoinTeacherGroup", parseInt(userId));
+        console.log(`Joined teacher group for user ${userId}`);
+      }
+      
+      return true;
       
     } catch (err) {
       console.error("SignalR connection failed:", err);
       this.isConnected = false;
       toast.error('Failed to connect to notification service');
+      return false;
     }
   }
 

@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const[ formData,setFormData]= useState({
         className: "",
         classCode: "",
@@ -54,6 +55,7 @@ const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
       }
 
       const handleSubmit = async () => {
+        setLoading(true);
         try {
             // Map frontend form data to backend expected format
             const classData = {
@@ -78,6 +80,7 @@ const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
                 status: result.status
             };
             
+            message.success('Class created successfully');
             form.resetFields();
             setFormData({
                 className: "",
@@ -91,7 +94,10 @@ const AddClassPopup = ({setShowAddClassPopup, onClassAdded}) => {
                 
         } catch (error) {
             console.error("Error creating class:", error);
-            message.error("Failed to create class: " + (error.message || error.response?.data || 'There was an error creating the class.'));
+            const errorMessage = error.response?.data?.message || error.message || 'There was an error creating the class.';
+            message.error("Failed to create class: " + errorMessage);
+        } finally {
+            setLoading(false);
         }
       }
       
@@ -103,6 +109,9 @@ return (
             title={<Title level={4}>Add Class</Title>}
             onCancel={() => setShowAddClassPopup(false)}
             footer={null}
+            maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+            width={600}
+            destroyOnClose={true}
         >
             <Form
                 layout="vertical"
@@ -156,8 +165,8 @@ return (
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" block>
-                        Add Class
+                    <Button type="primary" htmlType="submit" block loading={loading} disabled={loading}>
+                        {loading ? 'Creating Class...' : 'Add Class'}
                     </Button>
                 </Form.Item>
             </Form>

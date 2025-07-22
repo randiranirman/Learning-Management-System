@@ -121,11 +121,11 @@ export default function TeacherCourseRegistration() {
       // Send SignalR notification
       try {
         await signalRService.sendNotification(
-          "Teacher Registration", 
-          "New teacher registration request", 
-          "New", 
-          "Admin",
-          [parseInt(localStorage.getItem("UserId"))]
+          "ReceiveMessage", 
+          {
+            user: "Teacher Registration System",
+            message: `New teacher registration request from ${apiPayload.firstName} (Employee ID: ${apiPayload.employeeId})`
+          }
         );
       } catch (notificationError) {
         console.error("Notification error:", notificationError);

@@ -7,8 +7,10 @@ const { Title } = Typography;
 
 const AddCoursePopup = ({ setShowCoursePopup, onCourseAdded }) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
       const payload = {
         name: values.name,
@@ -16,28 +18,35 @@ const AddCoursePopup = ({ setShowCoursePopup, onCourseAdded }) => {
         description: values.description,
       };
 
-      await addSubject(payload);
+      const response = await addSubject(payload);
 
       message.success('Subject added successfully');
-      Swal.fire({
-        title: 'Success!',
-        text: 'Subject added successfully',
-        icon: 'success',
-        confirmButtonText: 'OK',
-      });
-
+      
+      // Don't show SweetAlert - use Ant Design message which is less intrusive
       form.resetFields();
       setShowCoursePopup(false);
-      onCourseAdded && onCourseAdded(payload);
+      
+      // Pass the complete response data for real-time update
+      onCourseAdded && onCourseAdded(response);
 
     } catch (error) {
       console.error('Error adding subject:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to add subject',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
+      
+      // Show more specific error message
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to add subject';
+      message.error(errorMessage);
+      
+      // Only show SweetAlert for critical errors
+      if (error.response?.status === 500) {
+        Swal.fire({
+          title: 'Server Error!',
+          text: 'There was a problem with the server. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,6 +56,9 @@ const AddCoursePopup = ({ setShowCoursePopup, onCourseAdded }) => {
       title={<Title level={4}>Add Subject</Title>}
       onCancel={() => setShowCoursePopup(false)}
       footer={null}
+      maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+      width={600}
+      destroyOnClose={true}
     >
       <Form
         layout="vertical"
@@ -78,8 +90,8 @@ const AddCoursePopup = ({ setShowCoursePopup, onCourseAdded }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
-            Add Subject
+          <Button type="primary" htmlType="submit" block loading={loading} disabled={loading}>
+            {loading ? 'Adding Subject...' : 'Add Subject'}
           </Button>
         </Form.Item>
       </Form>
