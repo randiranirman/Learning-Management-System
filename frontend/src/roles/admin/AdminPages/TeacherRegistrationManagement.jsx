@@ -60,6 +60,77 @@ const [registrations, setRegistrations] = useState([]);
     }
   }, []);
 
+  // Group registrations by teacher
+  const groupRegistrationsByTeacher = (data) => {
+    if (!data || typeof data !== 'object') return [];
+    
+    const teacherRegistrations = new Map();
+    
+    // Process class registrations
+    if (Array.isArray(data.classRegistrations)) {
+      data.classRegistrations.forEach(reg => {
+        const key = `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`;
+        if (!teacherRegistrations.has(key)) {
+          teacherRegistrations.set(key, {
+            teacherId: reg.teacherId,
+            employeeId: reg.employeeId,
+            firstName: reg.firstName || '',
+            teacherEmail: reg.teacherEmail || '',
+            numberOfStudents: reg.numberOfStudents || 0,
+            remarks: reg.remarks || '',
+            status: reg.status,
+            registeredAt: reg.registeredAt,
+            classRegistrations: [],
+            subjectRegistrations: [],
+            registrationIds: []
+          });
+        }
+        const teacher = teacherRegistrations.get(key);
+        teacher.classRegistrations.push({
+          id: reg.teacherRegistrationId,
+          classId: reg.classId,
+          className: reg.className
+        });
+        teacher.registrationIds.push(reg.teacherRegistrationId);
+      });
+    }
+    
+    // Process subject registrations
+    if (Array.isArray(data.subjectRegistrations)) {
+      data.subjectRegistrations.forEach(reg => {
+        const key = `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`;
+        if (!teacherRegistrations.has(key)) {
+          teacherRegistrations.set(key, {
+            teacherId: reg.teacherId,
+            employeeId: reg.employeeId,
+            firstName: reg.firstName || '',
+            teacherEmail: reg.teacherEmail || '',
+            numberOfStudents: reg.numberOfStudents || 0,
+            remarks: reg.remarks || '',
+            status: reg.status,
+            registeredAt: reg.registeredAt,
+            classRegistrations: [],
+            subjectRegistrations: [],
+            registrationIds: []
+          });
+        }
+        const teacher = teacherRegistrations.get(key);
+        teacher.subjectRegistrations.push({
+          id: reg.teacherRegistrationId,
+          subjectId: reg.subjectId,
+          subjectName: reg.subjectName
+        });
+        teacher.registrationIds.push(reg.teacherRegistrationId);
+      });
+    }
+    
+    return Array.from(teacherRegistrations.values()).map((reg, index) => ({
+      ...reg,
+      key: `teacher-${reg.teacherId}-${index}`,
+      uniqueId: `${reg.teacherId}_${reg.employeeId}_${reg.registeredAt}`
+    }));
+  };
+
   // Fetch pending registrations
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -67,22 +138,10 @@ const [registrations, setRegistrations] = useState([]);
       const data = await getPendingRegistrations();
       console.log('Fetched registrations:', data);
       
-      // Handle different data structures from backend
-      if (Array.isArray(data)) {
-        setRegistrations(data);
-      } else if (data && typeof data === 'object') {
-        // If backend returns object with arrays, combine them
-        const allRegistrations = [];
-        if (Array.isArray(data.classRegistrations)) {
-          allRegistrations.push(...data.classRegistrations);
-        }
-        if (Array.isArray(data.subjectRegistrations)) {
-          allRegistrations.push(...data.subjectRegistrations);
-        }
-        setRegistrations(allRegistrations);
-      } else {
-        setRegistrations([]);
-      }
+      // Group registrations by teacher
+      const groupedRegistrations = groupRegistrationsByTeacher(data);
+      console.log('Grouped registrations:', groupedRegistrations);
+      setRegistrations(groupedRegistrations);
     } catch (error) {
       message.error('Failed to fetch registrations');
       console.error('Error fetching registrations:', error);
@@ -119,16 +178,19 @@ const handleAction = async (record, action) => {
 
   const confirmAction = async () => {
     try {
-      const actionData = {
-        registrationId: selectedRecord.teacherRegistrationId || selectedRecord.id,
-        remarks: actionRemarks,
-        status: actionType === 'approve' ? 1 : 2,
-        adminId: adminId
-      };
+      // For grouped registrations, we need to approve/reject all registration IDs
+      const promises = selectedRecord.registrationIds.map(registrationId => {
+        const actionData = {
+          registrationId: registrationId,
+          remarks: actionRemarks,
+          status: actionType === 'approve' ? 1 : 2,
+          adminId: adminId
+        };
+        console.log('Action data for registration ID', registrationId, ':', actionData);
+        return approveTeacherRegistration(actionData);
+      });
       
-      console.log('Action data:', actionData);
-      
-      await approveTeacherRegistration(actionData);
+      await Promise.all(promises);
       
       if (window.Swal) {
         await window.Swal.fire({
@@ -284,9 +346,9 @@ const adminId = parseInt(localStorage.getItem("UserId"));
           <Table
             columns={[
               {
-                title: 'Registration ID',
-                dataIndex: 'teacherRegistrationId',
-                key: 'teacherRegistrationId',
+                title: 'Teacher ID',
+                dataIndex: 'teacherId',
+                key: 'teacherId',
                 render: (text) => <Text code>{text}</Text>
               },
               {
@@ -301,21 +363,16 @@ const adminId = parseInt(localStorage.getItem("UserId"));
                 )
               },
               {
-                title: 'Class',
-                dataIndex: 'className',
-                key: 'className',
+                title: 'Name',
+                dataIndex: 'firstName',
+                key: 'firstName',
                 render: (text) => text || 'N/A'
               },
               {
-                title: 'Subject',
-                dataIndex: 'subjectName',
-                key: 'subjectName',
-                render: (text) => (
-                  <Space>
-                    <BookOutlined />
-                    <Text>{text}</Text>
-                  </Space>
-                )
+                title: 'Email',
+                dataIndex: 'teacherEmail',
+                key: 'teacherEmail',
+                render: (text) => text || 'N/A'
               },
               {
                 title: 'Status',
@@ -339,25 +396,31 @@ const adminId = parseInt(localStorage.getItem("UserId"));
                         icon={<EyeOutlined />}
                         size="small"
                         onClick={() => showDetails(record)}
-                      />
+                      >
+                        View Details
+                      </Button>
                     </Tooltip>
                     {record.status === 0 && (
                       <>
-                        <Tooltip title="Approve">
+                        <Tooltip title="Approve Registration">
                           <Button
                             icon={<CheckCircleOutlined />}
                             size="small"
                             type="primary"
                             onClick={() => handleAction(record, 'approve')}
-                          />
+                          >
+                            Approve
+                          </Button>
                         </Tooltip>
-                        <Tooltip title="Reject">
+                        <Tooltip title="Reject Registration">
                           <Button
                             icon={<CloseCircleOutlined />}
                             size="small"
                             danger
                             onClick={() => handleAction(record, 'reject')}
-                          />
+                          >
+                            Reject
+                          </Button>
                         </Tooltip>
                       </>
                     )}
@@ -366,7 +429,7 @@ const adminId = parseInt(localStorage.getItem("UserId"));
               }
             ]}
             dataSource={getFilteredData()}
-            rowKey={(record) => record.teacherRegistrationId || record.id}
+            rowKey={(record) => record.key || record.uniqueId}
             loading={loading}
             pagination={{
               pageSize: 10,
@@ -389,21 +452,33 @@ const adminId = parseInt(localStorage.getItem("UserId"));
       >
         {selectedRecord && (
           <div className="space-y-4">
+            {/* Basic Information */}
             <Row gutter={16}>
               <Col span={12}>
-                <Text strong>ID: </Text>
-                <Text code>{selectedRecord.teacherRegistrationId || selectedRecord.id}</Text>
+                <Text strong>Teacher ID: </Text>
+                <Text code>{selectedRecord.teacherId}</Text>
               </Col>
               <Col span={12}>
-                <Text strong>Teacher ID: </Text>
-                <Text>{selectedRecord.teacherId}</Text>
+                <Text strong>Employee ID: </Text>
+                <Text>{selectedRecord.employeeId}</Text>
               </Col>
             </Row>
             
             <Row gutter={16}>
               <Col span={12}>
-                <Text strong>Employee ID: </Text>
-                <Text>{selectedRecord.employeeId}</Text>
+                <Text strong>First Name: </Text>
+                <Text>{selectedRecord.firstName || 'N/A'}</Text>
+              </Col>
+              <Col span={12}>
+                <Text strong>Email: </Text>
+                <Text>{selectedRecord.teacherEmail || 'N/A'}</Text>
+              </Col>
+            </Row>
+            
+            <Row gutter={16}>
+              <Col span={12}>
+                <Text strong>Number of Students: </Text>
+                <Text>{selectedRecord.numberOfStudents || 0}</Text>
               </Col>
               <Col span={12}>
                 <Text strong>Status: </Text>
@@ -411,40 +486,63 @@ const adminId = parseInt(localStorage.getItem("UserId"));
               </Col>
             </Row>
             
-            {selectedRecord.className && (
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Text strong>Class: </Text>
-                  <Text>{selectedRecord.className}</Text>
-                </Col>
-                <Col span={12}>
-                  <Text strong>Class ID: </Text>
-                  <Text>{selectedRecord.classId}</Text>
-                </Col>
-              </Row>
-            )}
-            
+            {/* Class Registrations */}
             <Row gutter={16}>
-              <Col span={12}>
-                <Text strong>Subject: </Text>
-                <Text>{selectedRecord.subjectName}</Text>
-              </Col>
-              <Col span={12}>
-                <Text strong>Subject ID: </Text>
-                <Text>{selectedRecord.subjectId}</Text>
+              <Col span={24}>
+                <Text strong>Class Registrations:</Text>
+                <div style={{ marginTop: '8px' }}>
+                  {selectedRecord.classRegistrations && selectedRecord.classRegistrations.length > 0 ? (
+                    selectedRecord.classRegistrations.map((cls, index) => (
+                      <div key={index} style={{ padding: '8px', border: '1px solid #f0f0f0', marginBottom: '8px', borderRadius: '4px' }}>
+                        <Text><strong>Registration ID:</strong> {cls.id}</Text><br/>
+                        <Text><strong>Class ID:</strong> {cls.classId}</Text><br/>
+                        <Text><strong>Class Name:</strong> {cls.className}</Text>
+                      </div>
+                    ))
+                  ) : (
+                    <Text type="secondary">No class registrations</Text>
+                  )}
+                </div>
               </Col>
             </Row>
             
-            {selectedRecord.isActive !== undefined && (
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Text strong>Active: </Text>
-                  <Tag color={selectedRecord.isActive ? 'green' : 'red'}>
-                    {selectedRecord.isActive ? 'Yes' : 'No'}
-                  </Tag>
-                </Col>
-              </Row>
-            )}
+            {/* Subject Registrations */}
+            <Row gutter={16}>
+              <Col span={24}>
+                <Text strong>Subject Registrations:</Text>
+                <div style={{ marginTop: '8px' }}>
+                  {selectedRecord.subjectRegistrations && selectedRecord.subjectRegistrations.length > 0 ? (
+                    selectedRecord.subjectRegistrations.map((subj, index) => (
+                      <div key={index} style={{ padding: '8px', border: '1px solid #f0f0f0', marginBottom: '8px', borderRadius: '4px' }}>
+                        <Text><strong>Registration ID:</strong> {subj.id}</Text><br/>
+                        <Text><strong>Subject ID:</strong> {subj.subjectId}</Text><br/>
+                        <Text><strong>Subject Name:</strong> {subj.subjectName}</Text>
+                      </div>
+                    ))
+                  ) : (
+                    <Text type="secondary">No subject registrations</Text>
+                  )}
+                </div>
+              </Col>
+            </Row>
+            
+            {/* Registration IDs */}
+            <Row gutter={16}>
+              <Col span={24}>
+                <Text strong>All Registration IDs: </Text>
+                <div style={{ marginTop: '4px' }}>
+                  {selectedRecord.registrationIds && selectedRecord.registrationIds.length > 0 ? (
+                    selectedRecord.registrationIds.map((id, index) => (
+                      <Tag key={index} color="orange" style={{ marginBottom: '4px' }}>
+                        {id}
+                      </Tag>
+                    ))
+                  ) : (
+                    <Text type="secondary">No registration IDs</Text>
+                  )}
+                </div>
+              </Col>
+            </Row>
             
             <Row gutter={16}>
               <Col span={24}>
