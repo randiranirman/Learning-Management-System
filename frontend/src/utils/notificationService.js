@@ -105,19 +105,19 @@ export const startSignalRConnection = async (userId) => {
     console.log("🎭 Attempting to join group for role:", userRole);
     
     if (userRole === "admin") {
-      console.log("🔧 Calling JoinAdminGroup...");
+      console.log("Calling JoinAdminGroup...");
       await hubConnection.invoke("JoinAdminGroup");
-      console.log("✅ Successfully joined Admin group");
+      console.log("Successfully joined Admin group");
     } else if (userRole === "student" && userId) {
-      console.log(`👨‍🎓 Calling JoinStudentGroup with userId: ${userId}...`);
+      console.log(` Calling JoinStudentGroup with userId: ${userId}...`);
       await hubConnection.invoke("JoinStudentGroup", parseInt(userId));
-      console.log(`✅ Successfully joined Student group for user ${userId}`);
+      console.log(`Successfully joined Student group for user ${userId}`);
     } else if (userRole === "teacher" && userId) {
-      console.log(`👩‍🏫 Calling JoinTeacherGroup with userId: ${userId}...`);
+      console.log(` Calling JoinTeacherGroup with userId: ${userId}...`);
       await hubConnection.invoke("JoinTeacherGroup", parseInt(userId));
-      console.log(`✅ Successfully joined Teacher group for user ${userId}`);
+      console.log(`Successfully joined Teacher group for user ${userId}`);
     } else {
-      console.warn("⚠️ No matching role found or missing userId. Role:", userRole, "UserId:", userId);
+      console.warn(" No matching role found or missing userId. Role:", userRole, "UserId:", userId);
     }
 
   } catch (error) {
