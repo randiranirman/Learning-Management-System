@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Table, Space, Typography, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { fetchAllClasses, deleteClass } from '../../../utils/classService';
+import { fetchAllClasses, deleteClass, updateClass } from '../../../utils/classService';
 import AddClassPopup from './../AdminComponents/AddClassPopup';
+import EditClassPopup from './../AdminComponents/EditClassPopup';
 import Swal from 'sweetalert2';
 
 const { Title, Text } = Typography;
 
 const ManageClasses = () => {
   const [showClassPopup, setShowClassPopup] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editingClass, setEditingClass] = useState(null);
   const [classes, setClasses] = useState([]);
   const [isLoadingClasses, setIsLoadingClasses] = useState(false);
 
@@ -86,15 +89,43 @@ const ManageClasses = () => {
     }
   };
 
-  // Handle class edit (placeholder)
+  // Handle class edit
   const handleEditClass = (classData) => {
     console.log("Edit class:", classData);
-    Swal.fire({
-      title: 'Info',
-      text: 'Edit functionality to be implemented.',
-      icon: 'info',
-      confirmButtonText: 'OK',
-    });
+    setEditingClass(classData);
+    setShowEditPopup(true);
+  };
+
+  // Handle class update
+  const handleClassUpdated = async (updatedClassData) => {
+    try {
+      // Prepare the request body according to your backend structure
+      const requestBody = {
+        name: updatedClassData.name,
+        code: updatedClassData.code,
+        description: updatedClassData.description,
+        credit: updatedClassData.credit,
+        classId: updatedClassData.id || updatedClassData.classId
+      };
+
+      // Call the updateClass API
+      const response = await updateClass(requestBody);
+      
+      // Update the local state with the updated class
+      setClasses(classes.map(cls => 
+        cls.id === updatedClassData.id 
+          ? { ...cls, ...updatedClassData }
+          : cls
+      ));
+      
+      // Close the edit popup
+      setShowEditPopup(false);
+      setEditingClass(null);
+      
+    } catch (error) {
+      console.error("Error updating class:", error);
+      // Error handling is already done in the updateClass function
+    }
   };
 
   // Handle view class details (placeholder)
@@ -227,6 +258,15 @@ const ManageClasses = () => {
         <AddClassPopup
           setShowAddClassPopup={setShowClassPopup}
           onClassAdded={handleClassAdded}
+        />
+      )}
+
+      {/* Edit Class Modal */}
+      {showEditPopup && editingClass && (
+        <EditClassPopup
+          classData={editingClass}
+          setShowEditPopup={setShowEditPopup}
+          onClassUpdated={handleClassUpdated}
         />
       )}
     </div>
