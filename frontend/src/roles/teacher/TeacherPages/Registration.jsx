@@ -12,7 +12,7 @@ import {
 import { fetchAllClasses } from "../../../utils/classService";
 import { fetchAllSubjects } from "../../../utils/subjectService";
 import { teacherRegistration } from "../../../utils/teacherRegistrationService";
-import signalRService from "../../../services/signalRService";
+// import signalRService from "../../../services/signalRService";
 import Swal from "sweetalert2";
 
 const { Option } = Select;

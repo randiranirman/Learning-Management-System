@@ -30,7 +30,7 @@ import {
   FilterOutlined,
   ReloadOutlined
 } from '@ant-design/icons';
-import { getPendingRegistrations, approveTeacherRegistration } from '../../../utils/teacherRegistrationService';
+import { getPendingTeacherRegistrations, approveTeacherRegistration } from '../../../utils/teacherRegistrationService';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -125,7 +125,7 @@ const [registrations, setRegistrations] = useState([]);
   const fetchRegistrations = async () => {
     setLoading(true);
     try {
-      const data = await getPendingRegistrations();
+      const data = await getPendingTeacherRegistrations();
       console.log('Fetched registrations:', data);
       
       // Group registrations by teacher

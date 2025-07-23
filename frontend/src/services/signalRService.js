@@ -1,192 +1,185 @@
-// services/signalRService.js
-import * as signalR from '@microsoft/signalr';
-import { toast } from 'react-toastify';
+// // services/signalRService.js
+// import * as signalR from '@microsoft/signalr';
+// import { toast } from 'react-toastify';
 
-class SignalRService {
-  constructor() {
-    this.connection = null;
-    this.isConnected = false;
-    this.maxRetries = 3;
-    this.retryDelay = 2000;
-  }
+// class SignalRService {
+//   constructor() {
+//     this.connection = null;
+//     this.isConnected = false;
+//   }
 
-  
-  async initializeConnection(userRole = null, userId = null) {
-    if (this.connection && this.connection.state === signalR.HubConnectionState.Connected) {
-      console.log("SignalR already connected");
-      return true;
-    }
+//   async initializeConnection() {
+//     if (this.connection) {
+//       console.log("SignalR already initialized");
+//       return;
+//     }
 
-    if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
-      console.log("SignalR connection in progress or reconnecting...");
-      return false;
-    }
+//     try {
+//       const token = localStorage.getItem('token')?.trim();
+//       if (!token) {
+//         toast.error("Missing token. Cannot connect to SignalR.");
+//         return;
+//       }
 
-    // Validate token before attempting connection
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      console.error('[SignalR] Cannot connect: No access token available');
-      toast.error('Authentication required for notifications');
-      return false;
-    }
+//       this.connection = new signalR.HubConnectionBuilder()
+//         .withUrl("https://localhost:7293/notificationHub", {
+//           accessTokenFactory: () => token,
+//         })
+//         .configureLogging(signalR.LogLevel.Information)
+//         .withAutomaticReconnect()
+//         .build();
 
-    try {
-      console.log('[SignalR] Starting connection negotiation...');
-      this.connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7293/notificationHub", {
-          accessTokenFactory: () => {
-            const token = localStorage.getItem('accessToken');
-            
-            console.log('[SignalR] Token available:', !!token);
-            if (!token) {
-              console.warn('[SignalR] No access token found');
-              return '';
-            }
-            return token;
-          },
-          skipNegotiation: false,
-          transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents | signalR.HttpTransportType.LongPolling,
-          withCredentials: false
-        })
-        .configureLogging(signalR.LogLevel.Information)
-        .withAutomaticReconnect([0, 2000, 10000, 30000])
-        .build();
+//       this.connection.onreconnecting(() => {
+//         this.isConnected = false;
+//         console.log("SignalR reconnecting...");
+//       });
 
-      this.connection.onreconnecting(() => {
-        this.isConnected = false;
-        console.log("SignalR reconnecting...");
-      });
+//       this.connection.onreconnected(async () => {
+//         this.isConnected = true;
+//         console.log("SignalR reconnected");
+//         try {
+//           await this.connection.invoke("JoinAdminGroup");
+//           console.log("Rejoined admin group after reconnect");
+//         } catch (err) {
+//           console.error("Failed to rejoin admin group:", err);
+//         }
+//       });
 
-      this.connection.onreconnected(() => {
-        this.isConnected = true;
-        console.log("SignalR reconnected");
-        this.connection.invoke("JoinAdminGroup").catch(err => console.error("Failed to rejoin admin group:", err));
-      });
+//       this.connection.onclose(() => {
+//         this.isConnected = false;
+//         console.log("SignalR connection closed");
+//       });
 
-      this.connection.onclose(() => {
-        this.isConnected = false;
-        console.log("SignalR connection closed");
-      });
+//       // === NOTIFICATION HANDLERS ===
 
-      this.connection.on("NotifyNewRegistration", (studentId, classId, className, subjectIds, subjectNames, indexNumber) => {
-        console.log("New registration notification received (method 1):", {
-          studentId, classId, className, subjectIds, subjectNames, indexNumber
-        });
-        toast.info(`📌 New registration from Student ${studentId} for ${className} (Index: ${indexNumber}) with subjects: ${subjectNames ? subjectNames.join(", ") : 'N/A'}`);
-      });
+//       this.connection.on("NotifyNewRegistration", (studentId, classId, className, subjectIds, subjectNames, indexNumber) => {
+//         console.log("New registration (method 1):", { studentId, classId, className, subjectIds, subjectNames, indexNumber });
+//         toast.info(`📌 New registration from Student ${studentId} for ${className} (Index: ${indexNumber}) with subjects: ${subjectNames?.join(", ") || 'N/A'}`);
+//       });
 
-      this.connection.on("NotifyNewRegistrationAsync", (data) => {
-        console.log("New registration notification received (method 2):", data);
-        const { StudentId, ClassName, SubjectNames, IndexNumber } = data;
-        toast.info(`📌 New registration from ${StudentId} for ${ClassName} (Index: ${IndexNumber}) with subjects: ${SubjectNames ? SubjectNames.join(", ") : 'N/A'}`);
-      });
+//       this.connection.on("NotifyNewRegistrationAsync", (data) => {
+//         console.log("New registration (method 2):", data);
+//         const { StudentId, ClassName, SubjectNames, IndexNumber } = data;
+//         toast.info(`📌 New registration from ${StudentId} for ${ClassName} (Index: ${IndexNumber}) with subjects: ${SubjectNames?.join(", ") || 'N/A'}`);
+//       });
 
-      this.connection.on('NotifyRegistrationApproved', (studentId, registrationId, className, subjectNames) => {
-        console.log("Registration approved notification received:", {
-          studentId, registrationId, className, subjectNames
-        });
-        toast.success(
-          `✅ Your registration for class "${className}" with subjects ${subjectNames ? subjectNames.join(', ') : 'N/A'} has been approved!`
-        );
-      });
+//       this.connection.on('NotifyRegistrationApproved', (studentId, registrationId, className, subjectNames) => {
+//         console.log("Registration approved:", { studentId, registrationId, className, subjectNames });
+//         toast.success(`✅ Your registration for class "${className}" with subjects ${subjectNames?.join(', ') || 'N/A'} has been approved!`);
+//       });
 
-      this.connection.on('NotifyRegistrationRejected', (studentId, registrationId, className, subjectNames, reason) => {
-        console.log("Registration rejected notification received:", {
-          studentId, registrationId, className, subjectNames, reason
-        });
-        toast.error(
-          `❌ Your registration for class "${className}" with subjects ${subjectNames ? subjectNames.join(', ') : 'N/A'} was rejected. Reason: ${reason || 'No reason provided'}`
-        );
-      });
+//       this.connection.on('NotifyRegistrationRejected', (studentId, registrationId, className, subjectNames, reason) => {
+//         console.log("Registration rejected:", { studentId, registrationId, className, subjectNames, reason });
+//         toast.error(`❌ Your registration for class "${className}" with subjects ${subjectNames?.join(', ') || 'N/A'} was rejected. Reason: ${reason || 'No reason provided'}`);
+//       });
 
-      this.connection.on('ReceiveMessage', (user, message) => {
-        console.log('Generic message received:', { user, message });
-        toast.info(`Message from ${user}: ${message}`);
-      });
+//       this.connection.on('ReceiveMessage', (user, message) => {
+//         console.log('Generic message received:', { user, message });
+//         toast.info(`📨 Message from ${user}: ${message}`);
+//       });
 
-      this.connection.on('NotifyRegistrationCompleted', (data) => {
-        console.log('Registration completed notification received:', data);
-        const { ClassName, Message } = data;
-        toast.success(
-          `✅ Registration Completed: ${Message}`
-        );
-      });
+//       this.connection.on('ReceiveNotification', (notification) => {
+//         console.log('General notification received:', notification);
+//         const { Title, Message, Type } = notification;
+//         switch (Type) {
+//           case 'success':
+//             toast.success(`${Title}: ${Message}`);
+//             break;
+//           case 'warning':
+//             toast.warning(`${Title}: ${Message}`);
+//             break;
+//           case 'error':
+//             toast.error(`${Title}: ${Message}`);
+//             break;
+//           default:
+//             toast.info(`${Title}: ${Message}`);
+//         }
+//       });
 
-      this.connection.on('NotifyAdminsOnRegistration', (data) => {
-        console.log('Admin registration notification received:', data);
-        const { StudentId, ClassName, SubjectNames } = data;
-        toast.info(
-          `📝 Student ${StudentId} registered for ${ClassName} with subjects: ${SubjectNames ? SubjectNames.join(', ') : 'N/A'}`
-        );
-      });
+//       this.connection.on('NewAssignment', (assignment) => {
+//         console.log('New assignment notification received:', assignment);
+//         const { SubjectName, AssignmentTitle, AssignmentDescription } = assignment;
+//         toast.info(`📚 New Assignment in ${SubjectName}: ${AssignmentTitle} - ${AssignmentDescription}`);
+//       });
 
-      await this.connection.start();
-      this.isConnected = true;
-      console.log("SignalR connected successfully!");
-      
-      // Join appropriate groups based on user role
-      if (userRole === 'Admin') {
-        await this.connection.invoke("JoinAdminGroup");
-        console.log("Joined admin group successfully!");
-      } else if (userRole === 'Student' && userId) {
-        await this.connection.invoke("JoinStudentGroup", parseInt(userId));
-        console.log(`Joined student group for user ${userId}`);
-      } else if (userRole === 'Teacher' && userId) {
-        await this.connection.invoke("JoinTeacherGroup", parseInt(userId));
-        console.log(`Joined teacher group for user ${userId}`);
-      }
-      
-      return true;
-      
-    } catch (err) {
-      console.error("SignalR connection failed:", err);
-      this.isConnected = false;
-      toast.error('Failed to connect to notification service');
-      return false;
-    }
-  }
+//       this.connection.on('SystemMessage', (message) => {
+//         console.log('System message received:', message);
+//         const { Message, Type } = message;
+//         const content = `🔧 System: ${Message}`;
+//         Type === 'warning' ? toast.warning(content) : toast.info(content);
+//       });
 
-  getConnectionState() {
-    if (!this.connection) return "Disconnected";
-    return this.connection.state;
-  }
+//       this.connection.on('BroadcastNotification', (broadcast) => {
+//         console.log('Broadcast notification received:', broadcast);
+//         const { Title, Message, Type } = broadcast;
+//         const content = `📢 ${Title}: ${Message}`;
+//         switch (Type) {
+//           case 'success':
+//             toast.success(content);
+//             break;
+//           case 'warning':
+//             toast.warning(content);
+//             break;
+//           default:
+//             toast.info(content);
+//         }
+//       });
 
-  isConnectionActive() {
-    return this.isConnected && this.connection && this.connection.state === signalR.HubConnectionState.Connected;
-  }
+//       await this.connection.start();
+//       this.isConnected = true;
+//       console.log("✅ SignalR connected successfully!");
 
-  async sendNotification(method, data) {
-    if (!this.isConnectionActive()) {
-      console.error("SignalR connection is not active");
-      return;
-    }
-    
-    try {
-      await this.connection.invoke(method, data);
-      console.log(`Notification sent via ${method}:`, data);
-    } catch (err) {
-      console.error(`Failed to send notification via ${method}:`, err);
-    }
-  }
+//       await this.connection.invoke("JoinAdminGroup");
+//       console.log("Joined admin group successfully!");
 
-  async stopConnection() {
-    if (this.connection) {
-      await this.connection.stop();
-      this.isConnected = false;
-      console.log("SignalR connection stopped");
-    }
-  }
+//     } catch (err) {
+//       console.error("❌ SignalR connection failed:", err);
+//       this.isConnected = false;
+//       toast.error('Failed to connect to notification service');
+//     }
+//   }
 
-  async reconnect() {
-    try {
-      await this.stopConnection();
-      this.connection = null;
-      await this.initializeConnection();
-    } catch (err) {
-      console.error("Failed to reconnect SignalR:", err);
-    }
-  }
-}
+//   getConnectionState() {
+//     if (!this.connection) return "Disconnected";
+//     return this.connection.state;
+//   }
 
-const signalRService = new SignalRService();
-export default signalRService;
+//   isConnectionActive() {
+//     return this.isConnected && this.connection && this.connection.state === signalR.HubConnectionState.Connected;
+//   }
+
+//   async sendNotification(method, data) {
+//     if (!this.isConnectionActive()) {
+//       console.error("SignalR connection is not active");
+//       return;
+//     }
+
+//     try {
+//       await this.connection.invoke(method, data);
+//       console.log(`Notification sent via ${method}:`, data);
+//     } catch (err) {
+//       console.error(`Failed to send notification via ${method}:`, err);
+//     }
+//   }
+
+//   async stopConnection() {
+//     if (this.connection) {
+//       await this.connection.stop();
+//       this.isConnected = false;
+//       console.log("SignalR connection stopped");
+//     }
+//   }
+
+//   async reconnect() {
+//     try {
+//       await this.stopConnection();
+//       this.connection = null;
+//       await this.initializeConnection();
+//     } catch (err) {
+//       console.error("Failed to reconnect SignalR:", err);
+//     }
+//   }
+// }
+
+//   const signalRService = new SignalRService();
+//   export default signalRService;
