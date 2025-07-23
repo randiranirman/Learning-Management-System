@@ -26,7 +26,7 @@ import {
 } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { addSubject, fetchAllSubjects } from '../../../utils/subjectService';
+import { addSubject, deleteSubject, fetchAllSubjects, updateSubject } from '../../../utils/subjectService';
 
 const { Title } = Typography;
 
@@ -40,19 +40,18 @@ const ManageCourse = () => {
 
   // Fetch subjects from API
   const fetchSubjects = async () => {
-    setLoading(true);
-    try {
-      const response = await fetchAllSubjects();
-      setSubjects(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error('Error fetching subjects:', error);
-      Swal.fire('Error', 'Failed to fetch subjects', 'error');
-      setSubjects([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  setLoading(true);
+  try {
+    const data = await fetchAllSubjects(); // already the array!
+    setSubjects(Array.isArray(data) ? data : []);
+  } catch (error) {
+    console.error('Error fetching subjects:', error);
+    Swal.fire('Error', 'Failed to fetch subjects', 'error');
+    setSubjects([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchSubjects();
@@ -87,7 +86,8 @@ const ManageCourse = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`/api/subjects/${subjectId}`); // Replace with your actual API
+          console.log( subjectId)
+          await deleteSubject(subjectId);
           setSubjects(subjects.filter((subject) => subject.subjectId !== subjectId));
           Swal.fire('Deleted!', 'The subject has been deleted.', 'success');
         } catch (error) {
@@ -102,8 +102,7 @@ const handleModalOk = async () => {
     const values = await form.validateFields();
 
     if (isEditMode && currentSubject) {
-      // Update subject using subjectService
-      const updatedSubject = await updateSubject(currentSubject.subjectId, values);
+      const updatedSubject = await updateSubject(currentSubject.subjectId, values); // ✅ Fixed
       setSubjects(
         subjects.map((subject) =>
           subject.subjectId === currentSubject.subjectId
@@ -112,7 +111,6 @@ const handleModalOk = async () => {
         )
       );
     } else {
-      // Add subject using subjectService
       const newSubject = await addSubject(values);
       setSubjects([...subjects, newSubject]);
     }
@@ -124,6 +122,7 @@ const handleModalOk = async () => {
     Swal.fire('Error', `Failed to ${isEditMode ? 'update' : 'add'} subject`, 'error');
   }
 };
+
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
