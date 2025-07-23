@@ -1,55 +1,207 @@
-// import React from 'react';
-// import { Card, Typography, Badge, Divider } from 'antd';
-// import { BellOutlined } from '@ant-design/icons';
-// import { useNotifications } from '../../../contexts/NotificationContext';
-// import NotificationList from '../../../components/NotificationList';
+import React, { useState } from 'react';
+import {
+  Card,
+  Typography,
+  Badge,
+  Divider,
+  Button,
+  Space,
+  Row,
+  Col,
+  Statistic,
+  Input,
+  theme
+} from 'antd';
+import {
+  BellOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  ReloadOutlined
+} from '@ant-design/icons';
+import NotificationList from '../../../components/NotificationList';
 
-// const { Title, Text } = Typography;
+const { Title, Text } = Typography;
 
-// const Notifications = () => {
-//   const { notifications, getUnreadCount, connectionState } = useNotifications();
+const Notifications = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const { token } = theme.useToken();
 
-//   return (
-//     <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
-//       <Card
-//         style={{
-//           maxWidth: '1200px',
-//           margin: '0 auto',
-//           borderRadius: '8px',
-//           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-//         }}
-//       >
-//         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-//           <BellOutlined style={{ fontSize: '24px', marginRight: '12px', color: '#1890ff' }} />
-//           <Title level={2} style={{ margin: 0, color: '#1f1f1f' }}>
-//             Teacher Notifications
-//           </Title>
-//           <Badge 
-//             count={getUnreadCount()} 
-//             style={{ marginLeft: '16px' }}
-//             showZero={false}
-//           />
-//         </div>
-        
-//         <div style={{ marginBottom: '16px' }}>
-//           <Text type="secondary">
-//             Connection Status: 
-//             <span style={{ 
-//               color: connectionState === 'Connected' ? '#52c41a' : '#ff4d4f',
-//               fontWeight: 'bold',
-//               marginLeft: '8px'
-//             }}>
-//               {connectionState}
-//             </span>
-//           </Text>
-//         </div>
-        
-//         <Divider />
-        
-//         <NotificationList />
-//       </Card>
-//     </div>
-//   );
-// };
+  // Mock data for teacher notifications
+  const mockNotifications = [
+    {
+      id: 1,
+      title: "New Assignment Submission",
+      message: "Student John has submitted his assignment for review.",
+      type: "info",
+      read: false,
+      timestamp: new Date().toISOString()
+    },
+    {
+      id: 2,
+      title: "Upcoming Parent-Teacher Meeting",
+      message: "Please prepare the report for the upcoming meeting scheduled next week.",
+      type: "warning",
+      read: true,
+      timestamp: new Date(Date.now() - 60000 * 45).toISOString()
+    },
+    {
+      id: 3,
+      title: "Quiz Published Successfully",
+      message: "Your quiz 'Algebra Basics' has been published and is now available to students.",
+      type: "success",
+      read: false,
+      timestamp: new Date(Date.now() - 60000 * 120).toISOString()
+    }
+  ];
 
-// export default Notifications;
+  const getNotificationStats = () => {
+    const total = mockNotifications.length;
+    const unread = mockNotifications.filter(n => !n.read).length;
+
+    return { total, unread };
+  };
+
+  const stats = getNotificationStats();
+
+  const refreshData = () => {
+    console.log('Refreshing teacher notifications...');
+  };
+
+  const markAllAsRead = () => {
+    console.log('Marking all notifications as read...');
+  };
+
+  const clearAllNotifications = () => {
+    console.log('Clearing all notifications...');
+  };
+
+  return (
+    <div style={{ padding: '24px', background: token.colorBgLayout, minHeight: '100vh' }}>
+      {/* Header Section */}
+      <div style={{ marginBottom: '24px' }}>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <BellOutlined style={{ 
+                fontSize: '28px', 
+                marginRight: '16px', 
+                color: token.colorPrimary 
+              }} />
+              <div>
+                <Title level={2} style={{ margin: 0, color: token.colorTextHeading }}>
+                  Teacher Notifications
+                </Title>
+                <Text type="secondary" style={{ fontSize: '16px' }}>
+                  Stay informed about student submissions and schedule updates
+                </Text>
+              </div>
+            </div>
+          </Col>
+          <Col>
+            <Space>
+              <Badge 
+                count={stats.unread} 
+                style={{ backgroundColor: token.colorError }}
+                showZero={false}
+              >
+                <Button 
+                  icon={<ReloadOutlined />}
+                  onClick={refreshData}
+                >
+                  Refresh
+                </Button>
+              </Badge>
+            </Space>
+          </Col>
+        </Row>
+      </div>
+
+      {/* Statistics Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card size="small">
+            <Statistic
+              title="Total Notifications"
+              value={stats.total}
+              prefix={<BellOutlined />}
+              valueStyle={{ color: token.colorText }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card size="small">
+            <Statistic
+              title="Unread"
+              value={stats.unread}
+              prefix={<ExclamationCircleOutlined />}
+              valueStyle={{ color: token.colorError }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Connection Status */}
+      <Card size="small" style={{ marginBottom: '24px' }}>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Space>
+              <Text strong>System Status:</Text>
+              <Badge 
+                status="success"
+                text="Online"
+              />
+            </Space>
+          </Col>
+          <Col>
+            <Space>
+              {stats.unread > 0 && (
+                <Button 
+                  type="primary" 
+                  size="small" 
+                  onClick={markAllAsRead}
+                  icon={<CheckCircleOutlined />}
+                >
+                  Mark All Read ({stats.unread})
+                </Button>
+              )}
+              {stats.total > 0 && (
+                <Button 
+                  danger 
+                  size="small" 
+                  onClick={clearAllNotifications}
+                >
+                  Clear All
+                </Button>
+              )}
+            </Space>
+          </Col>
+        </Row>
+      </Card>
+
+      {/* Main Content */}
+      <Card>
+        {/* Filters for notifications */}
+        <div style={{ marginBottom: '16px' }}>
+          <Row gutter={[16, 16]} align="middle">
+            <Col xs={24} sm={12} md={8}>
+              <Input
+                placeholder="Search notifications..."
+                prefix={<SearchOutlined />}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                allowClear
+              />
+            </Col>
+          </Row>
+        </div>
+
+        <Divider />
+
+        <NotificationList notifications={mockNotifications} />
+      </Card>
+    </div>
+  );
+};
+
+export default Notifications;
