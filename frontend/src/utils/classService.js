@@ -75,3 +75,33 @@ export const deleteClass = async  ( classID) => {
         return false; // Return false on error
     }
 }
+
+export const updateClass=  async(requestBody ) => {
+
+
+    try {
+        const response = await axios.put(`${API_URL}/class/updateClass`, requestBody);
+        console.log("Class updated successfully:", response.data);
+        
+        await Swal.fire({
+            title: 'Success',
+            text: 'Class updated successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+        
+        return response.data;
+    }catch( error) {
+        console.log("Error updating class:", error);
+        
+        await Swal.fire({
+            title: 'Error',
+            text: 'Failed to update class. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        
+        throw error; // Re-throw the error for further handling if needed
+    }
+
+}
