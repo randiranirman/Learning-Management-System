@@ -62,7 +62,7 @@ export const updateSubject = async (subjectId, subjectData) => {
         };
         
         console.log("Updating subject with payload:", payload);
-        const response = await axios.put(`${API_URL}/update/${subjectId}`, payload, {
+        const response = await axios.put(`${API_URL}/subject/update/${subjectId}`, payload, {
             headers: getAuthHeaders()
         });
         console.log("Subject updated successfully:", response.data);
