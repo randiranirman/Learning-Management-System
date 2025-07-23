@@ -1,124 +1,129 @@
-// context/NotificationContext.jsx
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import signalRService from "../services/signalRService";
-import { ToastContainer } from "react-toastify";
-import { getUserRole, getIdFromToken } from "../utils/authService";
+// NotificationContext.jsx
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { startSignalRConnection, stopSignalRConnection, getConnectionState, joinGroup, leaveGroup } from '../utils/notificationService';
+import { AuthContext } from '../auth/authContext'; // Import your AuthContext
+import 'react-toastify/dist/ReactToastify.css';
 
-export const NotificationContext = createContext();
+const NotificationContext = createContext();
 
-// Custom hook to use notification context
-export const useNotifications = () => {
+export const useNotification = () => {
   const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useNotifications must be used within a NotificationProvider');
+    throw new Error('useNotification must be used within a NotificationProvider');
   }
   return context;
 };
 
 const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
   const [connectionState, setConnectionState] = useState('Disconnected');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const { isAuth, userRole } = useContext(AuthContext); // Use your auth context
 
-  const userRole = getUserRole();
-  const userId = getIdFromToken(localStorage.getItem('accessToken'));
-
+  // Initialize SignalR connection when user is authenticated
   useEffect(() => {
     const initializeSignalR = async () => {
-      try {
-        // Pass userRole and userId to initialize connection properly
-        const success = await signalRService.initializeConnection(userRole, userId);
-        
-        if (success) {
-          setConnectionState('Connected');
-          console.log(`SignalR initialized successfully for ${userRole} user`);
-        } else {
-          setConnectionState('Disconnected');
+      if (isAuth && userRole && !isInitialized) {
+        try {
+          // Get userId from localStorage using the exact key from authService
+          const userId = localStorage.getItem("UserId");
+          
+          console.log('🚀 Initializing SignalR for role:', userRole, 'userId:', userId);
+          await startSignalRConnection(userId);
+          setIsInitialized(true);
+          console.log('✅ SignalR connection initialized');
+        } catch (error) {
+          console.error('❌ Failed to initialize SignalR:', error);
         }
-        
-      } catch (error) {
-        console.error('Failed to initialize SignalR:', error);
-        setConnectionState('Disconnected');
       }
     };
 
-    // Only initialize if we have both user role and user ID (or if user is admin)
-    if (userRole && (userId || userRole === 'Admin')) {
-      initializeSignalR();
-    }
+    initializeSignalR();
+  }, [isAuth, userRole, isInitialized]);
 
-    // Cleanup function
+  // Monitor connection state
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const checkConnection = setInterval(() => {
+      const state = getConnectionState();
+      setConnectionState(state);
+    }, 2000);
+
+    return () => clearInterval(checkConnection);
+  }, [isInitialized]);
+
+  // Cleanup on unmount or logout
+  useEffect(() => {
     return () => {
-      signalRService.stopConnection();
+      if (isInitialized) {
+        stopSignalRConnection();
+        setIsInitialized(false);
+      }
     };
-  }, [userRole, userId]);
-
-  // Add a notification to the local state
-  const addNotification = useCallback((notification) => {
-    const newNotification = {
-      id: Date.now() + Math.random(), // Simple unique ID
-      timestamp: new Date(),
-      read: false,
-      ...notification
-    };
-    
-    setNotifications(prev => [newNotification, ...prev]);
   }, []);
 
-  // Mark notification as read
-  const markAsRead = useCallback((notificationId) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId ? { ...notif, read: true } : notif
-      )
-    );
-  }, []);
-
-  // Mark all notifications as read
-  const markAllAsRead = useCallback(() => {
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, read: true }))
-    );
-  }, []);
-
-  // Clear all notifications
-  const clearAllNotifications = useCallback(() => {
-    setNotifications([]);
-  }, []);
-
-  // Get unread count
-  const getUnreadCount = useCallback(() => {
-    return notifications.filter(notif => !notif.read).length;
-  }, [notifications]);
-
-  // Reconnect SignalR
-  const reconnectSignalR = useCallback(async () => {
-    setConnectionState('Reconnecting');
-    try {
-      await signalRService.reconnect();
-      setConnectionState('Connected');
-    } catch (error) {
-      console.error('Failed to reconnect SignalR:', error);
+  // Handle logout - stop connection
+  useEffect(() => {
+    if (!isAuth && isInitialized) {
+      stopSignalRConnection();
+      setIsInitialized(false);
       setConnectionState('Disconnected');
+      console.log('🛑 SignalR connection stopped due to logout');
     }
-  }, []);
+  }, [isAuth, isInitialized]);
 
-  const value = {
-    notifications,
+  const contextValue = {
     connectionState,
-    isLoading,
-    addNotification,
-    markAsRead,
-    markAllAsRead,
-    clearAllNotifications,
-    getUnreadCount,
-    reconnectSignalR
+    isInitialized,
+    joinGroup: async (groupType, userId = null) => {
+      if (connectionState === 'Connected') {
+        await joinGroup(groupType, userId);
+      }
+    },
+    leaveGroup: async (groupType, userId = null) => {
+      if (connectionState === 'Connected') {
+        await leaveGroup(groupType, userId);
+      }
+    },
   };
 
   return (
-    <NotificationContext.Provider value={value}>
-      <ToastContainer position="top-right" autoClose={8000} />
+    <NotificationContext.Provider value={contextValue}>
       {children}
+      
+      {/* Toast Container for notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="custom-toast-container"
+      />
+      
+      {/* Optional: Connection Status Indicator */}
+      {isAuth && (
+        <div className="signalr-status" style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          padding: '8px 12px',
+          borderRadius: '20px',
+          fontSize: '12px',
+          zIndex: 9999,
+          backgroundColor: connectionState === 'Connected' ? '#4CAF50' : '#f44336',
+          color: 'white',
+          display: process.env.NODE_ENV === 'development' ? 'block' : 'none' // Only show in development
+        }}>
+          🔗 {connectionState}
+        </div>
+      )}
     </NotificationContext.Provider>
   );
 };

@@ -58,6 +58,8 @@ export const getPendingRegistrations = async () => {
                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
            }
        });
+
+       console.log( "fetched registrations " , response.data)
        return response.data;
    } catch (error) {
        console.error("Error fetching pending registrations:", error);
