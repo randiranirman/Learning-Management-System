@@ -22,7 +22,7 @@ import Analytics from "./roles/admin/AdminPages/Analytics";
 import Settings from "./roles/admin/AdminPages/Settings";
 import EditProfile from "./roles/admin/AdminPages/EditProfile";
 import AdminTasks from "./roles/admin/AdminPages/AdminTasks";
-// import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
+import AdminNotifications from "./roles/admin/AdminPages/AdminNotifications";
 import TeacherRegistrationManagement from "./roles/admin/AdminPages/TeacherRegistrationManagement";
 import StudentRegistrationManagement from "./roles/admin/AdminPages/StudentRegistrationManagement";
 import AllTeachersDisplay from "./roles/admin/AdminPages/AllTeachersDisplay";
@@ -37,7 +37,7 @@ import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
 import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
 import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
-// import Notifications from "./roles/teacher/TeacherPages/Notifications";
+import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import Files from "./roles/teacher/TeacherPages/Files";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
 import SubjectStudents from "./roles/teacher/TeacherPages/SubjectStudents";
@@ -54,7 +54,7 @@ import StudentLayout from "./roles/student/StudentLayout/StudentLayout";
 import StudentDashboard from "./roles/student/StudentPages/StudentDashboard";
 import StudentRegistration from "./roles/student/StudentPages/StudentRegistration";
 import SubjectPage from "./roles/student/StudentPages/SubjectPage";
-// import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
+import StudentNotifications from "./roles/student/StudentPages/StudentNotifications";
 import StudentCalender from "./roles/student/StudentPages/StudentCalender";
 import StudentAssignment from "./roles/student/StudentPages/StudentAssignment";
 import StudentSettings from "./roles/student/StudentPages/StudentSettings";
@@ -85,7 +85,7 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
         <Route path="settings" element={<Settings />} />
         <Route path="manage-tasks" element={<AdminTasks />} />
-        {/* <Route path="notifications" element={<AdminNotifications />} /> */}
+        <Route path="notifications" element={<AdminNotifications />} />
         <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
         <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
         <Route path="editProfile" element={<EditProfile />} />
@@ -106,7 +106,7 @@ const App = () => {
         <Route path="settings" element={<TeacherSettings />} />
         <Route path="quiz" element={<QuizManagement />} />
         <Route path="quiz/createQuiz" element={<QuizCreation />} />
-        {/* <Route path="notifications" element={<Notifications />} /> */}
+        <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<Files />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
         <Route path="analytics/:subjectId" element={<SubjectStudents />} />
@@ -124,7 +124,7 @@ const App = () => {
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="studentRegistration" element={<StudentRegistration />} />
         <Route path="subject/:subjectId" element={<SubjectPage />} />
-        {/* <Route path="notifications" element={<StudentNotifications />} /> */}
+        <Route path="notifications" element={<StudentNotifications />} />
         <Route path="calendar" element={<StudentCalender />} />
         <Route path="assignments" element={<StudentAssignment />} />
         <Route path="settings" element={<StudentSettings />} />
