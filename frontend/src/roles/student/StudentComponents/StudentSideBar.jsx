@@ -59,7 +59,7 @@ const StudentSideBar = ({
       key: 'registration',
       icon: <SnippetsOutlined/>,
       label: 'Registration',
-      path: '/Student/StudentRegistration'
+      path: '/student/studentRegistration'
     },
     {
       key: 'settings',
