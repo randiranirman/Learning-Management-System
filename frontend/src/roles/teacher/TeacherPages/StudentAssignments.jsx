@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Row, Col, Card, Typography, Button } from 'antd';
+import { Row, Col, Card, Typography, Button, Table } from 'antd';
 import { getAllAssignmentsMarksByStudentId } from "../../../utils/analyticsService";
 import AssignmentsStudentCard from "../TeacherComponents/AssignmentsStudentCard";
 import jsPDF from 'jspdf';
@@ -144,6 +144,24 @@ const StudentAssignments = () => {
         );
     };
 
+    const columns = [
+        {
+            title: 'Assignment ID',
+            dataIndex: 'assignmentId',
+            key: 'assignmentId',
+        },
+        {
+            title: 'Assignment Title',
+            dataIndex: 'assignmentTitle',
+            key: 'assignmentTitle',
+        },
+        {
+            title: 'Marks',
+            dataIndex: 'marks',
+            key: 'marks',
+        },
+    ];
+
     return (
         <div style={{ padding: '20px' }}>
             <Title level={3}>Assignment Marks for Student Id: {studentId}</Title>
@@ -175,17 +193,21 @@ const StudentAssignments = () => {
                             </div>
                         </Card>
 
-                        <Title level={4} style={{ marginTop: '30px' }}>
-                            All the assignments marks for student: {studentId}
-                        </Title>
-
-                        <Row gutter={[16, 16]}>
-                            {assignments.map((assignment) => (
-                                <Col xs={24} sm={12} md={8} lg={6} key={assignment.assignmentId}>
-                                    <AssignmentsStudentCard assignment={assignment} />
-                                </Col>
-                            ))}
-                        </Row>
+                        <Card
+                            title="Assignment Details"
+                            style={{
+                                marginBottom: '24px',
+                                borderRadius: '12px',
+                            }}
+                        >
+                            <Table
+                                columns={columns}
+                                dataSource={assignments}
+                                rowKey="assignmentId"
+                                pagination={false}
+                                style={{ marginBottom: '20px' }}
+                            />
+                        </Card>
                     </div>
                 </>
             )}

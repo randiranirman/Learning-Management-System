@@ -5,7 +5,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 const { Option } = Select;
 const { Title } = Typography;
 
-const DropdownNavigation = ({ subjectTitle, subjectGrade }) => {
+const DropdownNavigation = () => {
   const { subjectId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +25,7 @@ const DropdownNavigation = ({ subjectTitle, subjectGrade }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
       <Title level={4}>
-        Analytics &gt; {subjectTitle} - Grade {subjectGrade}
+        {/* Analytics &gt; */}
       </Title>
       <Select
         defaultValue={getCurrentView()}
