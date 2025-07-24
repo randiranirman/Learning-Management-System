@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { getAllStudentsThatMadeSubmissionByAssignmentId } from "../../../utils/analyticsService";
-import StudentsAssignmentCard from "../TeacherComponents/StudentsAssignmentCard";
-import { Row, Col, Card, Typography, Button } from 'antd';
+import { Table, Card, Typography, Button, Row, Col } from 'antd';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -14,18 +13,18 @@ const AllStudentsPerAssignment = () => {
     const exportRef = useRef();
 
     useEffect(() => {
-        const loadAllStudentsThatMadeSubmissionsForAssignment = async () => {
+        const loadAllStudents = async () => {
             try {
                 const response = await getAllStudentsThatMadeSubmissionByAssignmentId(assignmentId);
                 setStudents(response);
             } catch (error) {
-                console.log(`Error while loading students for assignment Id: ${assignmentId}`, error);
+                console.error(`Error loading students for assignment ${assignmentId}`, error);
             }
         };
         if (assignmentId) {
-            loadAllStudentsThatMadeSubmissionsForAssignment();
+            loadAllStudents();
         }
-    }, [subjectId, assignmentId]);
+    }, [assignmentId]);
 
     const handleExportPdf = async () => {
         const input = exportRef.current;
@@ -34,14 +33,11 @@ const AllStudentsPerAssignment = () => {
         const canvas = await html2canvas(input, { scale: 2 });
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
-
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-
         const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pageWidth;
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
         let heightLeft = pdfHeight;
         let position = 0;
 
@@ -58,6 +54,24 @@ const AllStudentsPerAssignment = () => {
         pdf.save(`Assignment_${assignmentId}_Student_Marks.pdf`);
     };
 
+    const columns = [
+        {
+            title: 'Student ID',
+            dataIndex: 'studentId',
+            key: 'studentId',
+        },
+        {
+            title: 'Student Name',
+            dataIndex: 'fullName',
+            key: 'fullName',
+        },
+        {
+            title: 'Marks',
+            dataIndex: 'marks',
+            key: 'marks',
+        },
+    ];
+
     const MarksHistogram = ({ data }) => {
         const createBins = (students) => {
             const bins = {};
@@ -66,7 +80,6 @@ const AllStudentsPerAssignment = () => {
                 const binLabel = `${i}-${i + binSize - 1}`;
                 bins[binLabel] = 0;
             }
-
             students.forEach(student => {
                 const mark = parseInt(student.marks);
                 const binIndex = Math.floor(mark / binSize) * binSize;
@@ -75,7 +88,6 @@ const AllStudentsPerAssignment = () => {
                     bins[binLabel]++;
                 }
             });
-
             return Object.entries(bins).map(([range, count]) => ({
                 range,
                 count,
@@ -157,10 +169,7 @@ const AllStudentsPerAssignment = () => {
                     color: '#595959'
                 }}>
                     {binData.map((bin) => (
-                        <div key={bin.range} style={{
-                            width: '60px',
-                            textAlign: 'center'
-                        }}>
+                        <div key={bin.range} style={{ width: '60px', textAlign: 'center' }}>
                             {bin.range}
                         </div>
                     ))}
@@ -205,36 +214,29 @@ const AllStudentsPerAssignment = () => {
             </div>
 
             <div ref={exportRef}>
-                <Title level={3}>Students and their marks for Assignment Id: {assignmentId}</Title>
+                <Title level={3}>Students' Marks for Assignment #{assignmentId}</Title>
 
                 {students.length > 0 && (
                     <Card
                         title="Student Marks Distribution"
-                        style={{
-                            marginBottom: '24px',
-                            borderRadius: '12px',
-                        }}
+                        style={{ marginBottom: '24px', borderRadius: '12px' }}
                     >
                         <MarksHistogram data={students} />
-                        <div style={{
-                            textAlign: 'center',
-                            marginTop: '20px',
-                            fontSize: '14px',
-                            color: '#595959'
-                        }}>
+                        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#595959' }}>
                             <Text strong>Marks Range</Text> vs <Text strong>Number of Students</Text>
                         </div>
                     </Card>
                 )}
 
-                <Title level={4} style={{ marginBottom: '16px' }}>Student Details</Title>
-                <Row gutter={[16, 16]}>
-                    {students.map((student) => (
-                        <Col xs={24} sm={12} md={8} lg={6} key={student.studentId}>
-                            <StudentsAssignmentCard student={student} />
-                        </Col>
-                    ))}
-                </Row>
+                <Title level={4} style={{ margin: '16px 0' }}>Student Details</Title>
+
+                <Table
+                    dataSource={students}
+                    columns={columns}
+                    rowKey="studentId"
+                    pagination={{ pageSize: 8 }}
+                    bordered
+                />
 
                 {students.length === 0 && (
                     <Card style={{ textAlign: 'center', padding: '40px' }}>

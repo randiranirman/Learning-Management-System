@@ -10,7 +10,6 @@ const Analytics = () => {
 
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalTeachers, setTotalTeachers] = useState(0);
-  const [gradeRange, setGradeRange] = useState("0 - 0");
 
   const navigation = useNavigate();
 
@@ -24,11 +23,6 @@ const Analytics = () => {
       id: 2,
       key: 'Total Teachers',
       value: totalTeachers
-    },
-    {
-      id: 3,
-      key: 'Grade',
-      value: gradeRange 
     }
   ]
 
@@ -38,7 +32,6 @@ const Analytics = () => {
         const response = await getAdminOverviewInAnalytics();
         setTotalStudents(response.noOfStudents);
         setTotalTeachers(response.noOfTeachers);
-        setGradeRange(`${response.minGrade} - ${response.maxGrade}`);
       } catch (error) {
         console.error("Failed to fetch analytics data:", error);
       }

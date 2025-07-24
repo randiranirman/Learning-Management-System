@@ -174,6 +174,7 @@ const getAllSubmissionsByAssignmentId = async (assignmentId) => {
                 assignmentId: assignmentId
             }
         });
+        console.log("Reponse for fetch submissions:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching submissions by assignment ID:", error);

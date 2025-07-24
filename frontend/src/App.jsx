@@ -31,12 +31,10 @@ import AllTeacherAssigedSubjects from "./roles/admin/AdminPages/AllTeacherAssige
 
 // Teacher Components
 import TeacherLayout from "./roles/teacher/TeacherLayouts/TeacherLayout";
-import TeacherDashboard from "./roles/teacher/TeacherPages/Dashboard";
+import TeacherDashboard from "./roles/teacher/TeacherPages/TestDashboard";
 import Assignment from "./roles/teacher/TeacherPages/Assignments";
 import CourseRegistration from "./roles/teacher/TeacherPages/Registration";
 import TeacherSettings from "./roles/teacher/TeacherPages/Settings";
-import QuizManagement from "./roles/teacher/TeacherPages/QuizManagement";
-import QuizCreation from "./roles/teacher/TeacherPages/QuizCreation";
 import Notifications from "./roles/teacher/TeacherPages/Notifications";
 import Files from "./roles/teacher/TeacherPages/Files";
 import TeacherAnalytics from "./roles/teacher/TeacherPages/TeacherAnalytics";
@@ -104,8 +102,6 @@ const App = () => {
         <Route path="assignments/:subjectId" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
-        <Route path="quiz" element={<QuizManagement />} />
-        <Route path="quiz/createQuiz" element={<QuizCreation />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<Files />} />
         <Route path="analytics" element={<TeacherAnalytics />} />

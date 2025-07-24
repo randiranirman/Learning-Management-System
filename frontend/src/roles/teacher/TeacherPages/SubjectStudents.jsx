@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllStudentsBySubjectId } from '../../../utils/analyticsService';
-import { Row, Typography, Col } from 'antd';
-import StudentsSubjectCard from '../TeacherComponents/StudentsSubjectCard';
+import { Table, Typography, Button } from 'antd';
 import DropdownNavigation from '../TeacherComponents/DropdownNavigation';
+import { EyeOutlined } from '@ant-design/icons';
 
-const { Text, Title } = Typography;
+const { Title, Text } = Typography;
 
 const SubjectStudents = () => {
   const { subjectId } = useParams();
   const [students, setStudents] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,21 +27,54 @@ const SubjectStudents = () => {
     }
   }, [subjectId]);
 
-  const handleSelect = (studentId) => {
+  const handleViewAnalytics = (studentId) => {
     navigate(`/teacher/analytics/${subjectId}/${studentId}`);
-  }
+  };
+
+  const columns = [
+    {
+      title: 'Student ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Index Number',
+      dataIndex: 'indexNumber',
+      key: 'indexNumber',
+    },
+    {
+      title: 'Student Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      render: (text) => text || <Text type="secondary">N/A</Text>,
+    },
+    {
+      title: 'View Analytics',
+      key: 'actions',
+      render: (_, record) => (
+        <Button
+          type="primary"
+          icon={<EyeOutlined />}
+          onClick={() => handleViewAnalytics(record.id)}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div style={{ padding: '24px' }}>
-      <DropdownNavigation subjectTitle="Science" subjectGrade={10} />
+      <Title level={2}>Analytics</Title>
+      <DropdownNavigation />
       <Title level={3}>Registered Students for Subject ID: {subjectId}</Title>
-      <Row gutter={[16, 16]}>
-        {students.map((student) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={student.id}>
-                <StudentsSubjectCard student={student} onClick={() => handleSelect(student.id)} />
-            </Col>
-        ))}
-      </Row>
+
+      <Table
+        columns={columns}
+        dataSource={students}
+        rowKey="id"
+        pagination={{ pageSize: 6 }}
+      />
 
       {students.length === 0 && (
         <Text type="warning">No students registered for this subject.</Text>

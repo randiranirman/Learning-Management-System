@@ -1,63 +1,74 @@
-import { Card, Avatar, Typography, Divider, Row, Col, Statistic } from 'antd';
-import { 
-  BookOutlined, 
-  UserOutlined, 
-  FileTextOutlined, 
-  QuestionCircleOutlined
+import { Card, Avatar, Typography, Divider, Row, Col, Statistic, Tooltip } from 'antd';
+import {
+  BookOutlined,
+  UserOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
-// Fixed color for all class cards - using the first card's purple color
-const cardColor = "#722ed1";
+const cardBorderColor = "#d9d9d9"; // Light neutral gray
+const cardBackground = "#ffffff"; // White background
 
 const AnalyticsClassCard = ({ classItem, onClick }) => {
   return (
     <Card
       hoverable
       onClick={() => onClick(classItem)}
-      style={{ 
-        borderTop: `4px solid ${cardColor}`,
-        height: '280px',
-        cursor: 'pointer'
+      style={{
+        border: `1px solid ${cardBorderColor}`,
+        borderRadius: 8,
+        height: 260,
+        backgroundColor: cardBackground,
+        boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+        cursor: 'pointer',
+        overflow: 'hidden'
       }}
-      bodyStyle={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+      bodyStyle={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+        padding: 16
+      }}
     >
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-          <Avatar 
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+          <Avatar
             size={48}
-            style={{ backgroundColor: cardColor, marginRight: '12px' }}
+            style={{ backgroundColor: '#7933daff', marginRight: 12 }}
             icon={<BookOutlined />}
           />
-          <div>
-            <Title level={4} style={{ margin: 0 }}>{`${classItem.subjectGrade}th Grade ${classItem.subjectTitle}`}</Title>
-            <Text type="secondary">{classItem.subjectTitle}</Text>
+          <div style={{ flex: 1 }}>
+            <Tooltip title={`${classItem.subjectCode}th Grade ${classItem.subjectTitle}`}>
+              <Title level={5} ellipsis={{ rows: 1 }}>
+                {`${classItem.subjectTitle}`}
+              </Title>
+            </Tooltip>
+            <Text type="secondary" ellipsis={{ rows: 1 }}>
+              {classItem.subjectCode} 
+            </Text>
           </div>
         </div>
-        
-        <Divider style={{ margin: '16px 0' }} />
-        
-        <Row gutter={16}>
-          <Col span={8}>
-            <Statistic 
-              title="Students" 
+
+        <Divider style={{ margin: '12px 0' }} />
+
+        <Row gutter={12}>
+          <Col span={12}>
+            <Statistic
+              title="Students"
               value={classItem.noOfRegisterdStudents}
               prefix={<UserOutlined />}
             />
           </Col>
-          <Col span={8}>
-            <Statistic 
-              title="Assignments" 
+          <Col span={12}>
+            <Statistic
+              title="Assignments"
               value={classItem.noOfAssignments}
               prefix={<FileTextOutlined />}
             />
           </Col>
         </Row>
-      </div>
-
-      <div>
-        
       </div>
     </Card>
   );

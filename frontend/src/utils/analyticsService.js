@@ -1,10 +1,17 @@
 import axios from "axios";
 
 const BASE_URL = "https://localhost:7082/api";
+const NEW_BASE_URL = "https://localhost:7294/api";
+const FILE_BASE_URL = "https://localhost:7212/api";
 
+// editing
 const getAllStudentsBySubjectId = async (subjectId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/StudentMarksAnalytics/${subjectId}`);
+        const response = await axios.get(`${NEW_BASE_URL}/StudentView/get-student-details-by-subjectID`, {
+            params: {
+                subjectId: subjectId
+            }
+        });
         return response.data;
     } catch (error) {
         if (error.response?.status === 404) {
@@ -18,10 +25,10 @@ const getAllStudentsBySubjectId = async (subjectId) => {
 
 const getAllAssignmentsMarksByStudentId = async (subjectId, studentId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/StudentMarksAnalytics`, {
+        const response = await axios.get(`${NEW_BASE_URL}/Analytic/get-all-marks-by-subjectId-and-studentId`, {
             params: {
-                subjectId,
-                studentId
+                subjectId: subjectId,
+                studentId: studentId
             }
         });
         return response.data;
@@ -47,7 +54,11 @@ const getAllAssignmentsMarksByStudentId = async (subjectId, studentId) => {
 
 const getAllAssignmentsWithSubmissionBySubjectId = async (subjectId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/assignments/${subjectId}`);
+        const response = await axios.get(`${FILE_BASE_URL}/Assignment/get-all-assignments-by-subjectID`, {
+            params: {
+                subjectId: subjectId
+            }
+        });
         return response.data;
     } catch (error) {
         if (error.response?.status === 404) {
@@ -61,9 +72,9 @@ const getAllAssignmentsWithSubmissionBySubjectId = async (subjectId) => {
 
 const getAllStudentsThatMadeSubmissionByAssignmentId = async (assignmentId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/assignments`, {
+        const response = await axios.get(`${NEW_BASE_URL}/StudentView/get-all-student-marks-by-assignmentID`, {
             params:{
-                assignmentId
+                assignmentId: assignmentId
             }
         });
         return response.data;
@@ -79,9 +90,9 @@ const getAllStudentsThatMadeSubmissionByAssignmentId = async (assignmentId) => {
 
 const getAllSubjectsForGivenTeacher = async (teacherId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/teacher`, {
+        const response = await axios.get(`${NEW_BASE_URL}/Analytic/get-all-subjects-with-assignment-and-student-counts-by-teacherId`, {
             params: {
-                teacherId
+                teacherId: teacherId
             }
         })
         return response.data;

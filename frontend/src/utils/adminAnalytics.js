@@ -1,10 +1,12 @@
 import axios from "axios"
 
 const BASE_URL = "https://localhost:7082/api";
+const USER_URL = "https://localhost:7033";
+const COURSE_URL = "https://localhost:7293";
 
 const getAdminOverviewInAnalytics = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/Analytics`);
+        const response = await axios.get(`${USER_URL}/user/get-students-and-teachers-count`);
         return response.data;
     } catch (error) {
         console.error("Error fetching admin overview:", error);
@@ -14,7 +16,7 @@ const getAdminOverviewInAnalytics = async () => {
 
 const getAllTeachersInSystem = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/Analytics/teachers`);
+        const response = await axios.get(`${COURSE_URL}/registrations/teachers/Teacher/get-all-teachers-with-subjectCount`);
         return response.data;
     } catch (error) {
         console.error("Error fetching teachers:", error);
@@ -24,7 +26,7 @@ const getAllTeachersInSystem = async () => {
 
 const getAllStudentsInSystem = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/Analytics/students`);
+        const response = await axios.get(`${USER_URL}/user/students/get-all-students`);
         return response.data;
     } catch (error) {
         console.error("Error fetching students:", error);
@@ -34,8 +36,10 @@ const getAllStudentsInSystem = async () => {
 
 const getSubjectsWithStudentCountByTeacherId = async (teacherId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/Analytics/teacher`, {
-            params: { teacherId }
+        const response = await axios.get(`${COURSE_URL}/subjects/Subject/get-all-subjectDetails-withStudentCount-by-teacherId`, {
+            params: {
+                teacherId: teacherId
+            }
         });
         return response.data;
     } catch (error) {
@@ -44,7 +48,6 @@ const getSubjectsWithStudentCountByTeacherId = async (teacherId) => {
     }
 }
 
-// const filterStudentsByStudentIndexNo = (studentIndexNo) =>
     
 export {
     getAdminOverviewInAnalytics,

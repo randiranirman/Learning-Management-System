@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { Table, Input, Typography, Space } from "antd";
 import { getSubjectsWithStudentCountByTeacherId } from "../../../utils/adminAnalytics";
-import TeacherSubjectsWithStudentCountCard from "../AdminComponents/TeacherSubjectsWithStudentCountCard";
-import { Row, Col } from "antd";
+
+const { Title } = Typography;
 
 const AllTeacherAssigedSubjects = () => {
   const [searchParams] = useSearchParams();
@@ -14,9 +15,7 @@ const AllTeacherAssigedSubjects = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await getSubjectsWithStudentCountByTeacherId(
-          teacherId
-        );
+        const response = await getSubjectsWithStudentCountByTeacherId(teacherId);
         setSubjects(response);
       } catch (error) {
         console.error("Failed to fetch subjects:", error);
@@ -28,35 +27,53 @@ const AllTeacherAssigedSubjects = () => {
     }
   }, [teacherId]);
 
-  // Filter subjects by subjectTitle (case-insensitive)
   const filteredSubjects = subjects.filter(subject =>
     subject.subjectTitle && subject.subjectTitle.toLowerCase().includes(search.toLowerCase())
   );
 
+  const columns = [
+    {
+      title: "Subject ID",
+      dataIndex: "subjectId",
+      key: "subjectId",
+    },
+    {
+      title: "Subject Code",
+      dataIndex: "code",
+      key: "code",
+    },
+    {
+      title: "Subject Title",
+      dataIndex: "subjectTitle",
+      key: "subjectTitle",
+    },
+    {
+      title: "Registered Student Count",
+      dataIndex: "noOfRegisteredStudents",
+      key: "noOfRegisteredStudents",
+    },
+  ];
+
   return (
     <div>
-      <div style={{ marginBottom: 16 }}>
-        <input
-          type="text"
+      <Title level={3} style={{ marginBottom: 24 }}>Subjects Assigned to the Teacher</Title>
+
+      <Space direction="vertical" style={{ width: "100%", marginBottom: 16 }}>
+        <Input
           placeholder="Search by Subject Title"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ width: 300, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+          style={{ width: 300 }}
         />
-      </div>
-      <Row gutter={[16, 16]}>
-        {filteredSubjects.length === 0 ? (
-          <Col span={24} style={{ textAlign: "center", padding: "20px" }}>
-            No subjects are assigned to this teacher.
-          </Col>
-        ) : (
-          filteredSubjects.map((subject) => (
-            <Col span={8} key={subject.subjectId}>
-              <TeacherSubjectsWithStudentCountCard subject={subject} />
-            </Col>
-          ))
-        )}
-      </Row>
+      </Space>
+
+      <Table
+        dataSource={filteredSubjects}
+        columns={columns}
+        rowKey="subjectId"
+        pagination={{ pageSize: 6 }}
+        locale={{ emptyText: "No subjects found for the given title or teacher." }}
+      />
     </div>
   );
 };

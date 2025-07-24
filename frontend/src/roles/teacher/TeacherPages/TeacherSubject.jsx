@@ -31,17 +31,9 @@ const TeacherSubject = () => {
 
   const classActions = [
     {
-      title: "Create Quiz",
-      icon: <QuestionCircleOutlined />,
-      color: theme.primaryColor,
-      description: "Create new quiz for students",
-      action: () => navigate("/teacher/quiz"),
-      buttonType: "create",
-    },
-    {
       title: "View Assignments",
       icon: <FileTextOutlined />,
-      color: theme.secondaryColor,
+      color: theme.primaryColor,
       description: "Manage class assignments",
       action: () => navigate(`/teacher/assignments/${subjectId}`),
       buttonType: "view",
@@ -49,7 +41,7 @@ const TeacherSubject = () => {
     {
       title: "Grade Submissions",
       icon: <EditOutlined />,
-      color: theme.accentColor1,
+      color: theme.primaryColor,
       description: "Review pending submissions",
       action: () => navigate(`/teacher/subject/${subjectId}/view-submissions`),
       buttonType: "view",
@@ -57,7 +49,7 @@ const TeacherSubject = () => {
     {
       title: "Class Materials",
       icon: <BookOutlined />,
-      color: theme.accentColor2,
+      color: theme.primaryColor,
       description: "Upload and manage resources",
       action: () => navigate(`/teacher/files?subjectId=${subjectId}`),
       buttonType: "view",
