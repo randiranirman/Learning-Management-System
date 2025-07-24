@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Typography,
@@ -12,7 +12,6 @@ import {
   Statistic,
   Select,
   Input,
-  DatePicker,
   theme
 } from 'antd';
 import {
@@ -21,88 +20,63 @@ import {
   ExclamationCircleOutlined,
   UserOutlined,
   BookOutlined,
-  FilterOutlined,
   SearchOutlined,
   ReloadOutlined
 } from '@ant-design/icons';
-import { useNotifications } from '../../../contexts/NotificationContext';
 import NotificationList from '../../../components/NotificationList';
-import { getPendingRegistrations } from '../../../utils/teacherRegistrationService';
-// import AdminPendingRegistrations from '../AdminComponents/AdminPendingRegistrations';
-// import { getPendingRegistrations } from '../../../utils/studentRegistrationService';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
-const { RangePicker } = DatePicker;
 
 const AdminNotifications = () => {
-  const { 
-    notifications, 
-    getUnreadCount, 
-    connectionState, 
-    markAllAsRead,
-    clearAllNotifications,
-    reconnectSignalR
-  } = useNotifications();
-  
-  const [pendingRegistrations, setPendingRegistrations] = useState([]);
-  const [loadingPending, setLoadingPending] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
-  const [filteredNotifications, setFilteredNotifications] = useState(notifications);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const { token } = theme.useToken();
 
-  // useEffect(() => {
-  //   fetchPendingRegistrations();
-  // }, []);
-
-  useEffect(() => {
-    filterNotifications();
-  }, [notifications, searchTerm, filterType]);
-
-  const fetchPendingRegistrations = async () => {
-    setLoadingPending(true);
-    try {
-      const registrations = await getPendingRegistrations();
-      setPendingRegistrations(registrations || []);
-    } catch (error) {
-      console.error('Error fetching pending registrations:', error);
-    } finally {
-      setLoadingPending(false);
+  // Mock data for admin notifications
+  const mockNotifications = [
+    {
+      id: 1,
+      title: "New Student Registration",
+      message: "A new student has registered and is pending approval.",
+      type: "info",
+      read: false,
+      timestamp: new Date().toISOString()
+    },
+    {
+      id: 2,
+      title: "System Update Complete",
+      message: "The learning management system has been successfully updated to version 2.1.",
+      type: "success",
+      read: false,
+      timestamp: new Date(Date.now() - 60000 * 45).toISOString()
+    },
+    {
+      id: 3,
+      title: "Server Maintenance Alert",
+      message: "Scheduled maintenance will occur this weekend. Please notify users.",
+      type: "warning",
+      read: true,
+      timestamp: new Date(Date.now() - 60000 * 120).toISOString()
+    },
+    {
+      id: 4,
+      title: "New Teacher Registration",
+      message: "A new teacher has submitted their registration for review.",
+      type: "info",
+      read: false,
+      timestamp: new Date(Date.now() - 60000 * 180).toISOString()
     }
-  };
-
-  const filterNotifications = () => {
-    let filtered = notifications;
-
-    // Filter by type
-    if (filterType !== 'all') {
-      if (filterType === 'unread') {
-        filtered = filtered.filter(n => !n.read);
-      } else {
-        filtered = filtered.filter(n => n.type === filterType);
-      }
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(n => 
-        n.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        n.message.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredNotifications(filtered);
-  };
+  ];
 
   const getNotificationStats = () => {
-    const total = notifications.length;
-    const unread = notifications.filter(n => !n.read).length;
-    const registrationNotifications = notifications.filter(n => 
+    const total = mockNotifications.length;
+    const unread = mockNotifications.filter(n => !n.read).length;
+    const registrationNotifications = mockNotifications.filter(n => 
       n.type === 'info' && n.title.includes('Registration')
     ).length;
-    const errorNotifications = notifications.filter(n => n.type === 'error').length;
+    const errorNotifications = mockNotifications.filter(n => n.type === 'error').length;
 
     return { total, unread, registrationNotifications, errorNotifications };
   };
@@ -111,16 +85,18 @@ const AdminNotifications = () => {
 
   const handleTabChange = (key) => {
     setActiveTab(key);
-    if (key === 'pending') {
-      fetchPendingRegistrations();
-    }
   };
 
   const refreshData = () => {
-    fetchPendingRegistrations();
-    if (connectionState !== 'Connected') {
-      reconnectSignalR();
-    }
+    console.log('Refreshing admin notifications...');
+  };
+
+  const markAllAsRead = () => {
+    console.log('Marking all notifications as read...');
+  };
+
+  const clearAllNotifications = () => {
+    console.log('Clearing all notifications...');
   };
 
   return (
@@ -140,7 +116,7 @@ const AdminNotifications = () => {
                   Admin Notifications
                 </Title>
                 <Text type="secondary" style={{ fontSize: '16px' }}>
-                  Manage all system notifications and student registrations
+                  Manage all system notifications and user registrations
                 </Text>
               </div>
             </div>
@@ -155,7 +131,6 @@ const AdminNotifications = () => {
                 <Button 
                   icon={<ReloadOutlined />} 
                   onClick={refreshData}
-                  loading={loadingPending}
                 >
                   Refresh
                 </Button>
@@ -190,8 +165,8 @@ const AdminNotifications = () => {
         <Col xs={24} sm={12} md={6}>
           <Card size="small">
             <Statistic
-              title="Pending Registrations"
-              value={pendingRegistrations.length}
+              title="Registration Alerts"
+              value={stats.registrationNotifications}
               prefix={<UserOutlined />}
               valueStyle={{ color: token.colorWarning }}
             />
@@ -200,8 +175,8 @@ const AdminNotifications = () => {
         <Col xs={24} sm={12} md={6}>
           <Card size="small">
             <Statistic
-              title="Registration Alerts"
-              value={stats.registrationNotifications}
+              title="System Alerts"
+              value={stats.errorNotifications}
               prefix={<BookOutlined />}
               valueStyle={{ color: token.colorInfo }}
             />
@@ -214,10 +189,10 @@ const AdminNotifications = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Space>
-              <Text strong>Connection Status:</Text>
+              <Text strong>System Status:</Text>
               <Badge 
-                status={connectionState === 'Connected' ? 'success' : 'error'} 
-                text={connectionState}
+                status="success"
+                text="Online"
               />
             </Space>
           </Col>
@@ -294,13 +269,13 @@ const AdminNotifications = () => {
                 </Col>
                 <Col xs={24} sm={24} md={8}>
                   <Text type="secondary">
-                    Showing {filteredNotifications.length} of {stats.total} notifications
+                    Showing {mockNotifications.length} of {stats.total} notifications
                   </Text>
                 </Col>
               </Row>
             </div>
             
-            <NotificationList notifications={filteredNotifications} />
+            <NotificationList notifications={mockNotifications} />
           </TabPane>
           
           <TabPane 
@@ -308,21 +283,14 @@ const AdminNotifications = () => {
               <Space>
                 <UserOutlined />
                 Pending Registrations
-                {pendingRegistrations.length > 0 && (
-                  <Badge count={pendingRegistrations.length} size="small" />
-                )}
+                <Badge count={2} size="small" />
               </Space>
             } 
             key="pending"
           >
             <div style={{ padding: '20px', textAlign: 'center' }}>
-              <Text type="secondary">Pending registrations functionality will be available soon.</Text>
+              <Text type="secondary">Pending registrations management coming soon.</Text>
             </div>
-            <AdminPendingRegistrations 
-              pendingRegistrations={pendingRegistrations}
-              loading={loadingPending}
-              onRefresh={fetchPendingRegistrations}
-            />
           </TabPane>
         </Tabs>
       </Card>

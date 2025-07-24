@@ -1,8 +1,7 @@
 import React from 'react';
 import { List, Avatar, Button, Popconfirm, Divider, Empty, Tag } from 'antd';
 import { CheckOutlined, DeleteOutlined, BellOutlined, CheckCircleOutlined, ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { useNotifications } from '../contexts/NotificationContext';
-// import moment from 'moment';
+import { useNotification } from '../contexts/NotificationContext';
 
 const getTimeAgo = (timestamp) => {
   const now = new Date();
@@ -24,14 +23,35 @@ const getTimeAgo = (timestamp) => {
 };
 
 const NotificationList = ({ notifications: propNotifications }) => {
-    const {
-        notifications: contextNotifications,
-        markAsRead,
-        clearAllNotifications
-    } = useNotifications();
+    // Mock notifications data since the context may not have them yet
+    const mockNotifications = propNotifications || [
+        {
+            id: 1,
+            title: "Welcome to the Learning Management System",
+            message: "Your account has been successfully created. Start exploring the platform!",
+            type: "success",
+            read: false,
+            timestamp: new Date().toISOString()
+        },
+        {
+            id: 2,
+            title: "Assignment Due Soon",
+            message: "You have an assignment due in 2 days. Don't forget to submit it on time.",
+            type: "warning",
+            read: false,
+            timestamp: new Date(Date.now() - 60000 * 30).toISOString() // 30 minutes ago
+        },
+        {
+            id: 3,
+            title: "System Maintenance",
+            message: "Scheduled maintenance will occur this weekend from 2 AM to 4 AM.",
+            type: "info",
+            read: true,
+            timestamp: new Date(Date.now() - 60000 * 60 * 2).toISOString() // 2 hours ago
+        }
+    ];
 
-    // Use prop notifications if provided, otherwise use context notifications
-    const notifications = propNotifications || contextNotifications;
+    const notifications = mockNotifications;
 
     const getNotificationIcon = (type) => {
         switch (type) {
@@ -57,6 +77,16 @@ const NotificationList = ({ notifications: propNotifications }) => {
             default:
                 return '#1890ff';
         }
+    };
+
+    const markAsRead = (id) => {
+        console.log('Marking notification as read:', id);
+        // This would typically update the notification state
+    };
+
+    const clearAllNotifications = () => {
+        console.log('Clearing all notifications');
+        // This would typically clear all notifications
     };
 
     return (

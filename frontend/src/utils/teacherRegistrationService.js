@@ -103,7 +103,7 @@ export const teacherRegistration = async (teacherData) => {
   }
 };
 
-export const getPendingRegistrations = async () => {
+export const getPendingTeacherRegistrations = async () => {
 
 
   try {
