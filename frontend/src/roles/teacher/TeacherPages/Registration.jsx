@@ -13,6 +13,7 @@ import { fetchAllClasses } from "../../../utils/classService";
 import { fetchAllSubjects } from "../../../utils/subjectService";
 import { teacherRegistration } from "../../../utils/teacherRegistrationService";
 import signalRService from "../../../services/signalRService";
+import Swal from "sweetalert2";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -22,8 +23,6 @@ export default function TeacherCourseRegistration() {
   const [loading, setLoading] = useState(false);
   const [grades, setGrades] = useState([]);
   const [subjectNames, setSubjectNames] = useState([]);
-
-  
 
   useEffect(() => {
     const loadGrades = async () => {
@@ -80,80 +79,90 @@ export default function TeacherCourseRegistration() {
     { value: "BIO001", label: "BIO001" },
   ];
 
-  const showAlert = (type, title, text) => {
-    if (window.Swal) {
-      window.Swal.fire({ icon: type, title, text });
-    } else {
-      message[type](text);
-    }
-  };
-
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
+      // Validate required fields
+      if (!values.employeeId || !values.firstName || !values.teacherEmail || 
+          !values.classIds?.length || !values.subjectIds?.length || 
+          !values.subjectCode?.length || !values.numberOfStudents) {
+        throw new Error("Please fill in all required fields");
+      }
+
       // Transform form values to match backend API structure
       const apiPayload = {
-        teacherId: parseInt(localStorage.getItem("UserId"), 10),
-        employeeId: values.employeeId,
-        classIds: values.classIds || [], // Array of class IDs
-        subjectIds: values.subjectIds || [], // Array of subject IDs
+        teacherId: parseInt(localStorage.getItem("UserId"), 10) || 0,
+        employeeId: values.employeeId.toString(),
+        classIds: Array.isArray(values.classIds) ? values.classIds : [],
+        subjectIds: Array.isArray(values.subjectIds) ? values.subjectIds : [],
         remarks: values.remarks || "",
-        teacherEmail: values.teacherEmail,
-        numberOfStudents: values.numberOfStudents || 0,
-        firstName: values.firstName,
-        subjectCode: values.subjectCode || [] // Array of subject codes
+        teacherEmail: values.teacherEmail.toString(),
+        numberOfStudents: parseInt(values.numberOfStudents, 10) || 0,
+        firstName: values.firstName.toString(),
+        subjectCode: Array.isArray(values.subjectCode) ? values.subjectCode : []
       };
 
-      console.log("API Payload:", apiPayload);
+      console.log("Form values received:", values);
+      console.log("API Payload being sent:", apiPayload);
+      console.log("Payload validation:", {
+        hasEmployeeId: !!apiPayload.employeeId,
+        hasFirstName: !!apiPayload.firstName,
+        hasTeacherEmail: !!apiPayload.teacherEmail,
+        hasClassIds: apiPayload.classIds.length > 0,
+        hasSubjectIds: apiPayload.subjectIds.length > 0,
+        hasSubjectCode: apiPayload.subjectCode.length > 0,
+        hasNumberOfStudents: apiPayload.numberOfStudents > 0
+      });
 
       // Call the actual API
       const response = await teacherRegistration(apiPayload);
       console.log("Registration response:", response);
 
-      // Show success alert - try multiple approaches
-      if (window.Swal) {
-        await window.Swal.fire({
-          icon: "success",
-          title: "Registration Successful!",
-          text: "You Will be notified after admin approval.",
-          confirmButtonText: "OK",
-        });
-
-        signalRService.sendNotification(
-        "Teacher Registration", 
-        "New teacher registration request", 
-        "New", 
-        "Admin",
-        [parseInt(localStorage.getItem("UserId"), 10)]
-        )
-      } else {
-        // Fallback to alert and message
-        alert(
-          "Registration Successful! Course has been registered successfully."
+      // Send SignalR notification
+      try {
+        await signalRService.sendNotification(
+          "ReceiveMessage", 
+          {
+            user: "Teacher Registration System",
+            message: `New teacher registration request from ${apiPayload.firstName} (Employee ID: ${apiPayload.employeeId})`
+          }
         );
-        message.success("Course registered successfully!");
+      } catch (notificationError) {
+        console.error("Notification error:", notificationError);
+        // Don't fail the whole process if notification fails
       }
 
+      // Show success SweetAlert
+      await Swal.fire({
+        icon: "success",
+        title: "Registration Successful!",
+        text: "You will be notified after admin approval.",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#1890ff",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      });
+
+      // Reset form after successful submission and user clicks OK
       form.resetFields();
+
     } catch (error) {
       console.error("Registration error:", error);
 
       // Extract error message
       const errorMessage = error.message || "Something went wrong. Please try again.";
 
-      // Show error alert
-      if (window.Swal) {
-        await window.Swal.fire({
-          icon: "error",
-          title: "Registration Failed!",
-          text: errorMessage,
-          confirmButtonText: "OK",
-        });
-      } else {
-        // Fallback to alert and message
-        alert(`Registration Failed! ${errorMessage}`);
-        message.error(errorMessage);
-      }
+      // Show error SweetAlert
+      await Swal.fire({
+        icon: "error",
+        title: "Registration Failed!",
+        text: errorMessage,
+        confirmButtonText: "Try Again",
+        confirmButtonColor: "#ff4d4f",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      });
+
     } finally {
       setLoading(false);
     }
@@ -192,8 +201,6 @@ export default function TeacherCourseRegistration() {
             >
               <Input placeholder="Enter employee ID" />
             </Form.Item>
-
-           
 
             <Form.Item 
               name="classIds" 

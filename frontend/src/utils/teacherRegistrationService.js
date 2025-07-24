@@ -6,21 +6,61 @@ const REGISTER_API_URL ="https://localhost:7293/api/TeacherRegistration"
 
 export const teacherRegistration = async (teacherData) => {
   console.log("Teacher data received:", teacherData);
+  
+  // Validate input data structure
+  if (!teacherData || typeof teacherData !== 'object') {
+    throw new Error("Invalid teacher data provided");
+  }
 
-  // Prepare the request body to match the backend DTO
+  // Check for required fields
+  const requiredFields = ['employeeId', 'firstName', 'teacherEmail'];
+  const missingFields = requiredFields.filter(field => !teacherData[field]);
+  
+  if (missingFields.length > 0) {
+    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+  }
+
+  // Prepare the request body to match the backend DTO exactly
   const requestBody = {
-    teacherId: teacherData.teacherId || 0,
-    employeeId: teacherData.employeeId,
+    teacherId: parseInt(teacherData.teacherId, 10) || 0,
+    employeeId: String(teacherData.employeeId),
     classIds: Array.isArray(teacherData.classIds) ? teacherData.classIds : [],
     subjectIds: Array.isArray(teacherData.subjectIds) ? teacherData.subjectIds : [],
-    remarks: teacherData.remarks || "",
-    teacherEmail: teacherData.teacherEmail,
-    numberOfStudents: teacherData.numberOfStudents || 0,
-    firstName: teacherData.firstName,
+    remarks: String(teacherData.remarks || ""),
+    teacherEmail: String(teacherData.teacherEmail),
+    numberOfStudents: parseInt(teacherData.numberOfStudents, 10) || 0,
+    firstName: String(teacherData.firstName),
     subjectCode: Array.isArray(teacherData.subjectCode) ? teacherData.subjectCode : []
   };
 
+  // Additional validation
+  if (requestBody.classIds.length === 0) {
+    throw new Error("At least one class must be selected");
+  }
+  
+  if (requestBody.subjectIds.length === 0) {
+    throw new Error("At least one subject must be selected");
+  }
+  
+  if (requestBody.subjectCode.length === 0) {
+    throw new Error("At least one subject code must be selected");
+  }
+  
+  if (requestBody.numberOfStudents <= 0) {
+    throw new Error("Number of students must be greater than 0");
+  }
+
   console.log("Request body being sent:", requestBody);
+  console.log("Request body type validation:", {
+    teacherId: typeof requestBody.teacherId,
+    employeeId: typeof requestBody.employeeId,
+    classIds: Array.isArray(requestBody.classIds) ? `array[${requestBody.classIds.length}]` : typeof requestBody.classIds,
+    subjectIds: Array.isArray(requestBody.subjectIds) ? `array[${requestBody.subjectIds.length}]` : typeof requestBody.subjectIds,
+    teacherEmail: typeof requestBody.teacherEmail,
+    numberOfStudents: typeof requestBody.numberOfStudents,
+    firstName: typeof requestBody.firstName,
+    subjectCode: Array.isArray(requestBody.subjectCode) ? `array[${requestBody.subjectCode.length}]` : typeof requestBody.subjectCode
+  });
 
   try {
     const response = await axios.post(API_URL, requestBody, {
@@ -85,6 +125,55 @@ export const approveTeacherRegistration = async (registrationBody) => {
   console.log("Approving registration with data:", registrationBody);
 
   const requestBody = {
+    RegistrationId: registrationBody.registrationId,
+    Status: registrationBody.status, // Should be 0 (pending), 1 (approved), or 2 (rejected)
+    AdminId: registrationBody.adminId,
+    Remarks: registrationBody.remarks || ""
+  };
+  
+  console.log("Request body being sent:", requestBody);
+
+  try {
+    const response = await axios.post(`${REGISTER_API_URL}/approve`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+    console.log("Teacher registration approved:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error approving teacher registration:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      
+      // Handle validation errors
+      if (error.response.status === 400 && error.response.data?.errors) {
+        const validationErrors = error.response.data.errors;
+        const errorMessages = Object.keys(validationErrors).map(key => 
+          `${key}: ${validationErrors[key].join(', ')}`
+        ).join('; ');
+        throw new Error(`Validation failed: ${errorMessages}`);
+      }
+      
+      throw new Error(`Failed to approve registration: ${error.response.data?.message || error.response.status}`);
+    } else if (error.request) {
+      console.error("Request:", error.request);
+      throw new Error("No response from server");
+    } else {
+      console.error("Error message:", error.message);
+      throw new Error("Failed to approve registration");
+    }
+  }
+}
+
+
+
+export const rejectTeacherRegistration = async (registrationBody) => {
+  console.log("Rejecting registration with data:", registrationBody);
+
+  const requestBody = {
     registrationId: registrationBody.registrationId,
     status: registrationBody.status, // Should be 0 (pending), 1 (approved), or 2 (rejected)
     adminId: registrationBody.adminId,
@@ -94,7 +183,7 @@ export const approveTeacherRegistration = async (registrationBody) => {
   console.log("Request body being sent:", requestBody);
 
   try {
-    const response = await axios.post(`${REGISTER_API_URL}/approve`, requestBody, {
+    const response = await axios.post(`${REGISTER_API_URL}/reject`, requestBody, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`
