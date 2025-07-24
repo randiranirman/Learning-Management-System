@@ -4,12 +4,10 @@ import { toast } from "react-toastify";
 const SIGNALR_URL = "https://localhost:7293/notificationHub"; // Update if running HTTPS or on a different port
 
 let hubConnection = null;
-
-export const startSignalRConnection = async (userId) => {
+export const startSignalRConnection = async (userId, addNotification) => {
   try {
     hubConnection = new HubConnectionBuilder()
       .withUrl(`${SIGNALR_URL}?access_token=${localStorage.getItem("accessToken") || ""}`, {
-        // Also keep the accessTokenFactory as fallback
         accessTokenFactory: () => localStorage.getItem("accessToken") || "",
       })
       .configureLogging(LogLevel.Information)
@@ -20,16 +18,18 @@ export const startSignalRConnection = async (userId) => {
     hubConnection.on(
       "NotifyNewRegistrationAsync",
       (studentId, classId, className, subjectIds, subjectNames, indexNumber) => {
-        console.log("🔔 NotifyNewRegistrationAsync received:", {
-          studentId, classId, className, subjectIds, subjectNames, indexNumber
+        const message = `📌 New registration: Student ${studentId} registered for class "${className}" (Index: ${indexNumber}) with subjects: ${subjectNames?.join(", ") || "N/A"}`;
+        
+        toast.info(message, {
+          toastId: `new-reg-${studentId}-${classId}`,
         });
-        toast.info(
-          `📌 New registration: Student ${studentId} registered for class "${className}" (Index: ${indexNumber}) with subjects: ${subjectNames?.join(", ") || "N/A"}`,
-          {
-            toastId: `new-reg-${studentId}-${classId}`,
-            position: "top-right",
-          }
-        );
+
+        addNotification?.({
+          type: "info",
+          title: "New Student Registration",
+          message,
+          timestamp: new Date().toISOString(),
+        });
       }
     );
 
@@ -37,13 +37,19 @@ export const startSignalRConnection = async (userId) => {
     hubConnection.on(
       "NotifyRegistrationApproved",
       (studentId, registrationId, className, subjectNames) => {
-        toast.success(
-          `✅ Your registration for class "${className}" with subjects ${subjectNames?.join(", ") || "N/A"} has been approved!`,
-          {
-            toastId: `approve-reg-${registrationId}`,
-            position: "top-right",
-          }
-        );
+        const message = `✅ Your registration for class "${className}" with subjects ${subjectNames?.join(", ") || "N/A"} has been approved!`;
+
+        toast.success(message, {
+          toastId: `approve-reg-${registrationId}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "success",
+          title: "Registration Approved",
+          message,
+          timestamp: new Date().toISOString(),
+        });
       }
     );
 
@@ -51,73 +57,114 @@ export const startSignalRConnection = async (userId) => {
     hubConnection.on(
       "NotifyRegistrationRejected",
       (studentId, registrationId, className, subjectNames, reason) => {
-        toast.error(
-          `❌ Your registration for class "${className}" with subjects ${subjectNames?.join(", ") || "N/A"} was rejected. Reason: ${reason || "No reason provided"}`,
-          {
-            toastId: `reject-reg-${registrationId}`,
-            position: "top-right",
-          }
-        );
+        const message = `❌ Your registration for class "${className}" with subjects ${subjectNames?.join(", ") || "N/A"} was rejected. Reason: ${reason || "No reason provided"}`;
+
+        toast.error(message, {
+          toastId: `reject-reg-${registrationId}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "error",
+          title: "Registration Rejected",
+          message,
+          timestamp: new Date().toISOString(),
+        });
       }
     );
 
-    // === Additional Handlers for Extra Backend Methods ===
-    
-    // Registration Completed (from backend)
+    // === Teacher Notification to Admin ===
+    hubConnection.on(
+      "NotifyNewRegistrationAsyncByTeacher",
+      (teacherId, classIds, subjectNames) => {
+        const message = `📌 Teacher ${teacherId} has registered for classes: ${classIds.join(", ")} with subjects: ${subjectNames?.join(", ") || "N/A"}`;
+        
+        toast.info(message, {
+          toastId: `teacher-reg-${teacherId}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "info",
+          title: "Teacher Registration",
+          message,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    );
+
+    // === Teacher Registration Approved ===
+    hubConnection.on(
+      "NotifyNewRegistrationApprovedAsyncTeacher",
+      (teacherId, registrationId, className, subjectNames) => {
+        const message = `✅ Your registration for class "${className}" with subjects ${subjectNames?.join(", ") || "N/A"} has been approved!`;
+
+        toast.success(message, {
+          toastId: `teacher-approve-reg-${registrationId}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "success",
+          title: "Teacher Registration Approved",
+          message,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    );
+
+    // === Registration Completed
     hubConnection.on(
       "NotifyRegistrationCompleted",
-      (studentId, className, message) => {
-        toast.success(
-          `🎉 Registration completed for class "${className}": ${message}`,
-          {
-            toastId: `complete-reg-${studentId}-${className}`,
-            position: "top-right",
-          }
-        );
+      (studentId, className, msg) => {
+        const message = `🎉 Registration completed for class "${className}": ${msg}`;
+
+        toast.success(message, {
+          toastId: `complete-reg-${studentId}-${className}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "success",
+          title: "Registration Completed",
+          message,
+          timestamp: new Date().toISOString(),
+        });
       }
     );
 
-    // Admin notification for registration (from backend)
+    // === Admin Alert for Registration
     hubConnection.on(
       "NotifyAdminsOnRegistration",
       (studentId, className, subjectNames) => {
-        toast.info(
-          `📋 Student ${studentId} registered for class "${className}" with subjects: ${subjectNames?.join(", ") || "N/A"}`,
-          {
-            toastId: `admin-reg-${studentId}-${className}`,
-            position: "top-right",
-          }
-        );
+        const message = `📋 Student ${studentId} registered for class "${className}" with subjects: ${subjectNames?.join(", ") || "N/A"}`;
+
+        toast.info(message, {
+          toastId: `admin-reg-${studentId}-${className}`,
+          position: "top-right",
+        });
+
+        addNotification?.({
+          type: "info",
+          title: "Admin Registration Alert",
+          message,
+          timestamp: new Date().toISOString(),
+        });
       }
     );
 
+    // === Start connection and auto-join groups ===
     await hubConnection.start();
     console.log("✅ SignalR connection started");
 
-    // Debug: Log current localStorage values
-    console.log("🔍 Debug localStorage values:");
-    console.log("- UserRole:", localStorage.getItem("UserRole"));
-    console.log("- UserId:", localStorage.getItem("UserId"));
-    console.log("- accessToken:", localStorage.getItem("accessToken") ? "Present" : "Missing");
-
-    // Auto-join appropriate groups based on user role
     const userRole = localStorage.getItem("UserRole");
-    console.log("🎭 Attempting to join group for role:", userRole);
-    
+
     if (userRole === "admin") {
-      console.log("Calling JoinAdminGroup...");
       await hubConnection.invoke("JoinAdminGroup");
-      console.log("Successfully joined Admin group");
     } else if (userRole === "student" && userId) {
-      console.log(` Calling JoinStudentGroup with userId: ${userId}...`);
       await hubConnection.invoke("JoinStudentGroup", parseInt(userId));
-      console.log(`Successfully joined Student group for user ${userId}`);
     } else if (userRole === "teacher" && userId) {
-      console.log(` Calling JoinTeacherGroup with userId: ${userId}...`);
       await hubConnection.invoke("JoinTeacherGroup", parseInt(userId));
-      console.log(`Successfully joined Teacher group for user ${userId}`);
-    } else {
-      console.warn(" No matching role found or missing userId. Role:", userRole, "UserId:", userId);
     }
 
   } catch (error) {
@@ -126,44 +173,22 @@ export const startSignalRConnection = async (userId) => {
   }
 };
 
-export const stopSignalRConnection = async () => {
-  if (hubConnection) {
-    try {
-      // Leave groups gracefully before disconnecting
-      const userRole = localStorage.getItem("UserRole");
-      const userId = localStorage.getItem("UserId");
-      
-      if (userRole === "Admin") {
-        await hubConnection.invoke("LeaveAdminGroup");
-      } else if (userRole === "Student" && userId) {
-        await hubConnection.invoke("LeaveStudentGroup", parseInt(userId));
-      } else if (userRole === "Teacher" && userId) {
-        await hubConnection.invoke("LeaveTeacherGroup", parseInt(userId));
-      }
-      
-      await hubConnection.stop();
-      console.log("🛑 SignalR connection stopped gracefully");
-    } catch (error) {
-      console.error("❌ Error stopping SignalR connection:", error);
-      // Force stop if graceful stop fails
-      await hubConnection.stop();
-    }
-  }
+export const getConnectionState = () => {
+  return hubConnection?.state || "Disconnected";
 };
 
-// === Helper Functions for Manual Notifications ===
 
 export const joinGroup = async (groupType, userId = null) => {
   if (hubConnection && hubConnection.state === "Connected") {
     try {
       switch (groupType) {
-        case "Admin":
+        case "admin":
           await hubConnection.invoke("JoinAdminGroup");
           break;
-        case "Student":
+        case "student":
           if (userId) await hubConnection.invoke("JoinStudentGroup", parseInt(userId));
           break;
-        case "Teacher":
+        case "teacher":
           if (userId) await hubConnection.invoke("JoinTeacherGroup", parseInt(userId));
           break;
         default:
@@ -180,13 +205,13 @@ export const leaveGroup = async (groupType, userId = null) => {
   if (hubConnection && hubConnection.state === "Connected") {
     try {
       switch (groupType) {
-        case "Admin":
+        case "admin":
           await hubConnection.invoke("LeaveAdminGroup");
           break;
-        case "Student":
+        case "student":
           if (userId) await hubConnection.invoke("LeaveStudentGroup", parseInt(userId));
           break;
-        case "Teacher":
+        case "teacher":
           if (userId) await hubConnection.invoke("LeaveTeacherGroup", parseInt(userId));
           break;
         default:
@@ -199,56 +224,14 @@ export const leaveGroup = async (groupType, userId = null) => {
   }
 };
 
-export const sendTestNotification = async () => {
-  if (hubConnection && hubConnection.state === "Connected") {
+
+export const stopSignalRConnection = async () => {
+  if (hubConnection && hubConnection.state !== "Disconnected") {
     try {
-      await hubConnection.invoke("SendTestNotification");
-      console.log("🧪 Test notification sent");
+      await hubConnection.stop();
+      console.log("🛑 SignalR connection stopped.");
     } catch (error) {
-      console.error("❌ Error sending test notification:", error);
+      console.error("❌ Error stopping SignalR connection:", error);
     }
   }
 };
-
-export const getConnectionState = () => {
-  return hubConnection?.state || "Disconnected";
-};
-
-// Test function to manually trigger notification (for debugging)
-export const testNotificationHandler = () => {
-  console.log("🧪 Testing notification handler manually...");
-  if (hubConnection && hubConnection.state === "Connected") {
-    // Manually trigger the notification handler
-    const testData = {
-      studentId: 123,
-      classId: 456,
-      className: "Test Class",
-      subjectIds: [1, 2],
-      subjectNames: ["Math", "Science"],
-      indexNumber: "TEST001"
-    };
-    
-    // Simulate the notification event
-    console.log("🔔 Manually triggering NotifyNewRegistrationAsync...");
-    toast.info(
-      `📌 TEST: Student ${testData.studentId} registered for class "${testData.className}" (Index: ${testData.indexNumber}) with subjects: ${testData.subjectNames.join(", ")}`,
-      {
-        toastId: `test-notification`,
-        position: "top-right",
-      }
-    );
-    return true;
-  } else {
-    console.error("❌ SignalR connection not available or not connected");
-    return false;
-  }
-};
-
-// Make functions available globally for console testing
-if (typeof window !== 'undefined') {
-  window.testSignalR = {
-    testNotificationHandler,
-    getConnectionState,
-    sendTestNotification
-  };
-}
