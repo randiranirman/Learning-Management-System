@@ -20,6 +20,13 @@ const NotificationProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const { isAuth, userRole } = useContext(AuthContext); // Use your auth context
 
+  const [notifications, setNotifications] = useState([]);
+  // add new notification 
+  const addNotification = (notification) => {
+    setNotifications((prev) => [...prev, notification]);
+    console.log("🔔 New notification added:", notification);
+  }
+
   // Initialize SignalR connection when user is authenticated
   useEffect(() => {
     const initializeSignalR = async () => {
@@ -29,7 +36,7 @@ const NotificationProvider = ({ children }) => {
           const userId = localStorage.getItem("UserId");
           
           console.log('🚀 Initializing SignalR for role:', userRole, 'userId:', userId);
-          await startSignalRConnection(userId);
+          await startSignalRConnection(userId, addNotification);
           setIsInitialized(true);
           console.log('✅ SignalR connection initialized');
         } catch (error) {
@@ -41,6 +48,8 @@ const NotificationProvider = ({ children }) => {
     initializeSignalR();
   }, [isAuth, userRole, isInitialized]);
 
+
+  
   // Monitor connection state
   useEffect(() => {
     if (!isInitialized) return;
@@ -76,6 +85,7 @@ const NotificationProvider = ({ children }) => {
   const contextValue = {
     connectionState,
     isInitialized,
+    notifications,
     joinGroup: async (groupType, userId = null) => {
       if (connectionState === 'Connected') {
         await joinGroup(groupType, userId);
