@@ -68,7 +68,7 @@ const AssignmentSubmissions = () => {
           type="link"
           icon={<FileSearchOutlined />}
           onClick={() =>
-            navigate(`/teacher/subject/${subjectId}/view-submissions/${record.id}`)
+            navigate(`/teacher/subject/${subjectId}/view-submissions/${record.id}?AssignmentTitle=${record.title}`)
           }
         >
           View

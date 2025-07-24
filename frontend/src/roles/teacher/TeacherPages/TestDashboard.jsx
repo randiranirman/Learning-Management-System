@@ -17,7 +17,7 @@ const TestDashboard = () => {
   const [visibleCards, setVisibleCards] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const navigation = useNavigate();
-  const teacherId = pharseInt(localStorage.getItem("UserId"));
+  const teacherId = 2;
 
   const handleSubjectSelect = (subject) => {
     navigation(`/teacher/subject/${subject.subjectId}?subjectName=${subject.name}`);

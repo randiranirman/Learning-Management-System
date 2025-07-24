@@ -52,12 +52,6 @@ const TeacherSideBar = ({
       path: '/teacher/dashboard'
     },
     {
-      key: 'profile',
-      icon: <TeamOutlined />,
-      label: 'Profile',
-      path: '/teacher/profile'
-    },
-    {
       key: 'notifications',
       icon: <MailOutlined />,
       label: 'Notifications',
@@ -74,18 +68,6 @@ const TeacherSideBar = ({
       icon: <SettingOutlined />,
       label: 'Settings',
       path: '/teacher/settings'
-    },
-    {
-      key: 'quiz',
-      icon: <QuestionCircleOutlined />,
-      label: 'Quiz',
-      path: '/teacher/quiz'
-    },
-    {
-      key: 'quizCreation',
-      icon: <DiffOutlined />,
-      label: 'Quiz Creation',
-      path: '/teacher/quiz/createQuiz'
     },
      {
         key: 'Analytics ',

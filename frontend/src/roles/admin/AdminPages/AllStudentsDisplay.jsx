@@ -1,7 +1,8 @@
-import { Card, Row, Col, Typography, Statistic } from 'antd';
+import { Table, Typography, Input } from 'antd';
 import { useEffect, useState } from "react";
-import AllStudentsDisplayCard from "../AdminComponents/AllStudentsDisplayCard";
 import { getAllStudentsInSystem } from "../../../utils/adminAnalytics";
+
+const { Title } = Typography;
 
 const AllStudentsDisplay = () => {
   const [students, setStudents] = useState([]);
@@ -19,40 +20,54 @@ const AllStudentsDisplay = () => {
     fetchStudents();
   }, []);
 
-  // Filter students by index number (case-insensitive)
   const filteredStudents = students.filter(student =>
     student.indexNo && student.indexNo.toLowerCase().includes(search.toLowerCase())
   );
 
+  const columns = [
+    {
+      title: 'Student Index',
+      dataIndex: 'indexNo',
+      key: 'indexNo',
+    },
+    {
+      title: 'Student Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+    },
+    {
+      title: 'Grade',
+      dataIndex: 'grade',
+      key: 'grade',
+    }
+  ];
+
   return (
-    <div>
-      <Typography.Title level={3} style={{ marginBottom: 24 }}>
+    <div style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
+      <Title level={3} style={{ marginBottom: 16 }}>
         Registered Students
-      </Typography.Title>
-      <div style={{ marginBottom: 16 }}>
-        <input
-          type="text"
-          placeholder="Search by Index Number"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ width: 300, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
-        />
-      </div>
-      <Row gutter={[16, 16]}>
-        {filteredStudents.length === 0 ? (
-          <Col span={24} style={{ textAlign: 'center', padding: '20px' }}>
-            No students found for the given index number.
-          </Col>
-        ) : (
-          filteredStudents.map((student) => (
-            <Col span={8} key={student.id}>
-              <AllStudentsDisplayCard student={student} />
-            </Col>
-          ))
-        )}
-      </Row>
+      </Title>
+
+      <Input
+        placeholder="Search by Index Number"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ width: 300, marginBottom: 20, padding: 8 }}
+      />
+
+      <Table
+        columns={columns}
+        dataSource={filteredStudents}
+        rowKey="id"
+        pagination={{ pageSize: 8 }}
+        locale={{
+          emptyText: search
+            ? "This Index has No students"
+            : "No students available"
+        }}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default AllStudentsDisplay;
