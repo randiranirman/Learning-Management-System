@@ -102,8 +102,6 @@ const App = () => {
         <Route path="assignments/:subjectId" element={<Assignment />} />
         <Route path="registration" element={<CourseRegistration />} />
         <Route path="settings" element={<TeacherSettings />} />
-        <Route path="quiz" element={<QuizManagement />} />
-        <Route path="quiz/createQuiz" element={<QuizCreation />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="files" element={<Files />} />
         <Route path="analytics" element={<TeacherAnalytics />} />
