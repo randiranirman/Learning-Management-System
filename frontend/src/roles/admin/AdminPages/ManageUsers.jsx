@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Upload, Space, Typography, Popconfirm, message, Input } from 'antd';
 import { UploadOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ManageUserPopup from '../AdminComponents/ManageUserPopup';
+import EditUserPopup from '../AdminComponents/EditUserPopup'; // Import the new edit popup
 import { fetchAllUsers, getIdFromToken } from '../../../utils/authService';
 import { deleteUser } from '../../../utils/userService';
 import Swal from 'sweetalert2';
@@ -12,6 +13,8 @@ const { Title } = Typography;
 
 const ManageUsers = () => {
   const [showUserPopup, setShowUserPopup] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false); // New state for edit popup
+  const [selectedUser, setSelectedUser] = useState(null); // State to store selected user for editing
   const [users, setUsers] = useState([]);
   const [csvFile, setCsvFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -24,6 +27,7 @@ const ManageUsers = () => {
       email: "",
       role: "",
     });
+
 const handleFileChange = (info) => {
   if (info.fileList && info.fileList.length > 0) {
     // Get the last file in the list and extract the native File object
@@ -122,6 +126,26 @@ const handleFileChange = (info) => {
     await refreshUsersList();
     setShowUserPopup(false);
   };
+
+  // New function to handle edit button click
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setShowEditPopup(true);
+  };
+
+  // New function to handle user update
+  const handleUserUpdated = async () => {
+    await refreshUsersList();
+    setShowEditPopup(false);
+    setSelectedUser(null);
+  };
+
+  // Function to handle edit popup close
+  const handleEditCancel = () => {
+    setShowEditPopup(false);
+    setSelectedUser(null);
+  };
+
    const handleRoleChange = (value) => {
     setFormData({ ...formData, role: value });
   };
@@ -183,6 +207,8 @@ const handleFileChange = (info) => {
           <Button 
             type="primary" 
             icon={<EditOutlined />}
+            onClick={() => handleEditUser(record)} // Updated to call handleEditUser
+            style={{ background: '#5038ED' }}
           >
             Edit
           </Button>
@@ -223,9 +249,6 @@ const handleFileChange = (info) => {
               }
             } icon={<UploadOutlined />}>Select File</Button>
           </Upload>
-
-         
-          
 
           <Button 
             type="primary"
@@ -270,6 +293,16 @@ const handleFileChange = (info) => {
 
       {/* Add User Popup */}
       {showUserPopup && <ManageUserPopup setShowUserPopup={setShowUserPopup} onUserAdded={handleUserAdded} />}
+      
+      {/* Edit User Popup */}
+      {showEditPopup && (
+        <EditUserPopup 
+          visible={showEditPopup}
+          onCancel={handleEditCancel}
+          onUserUpdated={handleUserUpdated}
+          userData={selectedUser}
+        />
+      )}
     </>
   );
 };

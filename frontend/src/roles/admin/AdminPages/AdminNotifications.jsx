@@ -1,301 +1,147 @@
-import React, { useState } from 'react';
-import {
-  Card,
-  Typography,
-  Badge,
-  Divider,
-  Button,
-  Space,
-  Tabs,
-  Row,
-  Col,
-  Statistic,
-  Select,
-  Input,
-  theme
-} from 'antd';
-import {
-  BellOutlined,
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  UserOutlined,
-  BookOutlined,
-  SearchOutlined,
-  ReloadOutlined
-} from '@ant-design/icons';
-import NotificationList from '../../../components/NotificationList';
+import React from 'react';
+import { Card, Typography, Space, Tag, Empty, Badge, Avatar } from 'antd';
+import { CheckCircleOutlined, InfoCircleOutlined, ExclamationCircleOutlined, CloseCircleOutlined, BellOutlined } from '@ant-design/icons';
+import { useNotification } from '../../../contexts/NotificationContext';
 
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
+const { Title, Text, Paragraph } = Typography;
 
-const AdminNotifications = () => {
-  const [activeTab, setActiveTab] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const { token } = theme.useToken();
+const StudentNotifications = () => {
+  const { notifications } = useNotification();
+  console.log("🔔 Student Notifications:", notifications);
 
-  // Mock data for admin notifications
-  const mockNotifications = [
-    {
-      id: 1,
-      title: "New Student Registration",
-      message: "A new student has registered and is pending approval.",
-      type: "info",
-      read: false,
-      timestamp: new Date().toISOString()
-    },
-    {
-      id: 2,
-      title: "System Update Complete",
-      message: "The learning management system has been successfully updated to version 2.1.",
-      type: "success",
-      read: false,
-      timestamp: new Date(Date.now() - 60000 * 45).toISOString()
-    },
-    {
-      id: 3,
-      title: "Server Maintenance Alert",
-      message: "Scheduled maintenance will occur this weekend. Please notify users.",
-      type: "warning",
-      read: true,
-      timestamp: new Date(Date.now() - 60000 * 120).toISOString()
-    },
-    {
-      id: 4,
-      title: "New Teacher Registration",
-      message: "A new teacher has submitted their registration for review.",
-      type: "info",
-      read: false,
-      timestamp: new Date(Date.now() - 60000 * 180).toISOString()
+  const getNotificationIcon = (type) => {
+    const iconProps = { style: { fontSize: '16px' } };
+    switch (type) {
+      case 'success':
+        return <CheckCircleOutlined {...iconProps} style={{ color: '#52c41a' }} />;
+      case 'info':
+        return <InfoCircleOutlined {...iconProps} style={{ color: '#1890ff' }} />;
+      case 'warning':
+        return <ExclamationCircleOutlined {...iconProps} style={{ color: '#faad14' }} />;
+      case 'error':
+        return <CloseCircleOutlined {...iconProps} style={{ color: '#ff4d4f' }} />;
+      default:
+        return <BellOutlined {...iconProps} style={{ color: '#8c8c8c' }} />;
     }
-  ];
-
-  const getNotificationStats = () => {
-    const total = mockNotifications.length;
-    const unread = mockNotifications.filter(n => !n.read).length;
-    const registrationNotifications = mockNotifications.filter(n => 
-      n.type === 'info' && n.title.includes('Registration')
-    ).length;
-    const errorNotifications = mockNotifications.filter(n => n.type === 'error').length;
-
-    return { total, unread, registrationNotifications, errorNotifications };
   };
 
-  const stats = getNotificationStats();
-
-  const handleTabChange = (key) => {
-    setActiveTab(key);
+  const getTagColor = (type) => {
+    switch (type) {
+      case 'success': return 'success';
+      case 'info': return 'blue';
+      case 'warning': return 'warning';
+      case 'error': return 'error';
+      default: return 'default';
+    }
   };
 
-  const refreshData = () => {
-    console.log('Refreshing admin notifications...');
-  };
-
-  const markAllAsRead = () => {
-    console.log('Marking all notifications as read...');
-  };
-
-  const clearAllNotifications = () => {
-    console.log('Clearing all notifications...');
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+      return diffInMinutes < 1 ? 'Just now' : `${diffInMinutes}m ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
   };
 
   return (
-    <div style={{ padding: '24px', background: token.colorBgLayout, minHeight: '100vh' }}>
-      {/* Header Section */}
-      <div style={{ marginBottom: '24px' }}>
-        <Row justify="space-between" align="middle">
-          <Col>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <BellOutlined style={{ 
-                fontSize: '28px', 
-                marginRight: '16px', 
-                color: token.colorPrimary 
-              }} />
-              <div>
-                <Title level={2} style={{ margin: 0, color: token.colorTextHeading }}>
-                  Admin Notifications
-                </Title>
-                <Text type="secondary" style={{ fontSize: '16px' }}>
-                  Manage all system notifications and user registrations
-                </Text>
-              </div>
-            </div>
-          </Col>
-          <Col>
-            <Space>
-              <Badge 
-                count={stats.unread} 
-                style={{ backgroundColor: token.colorError }}
-                showZero={false}
-              >
-                <Button 
-                  icon={<ReloadOutlined />} 
-                  onClick={refreshData}
-                >
-                  Refresh
-                </Button>
-              </Badge>
-            </Space>
-          </Col>
-        </Row>
+    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Avatar 
+          icon={<BellOutlined />} 
+          style={{ backgroundColor: '#1890ff' }}
+          size="large"
+        />
+        <div>
+          <Title level={2} style={{ margin: 0, color: '#262626' }}>
+            Notifications
+          </Title>
+          <Text type="secondary">Stay updated with your latest activities</Text>
+        </div>
+        {notifications.length > 0 && (
+          <Badge 
+            count={notifications.length} 
+            style={{ marginLeft: 'auto' }}
+            showZero={false}
+          />
+        )}
       </div>
 
-      {/* Statistics Cards */}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small">
-            <Statistic
-              title="Total Notifications"
-              value={stats.total}
-              prefix={<BellOutlined />}
-              valueStyle={{ color: token.colorText }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small">
-            <Statistic
-              title="Unread"
-              value={stats.unread}
-              prefix={<ExclamationCircleOutlined />}
-              valueStyle={{ color: token.colorError }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small">
-            <Statistic
-              title="Registration Alerts"
-              value={stats.registrationNotifications}
-              prefix={<UserOutlined />}
-              valueStyle={{ color: token.colorWarning }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small">
-            <Statistic
-              title="System Alerts"
-              value={stats.errorNotifications}
-              prefix={<BookOutlined />}
-              valueStyle={{ color: token.colorInfo }}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Connection Status */}
-      <Card size="small" style={{ marginBottom: '24px' }}>
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Space>
-              <Text strong>System Status:</Text>
-              <Badge 
-                status="success"
-                text="Online"
-              />
-            </Space>
-          </Col>
-          <Col>
-            <Space>
-              {stats.unread > 0 && (
-                <Button 
-                  type="primary" 
-                  size="small" 
-                  onClick={markAllAsRead}
-                  icon={<CheckCircleOutlined />}
-                >
-                  Mark All Read ({stats.unread})
-                </Button>
-              )}
-              {stats.total > 0 && (
-                <Button 
-                  danger 
-                  size="small" 
-                  onClick={clearAllNotifications}
-                >
-                  Clear All
-                </Button>
-              )}
-            </Space>
-          </Col>
-        </Row>
-      </Card>
-
-      {/* Main Content Tabs */}
-      <Card>
-        <Tabs 
-          activeKey={activeTab} 
-          onChange={handleTabChange}
-          size="large"
-          tabBarStyle={{ marginBottom: '24px' }}
-        >
-          <TabPane 
-            tab={
-              <Space>
-                <BellOutlined />
-                All Notifications
-                {stats.unread > 0 && <Badge count={stats.unread} size="small" />}
-              </Space>
-            } 
-            key="all"
-          >
-            {/* Filters for notifications */}
-            <div style={{ marginBottom: '16px' }}>
-              <Row gutter={[16, 16]} align="middle">
-                <Col xs={24} sm={12} md={8}>
-                  <Input
-                    placeholder="Search notifications..."
-                    prefix={<SearchOutlined />}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    allowClear
-                  />
-                </Col>
-                <Col xs={24} sm={12} md={8}>
-                  <Select
-                    style={{ width: '100%' }}
-                    placeholder="Filter by type"
-                    value={filterType}
-                    onChange={setFilterType}
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        {notifications.length === 0 ? (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={
+              <Text type="secondary">No notifications yet</Text>
+            }
+            style={{ padding: '40px 0' }}
+          />
+        ) : (
+          notifications.map((notification) => (
+            <Card
+              key={notification.id}
+              hoverable
+              style={{
+                borderRadius: '8px',
+                border: '1px solid #f0f0f0',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+                transition: 'all 0.2s ease'
+              }}
+              bodyStyle={{ padding: '20px' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ marginTop: '4px' }}>
+                  {getNotificationIcon(notification.type)}
+                </div>
+                
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '12px', 
+                    marginBottom: '8px',
+                    flexWrap: 'wrap'
+                  }}>
+                    <Title level={4} style={{ margin: 0, color: '#262626' }}>
+                      {notification.title}
+                    </Title>
+                    <Tag color={getTagColor(notification.type)} style={{ margin: 0 }}>
+                      {notification.type}
+                    </Tag>
+                  </div>
+                  
+                  <Paragraph 
+                    style={{ 
+                      margin: '0 0 12px 0', 
+                      color: '#595959',
+                      lineHeight: '1.6'
+                    }}
                   >
-                    <Select.Option value="all">All Types</Select.Option>
-                    <Select.Option value="unread">Unread Only</Select.Option>
-                    <Select.Option value="info">Info</Select.Option>
-                    <Select.Option value="success">Success</Select.Option>
-                    <Select.Option value="warning">Warning</Select.Option>
-                    <Select.Option value="error">Error</Select.Option>
-                  </Select>
-                </Col>
-                <Col xs={24} sm={24} md={8}>
-                  <Text type="secondary">
-                    Showing {mockNotifications.length} of {stats.total} notifications
-                  </Text>
-                </Col>
-              </Row>
-            </div>
-            
-            <NotificationList notifications={mockNotifications} />
-          </TabPane>
-          
-          <TabPane 
-            tab={
-              <Space>
-                <UserOutlined />
-                Pending Registrations
-                <Badge count={2} size="small" />
-              </Space>
-            } 
-            key="pending"
-          >
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <Text type="secondary">Pending registrations management coming soon.</Text>
-            </div>
-          </TabPane>
-        </Tabs>
-      </Card>
+                    {notification.message}
+                  </Paragraph>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Text 
+                      type="secondary" 
+                      style={{ fontSize: '12px' }}
+                    >
+                      {formatTimestamp(notification.timestamp)}
+                    </Text>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
+      </Space>
     </div>
   );
 };
 
-export default AdminNotifications;
+export default StudentNotifications;
