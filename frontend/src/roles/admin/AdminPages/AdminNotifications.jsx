@@ -51,7 +51,7 @@ const StudentNotifications = () => {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '24px', maxWidth: '800px', marginLeft: '24px' }}>
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
         <Avatar 
           icon={<BellOutlined />} 
