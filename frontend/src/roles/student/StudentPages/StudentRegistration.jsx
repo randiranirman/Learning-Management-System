@@ -77,7 +77,7 @@ const StudentRegistration = () => {
       message.success('Registration submitted successfully!');
       
       form.resetFields();
-      setCurrentStep(2);
+      // setCurrentStep(2);
     } catch (error) {
       console.log("Registration failed", error);
       message.error('Registration failed. Please try again.');

@@ -72,62 +72,67 @@ const App = () => {
       <Route path="/firstLogin" element={<FirstLogin />} />
       <Route path="/request-password-reset" element={<RequestReset />} />
 
-      {/* Admin routes */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="manage-users" element={<ManageUsers />} />
-        <Route path="manage-assignments" element={<ManageAssignments />} />
-        <Route path="manage-courses" element={<ManageCourses />} />
-        <Route path="manage-classes" element={<ManageClasses />} />
-        <Route path="analytics" element={<Analytics />} />
-        <Route path="settings" element={<Settings />} />
-        <Route path="manage-tasks" element={<AdminTasks />} />
-        <Route path="notifications" element={<AdminNotifications />} />
-        <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
-        <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
-        <Route path="editProfile" element={<EditProfile />} />
-        <Route path="analytics/teachers" element={<AllTeachersDisplay />} />
-        <Route path="analytics/teacher" element={<AllTeacherAssigedSubjects />} />
-        <Route path="analytics/students" element={<AllStudentsDisplay />} />
-        <Route path="test" element={<NotificationTest />} />
-       
+      {/* Admin protected routes */}
+      <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="manage-users" element={<ManageUsers />} />
+          <Route path="manage-assignments" element={<ManageAssignments />} />
+          <Route path="manage-courses" element={<ManageCourses />} />
+          <Route path="manage-classes" element={<ManageClasses />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="manage-tasks" element={<AdminTasks />} />
+          <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="teacherRegistrationManagement" element={<TeacherRegistrationManagement />} />
+          <Route path="studentRegistrationsManagement" element={<StudentRegistrationManagement />} />
+          <Route path="editProfile" element={<EditProfile />} />
+          <Route path="analytics/teachers" element={<AllTeachersDisplay />} />
+          <Route path="analytics/teacher" element={<AllTeacherAssigedSubjects />} />
+          <Route path="analytics/students" element={<AllStudentsDisplay />} />
+          <Route path="test" element={<NotificationTest />} />
+        </Route>
       </Route>
 
-      {/* Teacher routes */}
-      <Route path="/teacher" element={<TeacherLayout />}>
-        <Route index element={<TeacherDashboard />} />
-        <Route path="dashboard" element={<TeacherDashboard />} />
-        <Route path="assignments" element={<Assignment />} />
-        <Route path="assignments/:subjectId" element={<Assignment />} />
-        <Route path="registration" element={<CourseRegistration />} />
-        <Route path="settings" element={<TeacherSettings />} />
-        <Route path="notifications" element={<Notifications />} />
-        <Route path="files" element={<Files />} />
-        <Route path="analytics" element={<TeacherAnalytics />} />
-        <Route path="analytics/:subjectId" element={<SubjectStudents />} />
-        <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
-        <Route path="analytics/assignments/:subjectId" element={<AssignmentsSubject />} />
-        <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
-        <Route path="subject/:subjectId" element={<TeacherSubject />} />
-        <Route path="subject/:subjectId/view-submissions" element={<AssignmentSubmissions />} />
-        <Route path="subject/:subjectId/view-submissions/:assignmentId" element={<ViewSubmissions />} />
+      {/* Teacher protected routes */}
+      <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
+        <Route path="/teacher" element={<TeacherLayout />}>
+          <Route index element={<TeacherDashboard />} />
+          <Route path="dashboard" element={<TeacherDashboard />} />
+          <Route path="assignments" element={<Assignment />} />
+          <Route path="assignments/:subjectId" element={<Assignment />} />
+          <Route path="registration" element={<CourseRegistration />} />
+          <Route path="settings" element={<TeacherSettings />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="files" element={<Files />} />
+          <Route path="analytics" element={<TeacherAnalytics />} />
+          <Route path="analytics/:subjectId" element={<SubjectStudents />} />
+          <Route path="analytics/:subjectId/:studentId" element={<StudentAssignments />} />
+          <Route path="analytics/assignments/:subjectId" element={<AssignmentsSubject />} />
+          <Route path="analytics/assignments/:subjectId/:assignmentId" element={<AllStudentsPerAssignment />} />
+          <Route path="subject/:subjectId" element={<TeacherSubject />} />
+          <Route path="subject/:subjectId/view-submissions" element={<AssignmentSubmissions />} />
+          <Route path="subject/:subjectId/view-submissions/:assignmentId" element={<ViewSubmissions />} />
+        </Route>
       </Route>
 
-      {/* Student routes */}
-      <Route path="/student" element={<StudentLayout />}>
-        <Route index element={<StudentDashboard />} />
-        <Route path="dashboard" element={<StudentDashboard />} />
-        <Route path="studentRegistration" element={<StudentRegistration />} />
-        <Route path="subject/:subjectId" element={<SubjectPage />} />
-        <Route path="notifications" element={<StudentNotifications />} />
-        <Route path="calendar" element={<StudentCalender />} />
-        <Route path="assignments" element={<StudentAssignment />} />
-        <Route path="settings" element={<StudentSettings />} />
-        <Route path="subject/:subjectId/assignments/submission" element={<AssignmentSubmission />} />
-        <Route path="subject/:subjectId" element={<SubjectLayout />}>
-          <Route index element={<SubjectPage />} />
+      {/* Student protected routes */}
+      <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+        <Route path="/student" element={<StudentLayout />}>
+          <Route index element={<StudentDashboard />} />
+          <Route path="dashboard" element={<StudentDashboard />} />
+          <Route path="studentRegistration" element={<StudentRegistration />} />
+          <Route path="subject/:subjectId" element={<SubjectPage />} />
+          <Route path="notifications" element={<StudentNotifications />} />
+          <Route path="calendar" element={<StudentCalender />} />
           <Route path="assignments" element={<StudentAssignment />} />
+          <Route path="settings" element={<StudentSettings />} />
+          <Route path="subject/:subjectId/assignments/submission" element={<AssignmentSubmission />} />
+          <Route path="subject/:subjectId" element={<SubjectLayout />}>
+            <Route index element={<SubjectPage />} />
+            <Route path="assignments" element={<StudentAssignment />} />
+          </Route>
         </Route>
       </Route>
 

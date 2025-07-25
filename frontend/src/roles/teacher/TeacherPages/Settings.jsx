@@ -28,6 +28,7 @@ import {
 import EditProfile from "./EditProfile";
 import PasswordResetModal from "../../admin/AdminComponents/PasswordResetModal";
 import { getTeacherDetails } from "../../../utils/teacherService";
+import { editTeacherDetails } from "../../../utils/teacherService";
 import Swal from "sweetalert2";
 
 const { Title, Text, Paragraph } = Typography;
@@ -63,9 +64,41 @@ const Settings = () => {
     }
   };
 
-  const handleProfileUpdate = (updatedData) => {
-    setTeacherDetails({ ...teacherDetails, ...updatedData });
-  };
+  const handleProfileUpdate = async (updatedData) => {
+    try {
+        // Show loading state
+        setLoading(true);
+        
+        // Call the edit API
+        const result = await editTeacherDetails(updatedData);
+        
+        // Update local state with the updated data
+        setTeacherDetails({ ...teacherDetails, ...updatedData });
+        
+        // Show success message
+        await Swal.fire({
+            title: 'Success',
+            text: 'Profile updated successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+        });
+        
+        // Close the edit modal
+        setShowEditProfile(false);
+        
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        
+        await Swal.fire({
+            title: 'Error',
+            text: error.message || 'Failed to update profile. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    } finally {
+        setLoading(false);
+    }
+};
 
   useEffect(() => {
     fetchTeacherDetails();
